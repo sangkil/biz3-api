@@ -1,0 +1,25 @@
+{
+	"name": "sangkil/biz3-api",
+	"description": "Sangkilbiz api",
+	"keywords": ["rest", "erp"],
+	"type": "yii2-extension",
+	"license": "BSD-3-Clause",
+	"support": {
+		"issues": "https://github.com/sangkil/biz3-api/issues",
+		"source": "https://github.com/sangkil/biz3-api"
+	},
+	"authors": [
+		{
+			"name": "Misbahul Munir",
+			"email": "misbahuldmunir@gmail.com"
+		}
+	],
+	"require": {
+		"yiisoft/yii2": "*""*"
+	},
+	"autoload": {
+		"psr-4": {
+			"biz\\core\\": "core"
+		}
+	}
+}
