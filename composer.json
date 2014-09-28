@@ -25,5 +25,8 @@
 			"biz\\core\\": "core",
 			"biz\\rest\\": "rest"
 		}
-	}
+	},
+	"extra": {
+        "bootstrap": "biz\\core\\Bootstrap"
+    }
 }
