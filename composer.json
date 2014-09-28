@@ -22,11 +22,10 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"biz\\core\\": "core",
-			"biz\\rest\\": "rest"
+			"biz\\": "core"
 		}
 	},
 	"extra": {
-        "bootstrap": "biz\\core\\Bootstrap"
-    }
+		"bootstrap": "biz\\Bootstrap"
+	}
 }
