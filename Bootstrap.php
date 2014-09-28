@@ -19,7 +19,7 @@ class Bootstrap implements \yii\base\BootstrapInterface
                 'class' => 'yii\behaviors\TimestampBehavior',
                 'createdAtAttribute' => 'created_at',
                 'updatedAtAttribute' => 'updated_at',
-                'value' => new yii\db\Expression('NOW()')
+                'value' => new \yii\db\Expression('NOW()')
             ],
             'BizBlameableBehavior' => [
                 'class' => 'yii\behaviors\BlameableBehavior',
