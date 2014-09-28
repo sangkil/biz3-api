@@ -1,6 +1,6 @@
 <?php
 
-namespace biz\core;
+namespace biz;
 
 use Yii;
 
