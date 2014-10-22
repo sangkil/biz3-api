@@ -5,33 +5,27 @@ namespace biz\core\accounting\models;
 use Yii;
 
 /**
- * This is the model class for table "invoice".
+ * This is the model class for table "{{%invoice}}".
  *
- * @property integer $id_invoice
- * @property string $invoice_num
- * @property string $invoice_date
+ * @property integer $id
+ * @property string $number
+ * @property string $date
  * @property string $due_date
- * @property integer $invoice_type
- * @property integer $id_vendor
- * @property double $invoice_value
+ * @property integer $type
+ * @property integer $vendor_id
+ * @property double $value
  * @property integer $status
  * @property string $created_at
  * @property integer $created_by
  * @property string $updated_at
  * @property integer $updated_by
  *
- * @property InvoiceDtl[] $invoiceDtls
  * @property PaymentDtl[] $paymentDtls
  * @property Payment[] $payments
+ * @property InvoiceDtl[] $invoiceDtls
  */
 class Invoice extends \yii\db\ActiveRecord
 {
-    const TYPE_IN = 1;
-    const TYPE_OUT = 2;
-
-    const STATUS_DRAFT = 1;
-    const STATUS_POSTED = 2;
-
     /**
      * @inheritdoc
      */
@@ -46,11 +40,11 @@ class Invoice extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['invoice_num', 'invoice_date', 'due_date', 'invoice_type', 'id_vendor', 'invoice_value', 'status'], 'required'],
-            [['invoice_date', 'due_date', 'created_at', 'updated_at'], 'safe'],
-            [['invoice_type', 'id_vendor', 'status', 'created_by', 'updated_by'], 'integer'],
-            [['invoice_value'], 'number'],
-            [['invoice_num'], 'string', 'max' => 16]
+            [['number', 'date', 'due_date', 'type', 'vendor_id', 'value', 'status'], 'required'],
+            [['date', 'due_date', 'created_at', 'updated_at'], 'safe'],
+            [['type', 'vendor_id', 'status', 'created_by', 'updated_by'], 'integer'],
+            [['value'], 'number'],
+            [['number'], 'string', 'max' => 16]
         ];
     }
 
@@ -60,13 +54,13 @@ class Invoice extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_invoice' => 'Id Invoice',
-            'invoice_num' => 'Invoice Num',
-            'invoice_date' => 'Invoice Date',
+            'id' => 'ID',
+            'number' => 'Number',
+            'date' => 'Date',
             'due_date' => 'Due Date',
-            'invoice_type' => 'Invoice Type',
-            'id_vendor' => 'Id Vendor',
-            'invoice_value' => 'Invoice Value',
+            'type' => 'Type',
+            'vendor_id' => 'Vendor ID',
+            'value' => 'Value',
             'status' => 'Status',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
@@ -78,17 +72,9 @@ class Invoice extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getInvoiceDtls()
-    {
-        return $this->hasMany(InvoiceDtl::className(), ['id_invoice' => 'id_invoice']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getPaymentDtls()
     {
-        return $this->hasMany(PaymentDtl::className(), ['id_invoice' => 'id_invoice']);
+        return $this->hasMany(PaymentDtl::className(), ['invoice_id' => 'id']);
     }
 
     /**
@@ -96,6 +82,40 @@ class Invoice extends \yii\db\ActiveRecord
      */
     public function getPayments()
     {
-        return $this->hasMany(Payment::className(), ['id_payment' => 'id_payment'])->via('paymentDtls');
+        return $this->hasMany(Payment::className(), ['id' => 'payment_id'])->viaTable('{{%payment_dtl}}', ['invoice_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getInvoiceDtls()
+    {
+        return $this->hasMany(InvoiceDtl::className(), ['invoice_id' => 'id']);
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return[
+            'BizTimestampBehavior',
+            'BizBlameableBehavior',
+            [
+                'class' => 'mdm\autonumber\Behavior',
+                'digit' => 6,
+                'attribute' => 'number',
+                'value' => 'AI' . date('y.?')
+            ],
+            [
+                'class' => 'mdm\converter\DateConverter',
+                'attributes' => [
+                    'Date' => 'date',
+                    'DueDate' => 'due_date',
+                ]
+            ],
+            'BizStatusConverter',
+            'mdm\behaviors\ar\RelatedBehavior',
+        ];
     }
 }

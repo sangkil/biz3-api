@@ -13,12 +13,12 @@ class m140624_050030_create_table_purchase extends \yii\db\Migration
         }
 
         $this->createTable('{{%purchase}}', [
-            'id_purchase' => Schema::TYPE_PK,
-            'purchase_num' => Schema::TYPE_STRING . '(16) NOT NULL',
-            'id_supplier' => Schema::TYPE_INTEGER . ' NOT NULL',
-            'id_branch' => Schema::TYPE_INTEGER . ' NOT NULL',
-            'purchase_date' => Schema::TYPE_DATE . ' NOT NULL',
-            'purchase_value' => Schema::TYPE_FLOAT . ' NOT NULL',
+            'id' => Schema::TYPE_PK,
+            'number' => Schema::TYPE_STRING . '(16) NOT NULL',
+            'supplier_id' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'branch_id' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'date' => Schema::TYPE_DATE . ' NOT NULL',
+            'value' => Schema::TYPE_FLOAT . ' NOT NULL',
             'discount' => Schema::TYPE_FLOAT,
             'status' => Schema::TYPE_INTEGER . ' NOT NULL',
             // history column
@@ -29,16 +29,16 @@ class m140624_050030_create_table_purchase extends \yii\db\Migration
         ], $tableOptions);
 
         $this->createTable('{{%purchase_dtl}}', [
-            'id_purchase' => Schema::TYPE_INTEGER . ' NOT NULL',
-            'id_product' => Schema::TYPE_INTEGER . ' NOT NULL',
-            'id_uom' => Schema::TYPE_INTEGER . ' NOT NULL',
-            'purch_qty' => Schema::TYPE_FLOAT . ' NOT NULL',
-            'purch_price' => Schema::TYPE_FLOAT . ' NOT NULL',
+            'purchase_id' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'product_id' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'uom_id' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'qty' => Schema::TYPE_FLOAT . ' NOT NULL',
+            'price' => Schema::TYPE_FLOAT . ' NOT NULL',
             'discount' => Schema::TYPE_FLOAT,
-            'purch_qty_receive' => Schema::TYPE_FLOAT,
+            'total_receive' => Schema::TYPE_FLOAT,
             // constrain
-            'PRIMARY KEY (id_purchase , id_product)',
-            'FOREIGN KEY (id_purchase) REFERENCES {{%purchase}} (id_purchase) ON DELETE CASCADE ON UPDATE CASCADE',
+            'PRIMARY KEY ([[purchase_id]], [[product_id]])',
+            'FOREIGN KEY ([[purchase_id]]) REFERENCES {{%purchase}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
         ], $tableOptions);
 
     }

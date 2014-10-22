@@ -45,7 +45,7 @@ class Purchase extends \biz\core\base\Api
         if (!empty($data['details'])) {
             $this->fire('_create', [$model]);
             $success = $model->save();
-            $success = $model->saveRelated('purchaseDtls', $data, $success, 'details');
+            $success = $model->saveRelated('purchaseDtls', $data['details'], $success);
             if ($success) {
                 $this->fire('_created', [$model]);
                 $transaction->commit();
@@ -83,7 +83,7 @@ class Purchase extends \biz\core\base\Api
             $this->fire('_update', [$model]);
             $success = $model->save();
             if (!empty($data['details'])) {
-                $success = $model->saveRelated('purchaseDtls', $data, $success, 'details');
+                $success = $model->saveRelated('purchaseDtls', $data['details'], $success);
             }
             if ($success) {
                 $this->fire('_updated', [$model]);
@@ -102,8 +102,8 @@ class Purchase extends \biz\core\base\Api
 
     /**
      *
-     * @param  string                         $id
-     * @param  array                          $data
+     * @param  string $id
+     * @param  array $data
      * @param  \biz\core\purchase\models\Purchase $model
      * @return \biz\core\purchase\models\Purchase
      * @throws \Exception
@@ -111,17 +111,17 @@ class Purchase extends \biz\core\base\Api
     public function receive($id, $data = [], $model = null)
     {
         $model = $model ? : $this->findModel($id);
-
+        /* @var $detail \biz\core\purchase\models\PurchaseDtl */
         $success = true;
         $model->scenario = MPurchase::SCENARIO_DEFAULT;
         $model->load($data, '');
         $model->status = MPurchase::STATUS_RECEIVE;
         $this->fire('_receive', [$model]);
-        $purchaseDtls = ArrayHelper::index($model->purchaseDtls, 'id_product');
+        $purchaseDtls = ArrayHelper::index($model->purchaseDtls, 'product_id');
         if (!empty($data['details'])) {
             $this->fire('_receive_head', [$model]);
             foreach ($data['details'] as $dataDetail) {
-                $index = $dataDetail['id_product'];
+                $index = $dataDetail['product_id'];
                 $detail = $purchaseDtls[$index];
                 $detail->scenario = MPurchase::SCENARIO_RECEIVE;
                 $detail->load($dataDetail, '');
@@ -134,7 +134,7 @@ class Purchase extends \biz\core\base\Api
         }
         $allReceived = true;
         foreach ($purchaseDtls as $detail) {
-            $allReceived = $allReceived && $detail->purch_qty == $detail->purch_qty_receive;
+            $allReceived = $allReceived && $detail->qty == $detail->total_receive;
         }
         if ($allReceived) {
             $model->status = MPurchase::STATUS_RECEIVED;

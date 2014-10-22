@@ -5,10 +5,10 @@ namespace biz\core\accounting\models;
 use Yii;
 
 /**
- * This is the model class for table "acc_periode".
+ * This is the model class for table "{{%acc_periode}}".
  *
- * @property integer $id_periode
- * @property string $nm_periode
+ * @property integer $id
+ * @property string $name
  * @property string $date_from
  * @property string $date_to
  * @property integer $status
@@ -21,6 +21,7 @@ use Yii;
  */
 class AccPeriode extends \yii\db\ActiveRecord
 {
+
     /**
      * @inheritdoc
      */
@@ -35,10 +36,10 @@ class AccPeriode extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['nm_periode', 'date_from', 'date_to', 'status', 'created_by', 'updated_by'], 'required'],
+            [['name', 'date_from', 'date_to', 'status'], 'required'],
             [['date_from', 'date_to', 'created_at', 'updated_at'], 'safe'],
             [['status', 'created_by', 'updated_by'], 'integer'],
-            [['nm_periode'], 'string', 'max' => 32]
+            [['name'], 'string', 'max' => 32]
         ];
     }
 
@@ -48,8 +49,8 @@ class AccPeriode extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_periode' => 'Id Periode',
-            'nm_periode' => 'Nm Periode',
+            'id' => 'ID',
+            'name' => 'Name',
             'date_from' => 'Date From',
             'date_to' => 'Date To',
             'status' => 'Status',
@@ -65,6 +66,25 @@ class AccPeriode extends \yii\db\ActiveRecord
      */
     public function getGlHeaders()
     {
-        return $this->hasMany(GlHeader::className(), ['id_periode' => 'id_periode']);
+        return $this->hasMany(GlHeader::className(), ['periode_id' => 'id']);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return[
+            'BizTimestampBehavior',
+            'BizBlameableBehavior',
+            [
+                'class' => 'mdm\converter\DateConverter',
+                'attributes' => [
+                    'DateFrom' => 'date_from',
+                    'DateTo' => 'date_to'
+                ]
+            ],
+            'BizStatusConverter',
+        ];
     }
 }

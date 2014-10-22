@@ -5,13 +5,13 @@ namespace biz\core\master\models;
 use Yii;
 
 /**
- * This is the model class for table "product".
+ * This is the model class for table "{{%product}}".
  *
- * @property integer $id_product
- * @property integer $id_group
- * @property integer $id_category
- * @property string $cd_product
- * @property string $nm_product
+ * @property integer $id
+ * @property integer $group_id
+ * @property integer $category_id
+ * @property string $code
+ * @property string $name
  * @property integer $status
  * @property string $created_at
  * @property integer $created_by
@@ -19,17 +19,17 @@ use Yii;
  * @property integer $updated_by
  *
  * @property Cogs $cogs
+ * @property ProductGroup $group
+ * @property Category $category
  * @property Price[] $prices
- * @property PriceCategory[] $idPriceCategories
- * @property ProductGroup $idGroup
- * @property Category $idCategory
- * @property ProductChild[] $productChildren
- * @property ProductStock[] $productStocks
- * @property Warehouse[] $idWarehouses
+ * @property PriceCategory[] $priceCategories
  * @property ProductSupplier[] $productSuppliers
- * @property Supplier[] $idSuppliers
+ * @property Supplier[] $suppliers
+ * @property ProductStock[] $productStocks
+ * @property Warehouse[] $warehouses
  * @property ProductUom[] $productUoms
- * @property Uom[] $idUoms
+ * @property Uom[] $uoms
+ * @property ProductChild[] $productChildren
  */
 class Product extends \yii\db\ActiveRecord
 {
@@ -38,7 +38,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'product';
+        return '{{%product}}';
     }
 
     /**
@@ -47,11 +47,11 @@ class Product extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_group', 'id_category', 'cd_product', 'nm_product', 'status', 'created_by', 'updated_by'], 'required'],
-            [['id_group', 'id_category', 'status', 'created_by', 'updated_by'], 'integer'],
+            [['group_id', 'category_id', 'code', 'name', 'status'], 'required'],
+            [['group_id', 'category_id', 'status', 'created_by', 'updated_by'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
-            [['cd_product'], 'string', 'max' => 13],
-            [['nm_product'], 'string', 'max' => 64]
+            [['code'], 'string', 'max' => 13],
+            [['name'], 'string', 'max' => 64]
         ];
     }
 
@@ -61,11 +61,11 @@ class Product extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_product' => 'Id Product',
-            'id_group' => 'Id Group',
-            'id_category' => 'Id Category',
-            'cd_product' => 'Cd Product',
-            'nm_product' => 'Nm Product',
+            'id' => 'ID',
+            'group_id' => 'Group ID',
+            'category_id' => 'Category ID',
+            'code' => 'Code',
+            'name' => 'Name',
             'status' => 'Status',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
@@ -79,7 +79,23 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getCogs()
     {
-        return $this->hasOne(Cogs::className(), ['id_product' => 'id_product']);
+        return $this->hasOne(Cogs::className(), ['product_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getGroup()
+    {
+        return $this->hasOne(ProductGroup::className(), ['id' => 'group_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCategory()
+    {
+        return $this->hasOne(Category::className(), ['id' => 'category_id']);
     }
 
     /**
@@ -87,55 +103,15 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getPrices()
     {
-        return $this->hasMany(Price::className(), ['id_product' => 'id_product']);
+        return $this->hasMany(Price::className(), ['product_id' => 'id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdPriceCategories()
+    public function getPriceCategories()
     {
-        return $this->hasMany(PriceCategory::className(), ['id_price_category' => 'id_price_category'])->viaTable('{price}', ['id_product' => 'id_product']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getIdGroup()
-    {
-        return $this->hasOne(ProductGroup::className(), ['id_group' => 'id_group']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getIdCategory()
-    {
-        return $this->hasOne(Category::className(), ['id_category' => 'id_category']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProductChildren()
-    {
-        return $this->hasMany(ProductChild::className(), ['id_product' => 'id_product']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProductStocks()
-    {
-        return $this->hasMany(ProductStock::className(), ['id_product' => 'id_product']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getIdWarehouses()
-    {
-        return $this->hasMany(Warehouse::className(), ['id_warehouse' => 'id_warehouse'])->viaTable('{product_stock}', ['id_product' => 'id_product']);
+        return $this->hasMany(PriceCategory::className(), ['id' => 'price_category_id'])->viaTable('{{%price}}', ['product_id' => 'id']);
     }
 
     /**
@@ -143,15 +119,31 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getProductSuppliers()
     {
-        return $this->hasMany(ProductSupplier::className(), ['id_product' => 'id_product']);
+        return $this->hasMany(ProductSupplier::className(), ['product_id' => 'id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdSuppliers()
+    public function getSuppliers()
     {
-        return $this->hasMany(Supplier::className(), ['id_supplier' => 'id_supplier'])->viaTable('{product_supplier}', ['id_product' => 'id_product']);
+        return $this->hasMany(Supplier::className(), ['id' => 'supplier_id'])->viaTable('{{%product_supplier}}', ['product_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProductStocks()
+    {
+        return $this->hasMany(ProductStock::className(), ['product_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getWarehouses()
+    {
+        return $this->hasMany(Warehouse::className(), ['id' => 'warehouse_id'])->viaTable('{{%product_stock}}', ['product_id' => 'id']);
     }
 
     /**
@@ -159,14 +151,33 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getProductUoms()
     {
-        return $this->hasMany(ProductUom::className(), ['id_product' => 'id_product']);
+        return $this->hasMany(ProductUom::className(), ['product_id' => 'id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdUoms()
+    public function getUoms()
     {
-        return $this->hasMany(Uom::className(), ['id_uom' => 'id_uom'])->viaTable('{product_uom}', ['id_product' => 'id_product']);
+        return $this->hasMany(Uom::className(), ['id' => 'uom_id'])->viaTable('{{%product_uom}}', ['product_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProductChildren()
+    {
+        return $this->hasMany(ProductChild::className(), ['product_id' => 'id']);
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return[
+            'BizTimestampBehavior',
+            'BizBlameableBehavior'
+        ];
     }
 }

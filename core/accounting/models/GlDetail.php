@@ -5,14 +5,14 @@ namespace biz\core\accounting\models;
 use Yii;
 
 /**
- * This is the model class for table "gl_detail".
+ * This is the model class for table "{{%gl_detail}}".
  *
- * @property integer $id_gl_detail
- * @property integer $id_gl
- * @property integer $id_coa
+ * @property integer $id
+ * @property integer $header_id
+ * @property integer $coa_id
  * @property double $amount
  *
- * @property GlHeader $glHeader
+ * @property GlHeader $header
  * @property Coa $coa
  */
 class GlDetail extends \yii\db\ActiveRecord
@@ -31,8 +31,8 @@ class GlDetail extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_gl', 'id_coa', 'amount'], 'required'],
-            [['id_gl', 'id_coa'], 'integer'],
+            [['header_id', 'coa_id', 'amount'], 'required'],
+            [['header_id', 'coa_id'], 'integer'],
             [['amount'], 'number']
         ];
     }
@@ -43,9 +43,9 @@ class GlDetail extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_gl_detail' => 'Id Gl Detail',
-            'id_gl' => 'Id Gl',
-            'id_coa' => 'Id Coa',
+            'id' => 'ID',
+            'header_id' => 'Header ID',
+            'coa_id' => 'Coa ID',
             'amount' => 'Amount',
         ];
     }
@@ -53,9 +53,9 @@ class GlDetail extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getGlHeader()
+    public function getHeader()
     {
-        return $this->hasOne(GlHeader::className(), ['id_gl' => 'id_gl']);
+        return $this->hasOne(GlHeader::className(), ['id' => 'header_id']);
     }
 
     /**
@@ -63,6 +63,6 @@ class GlDetail extends \yii\db\ActiveRecord
      */
     public function getCoa()
     {
-        return $this->hasOne(Coa::className(), ['id_coa' => 'id_coa']);
+        return $this->hasOne(Coa::className(), ['id' => 'coa_id']);
     }
 }

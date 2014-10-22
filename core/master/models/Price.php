@@ -5,18 +5,18 @@ namespace biz\core\master\models;
 use Yii;
 
 /**
- * This is the model class for table "price".
+ * This is the model class for table "{{%price}}".
  *
- * @property integer $id_product
- * @property integer $id_price_category
+ * @property integer $product_id
+ * @property integer $price_category_id
  * @property double $price
  * @property string $created_at
  * @property integer $created_by
  * @property string $updated_at
  * @property integer $updated_by
  *
- * @property Product $idProduct
- * @property PriceCategory $idPriceCategory
+ * @property Product $product
+ * @property PriceCategory $priceCategory
  */
 class Price extends \yii\db\ActiveRecord
 {
@@ -25,7 +25,7 @@ class Price extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'price';
+        return '{{%price}}';
     }
 
     /**
@@ -34,8 +34,8 @@ class Price extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_product', 'id_price_category', 'created_by', 'updated_by'], 'required'],
-            [['id_product', 'id_price_category', 'created_by', 'updated_by'], 'integer'],
+            [['product_id', 'price_category_id'], 'required'],
+            [['product_id', 'price_category_id', 'created_by', 'updated_by'], 'integer'],
             [['price'], 'number'],
             [['created_at', 'updated_at'], 'safe']
         ];
@@ -47,8 +47,8 @@ class Price extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_product' => 'Id Product',
-            'id_price_category' => 'Id Price Category',
+            'product_id' => 'Product ID',
+            'price_category_id' => 'Price Category ID',
             'price' => 'Price',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
@@ -60,16 +60,27 @@ class Price extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdProduct()
+    public function getProduct()
     {
-        return $this->hasOne(Product::className(), ['id_product' => 'id_product']);
+        return $this->hasOne(Product::className(), ['id' => 'product_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdPriceCategory()
+    public function getPriceCategory()
     {
-        return $this->hasOne(PriceCategory::className(), ['id_price_category' => 'id_price_category']);
+        return $this->hasOne(PriceCategory::className(), ['id' => 'price_category_id']);
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return[
+            'BizTimestampBehavior',
+            'BizBlameableBehavior'
+        ];
     }
 }

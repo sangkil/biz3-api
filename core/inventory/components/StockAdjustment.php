@@ -132,27 +132,27 @@ class StockAdjustment extends \biz\core\base\Api
     public function createFromOpname($opname, $model = null)
     {
         // info product
-        $currentStocks = ProductStock::find()->select(['id_product', 'qty_stock'])
-                ->where(['id_warehouse' => $opname->id_warehouse])
-                ->indexBy('id_product')->asArray()->all();
+        $currentStocks = ProductStock::find()->select(['product_id', 'qty_stock'])
+                ->where(['warehouse_id' => $opname->warehouse_id])
+                ->indexBy('product_id')->asArray()->all();
         $isiProductUoms = [];
         foreach (ProductUom::find()->asArray()->all() as $row) {
-            $isiProductUoms[$row['id_product']][$row['id_uom']] = $row['isi'];
+            $isiProductUoms[$row['product_id']][$row['uom_id']] = $row['isi'];
         }
         // ***
 
         $data = [
-            'id_warehouse' => $opname->id_warehouse,
+            'warehouse_id' => $opname->warehouse_id,
             'adjustment_date' => date('Y-m-d'),
-            'id_reff' => $opname->id_opname,
+            'reff_id' => $opname->id,
             'description' => "Stock adjustment from stock opname no \"{$opname->opname_num}\"."
         ];
         $details = [];
         foreach ($opname->stockOpnameDtls as $detail) {
-            $cQty = $currentStocks[$detail->id_product] / $isiProductUoms[$detail->id_product][$detail->id_uom];
+            $cQty = $currentStocks[$detail->product_id] / $isiProductUoms[$detail->product_id][$detail->uom_id];
             $details[] = [
-                'id_product' => $detail->id_product,
-                'id_uom' => $detail->id_uom,
+                'product_id' => $detail->product_id,
+                'uom_id' => $detail->uom_id,
                 'qty' => $detail->qty - $cQty,
             ];
         }

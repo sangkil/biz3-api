@@ -5,13 +5,12 @@ namespace biz\core\accounting\models;
 use Yii;
 
 /**
- * This is the model class for table "payment".
+ * This is the model class for table "{{%payment}}".
  *
- * @property integer $id_payment
- * @property string $payment_num
- * @property string $payment_date
- * @property integer $payment_type
- * @property integer $status
+ * @property integer $id
+ * @property string $number
+ * @property string $date
+ * @property integer $type
  * @property string $created_at
  * @property integer $created_by
  * @property string $updated_at
@@ -22,9 +21,6 @@ use Yii;
  */
 class Payment extends \yii\db\ActiveRecord
 {
-    const STATUS_DRAFT = 1;
-    const STATUS_POSTED = 2;
-
     /**
      * @inheritdoc
      */
@@ -39,10 +35,10 @@ class Payment extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['payment_num', 'payment_date', 'payment_type', 'created_by', 'updated_by'], 'required'],
-            [['payment_date', 'created_at', 'updated_at'], 'safe'],
-            [['payment_type', 'created_by', 'updated_by'], 'integer'],
-            [['payment_num'], 'string', 'max' => 16]
+            [['number', 'date', 'type'], 'required'],
+            [['date', 'created_at', 'updated_at'], 'safe'],
+            [['type', 'created_by', 'updated_by'], 'integer'],
+            [['number'], 'string', 'max' => 16]
         ];
     }
 
@@ -52,10 +48,10 @@ class Payment extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_payment' => 'Id Payment',
-            'payment_num' => 'Payment Num',
-            'payment_date' => 'Payment Date',
-            'payment_type' => 'Payment Type',
+            'id' => 'ID',
+            'number' => 'Number',
+            'date' => 'Date',
+            'type' => 'Type',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
             'updated_at' => 'Updated At',
@@ -68,7 +64,7 @@ class Payment extends \yii\db\ActiveRecord
      */
     public function getPaymentDtls()
     {
-        return $this->hasMany(PaymentDtl::className(), ['id_payment' => 'id_payment']);
+        return $this->hasMany(PaymentDtl::className(), ['payment_id' => 'id']);
     }
 
     /**
@@ -76,6 +72,31 @@ class Payment extends \yii\db\ActiveRecord
      */
     public function getInvoices()
     {
-        return $this->hasMany(Invoice::className(), ['id_invoice' => 'id_invoice'])->viaTable('{payment_dtl}', ['id_payment' => 'id_payment']);
+        return $this->hasMany(Invoice::className(), ['id' => 'invoice_id'])->viaTable('{{%payment_dtl}}', ['payment_id' => 'id']);
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return[
+            'BizTimestampBehavior',
+            'BizBlameableBehavior',
+            [
+                'class' => 'mdm\autonumber\Behavior',
+                'digit' => 6,
+                'attribute' => 'number',
+                'value' => 'AP' . date('y.?')
+            ],
+            [
+                'class' => 'mdm\converter\DateConverter',
+                'attributes' => [
+                    'Date' => 'date',
+                ]
+            ],
+            'BizStatusConverter',
+            'mdm\behaviors\ar\RelatedBehavior',
+        ];
     }
 }

@@ -5,15 +5,15 @@ namespace biz\core\inventory\models;
 use Yii;
 
 /**
- * This is the model class for table "stock_adjustment_dtl".
+ * This is the model class for table "{{%stock_adjustment_dtl}}".
  *
- * @property integer $id_adjustment
- * @property integer $id_product
- * @property integer $id_uom
+ * @property integer $adjustment_id
+ * @property integer $product_id
+ * @property integer $uom_id
  * @property double $qty
  * @property double $item_value
  *
- * @property StockAdjustment $stockAdjustment
+ * @property StockAdjustment $adjustment
  */
 class StockAdjustmentDtl extends \yii\db\ActiveRecord
 {
@@ -31,8 +31,8 @@ class StockAdjustmentDtl extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_adjustment', 'id_product', 'id_uom', 'qty', 'item_value'], 'required'],
-            [['id_adjustment', 'id_product', 'id_uom'], 'integer'],
+            [['adjustment_id', 'product_id', 'uom_id', 'qty', 'item_value'], 'required'],
+            [['adjustment_id', 'product_id', 'uom_id'], 'integer'],
             [['qty', 'item_value'], 'number']
         ];
     }
@@ -43,9 +43,9 @@ class StockAdjustmentDtl extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_adjustment' => 'Id Adjustment',
-            'id_product' => 'Id Product',
-            'id_uom' => 'Id Uom',
+            'adjustment_id' => 'Adjustment ID',
+            'product_id' => 'Product ID',
+            'uom_id' => 'Uom ID',
             'qty' => 'Qty',
             'item_value' => 'Item Value',
         ];
@@ -54,8 +54,8 @@ class StockAdjustmentDtl extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getStockAdjustment()
+    public function getAdjustment()
     {
-        return $this->hasOne(StockAdjustment::className(), ['id_adjustment' => 'id_adjustment']);
+        return $this->hasOne(StockAdjustment::className(), ['id' => 'adjustment_id']);
     }
 }

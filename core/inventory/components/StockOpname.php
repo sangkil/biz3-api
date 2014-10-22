@@ -73,16 +73,16 @@ class StockOpname extends \biz\core\base\Api
         $model->load($data, '');
         $this->fire('_append', [$model]);
         $success = $model->save();
-        $stockOpnameDtls = ArrayHelper::index($model->stockOpnameDtls, 'id_product');
+        $stockOpnameDtls = ArrayHelper::index($model->stockOpnameDtls, 'product_id');
         foreach ($data['details'] as $dataDetail) {
-            $index = $dataDetail['id_product']; // id_product
+            $index = $dataDetail['product_id']; // product_id
             if (isset($stockOpnameDtls[$index])) {
                 $detail = $stockOpnameDtls[$index];
             } else {
                 $detail = new StockOpnameDtl([
                     'id_opname' => $model->id_opname,
-                    'id_product' => $dataDetail['id_product'],
-                    'id_uom' => $dataDetail['id_uom'],
+                    'product_id' => $dataDetail['product_id'],
+                    'uom_id' => $dataDetail['uom_id'],
                     'qty' => 0
                 ]);
             }

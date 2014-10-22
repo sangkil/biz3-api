@@ -5,23 +5,18 @@ namespace biz\core\accounting\models;
 use Yii;
 
 /**
- * This is the model class for table "invoice_dtl".
+ * This is the model class for table "{{%invoice_dtl}}".
  *
- * @property integer $id_invoice
- * @property integer $type_reff
- * @property integer $id_reff
+ * @property integer $invoice_id
+ * @property integer $reff_type
+ * @property integer $reff_id
  * @property string $description
- * @property double $trans_value
+ * @property double $value
  *
  * @property Invoice $invoice
  */
 class InvoiceDtl extends \yii\db\ActiveRecord
 {
-    const TYPE_PURCHASE_GR = 100;
-    const TYPE_PURCHASE_DISCOUNT = 110;
-    const TYPE_SALES_GI = 200;
-    const TYPE_SALES_DISCOUNT = 210;
-
     /**
      * @inheritdoc
      */
@@ -36,9 +31,9 @@ class InvoiceDtl extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_invoice', 'type_reff', 'id_reff', 'trans_value'], 'required'],
-            [['id_invoice', 'type_reff', 'id_reff'], 'integer'],
-            [['trans_value'], 'number'],
+            [['invoice_id', 'reff_type', 'reff_id', 'value'], 'required'],
+            [['invoice_id', 'reff_type', 'reff_id'], 'integer'],
+            [['value'], 'number'],
             [['description'], 'string', 'max' => 64]
         ];
     }
@@ -49,11 +44,11 @@ class InvoiceDtl extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_invoice' => 'Id Invoice',
-            'type_reff' => 'Type Reff',
-            'id_reff' => 'Id Reff',
+            'invoice_id' => 'Invoice ID',
+            'reff_type' => 'Reff Type',
+            'reff_id' => 'Reff ID',
             'description' => 'Description',
-            'trans_value' => 'Trans Value',
+            'value' => 'Value',
         ];
     }
 
@@ -62,6 +57,6 @@ class InvoiceDtl extends \yii\db\ActiveRecord
      */
     public function getInvoice()
     {
-        return $this->hasOne(Invoice::className(), ['id_invoice' => 'id_invoice']);
+        return $this->hasOne(Invoice::className(), ['id' => 'invoice_id']);
     }
 }

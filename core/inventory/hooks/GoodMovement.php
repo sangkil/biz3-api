@@ -53,20 +53,20 @@ class GoodMovement extends \yii\base\Behavior
         $model = $event->params[0];
         $data = [
             'movement_type' => MGoodMovement::TYPE_PURCHASE,
-            'id_reff' => $model->id_purchase
+            'reff_id' => $model->id_purchase
         ];
         $data['details'] = [];
         $query_isi = ProductUom::find()->select('isi');
         foreach ($model->purchaseDtls as $detail) {
-            if (!empty($detail->qty_receive)) {
+            if (!empty($detail->total_receive)) {
                 $isi = $query_isi->where([
-                        'id_product' => $detail->id_product,
-                        'id_uom' => $detail->id_uom_receive? : $detail->id_uom])
+                        'product_id' => $detail->product_id,
+                        'uom_id' => $detail->uom_id_receive? : $detail->uom_id])
                     ->scalar();
                 $data['details'][] = [
-                    'id_warehouse' => $detail->id_warehouse,
-                    'id_product' => $detail->id_product,
-                    'movement_qty' => $detail->qty_receive * $isi,
+                    'warehouse_id' => $detail->warehouse_id,
+                    'product_id' => $detail->product_id,
+                    'movement_qty' => $detail->total_receive * $isi,
                     'item_value' => $detail->purch_price - $detail->discount,
                     'trans_value' => $detail->purch_price - $detail->discount,
                 ];
@@ -85,20 +85,20 @@ class GoodMovement extends \yii\base\Behavior
         $model = $event->params[0];
         $data = [
             'movement_type' => MGoodMovement::TYPE_SALES,
-            'id_reff' => $model->id_sales
+            'reff_id' => $model->id_sales
         ];
         $data['details'] = [];
         $query_isi = ProductUom::find()->select('isi');
         foreach ($model->salesDtls as $detail) {
-            if (!empty($detail->qty_release)) {
+            if (!empty($detail->total_release)) {
                 $isi = $query_isi->where([
-                        'id_product' => $detail->id_product,
-                        'id_uom' => $detail->id_uom_release? : $detail->id_uom])
+                        'product_id' => $detail->product_id,
+                        'uom_id' => $detail->uom_id_release? : $detail->uom_id])
                     ->scalar();
                 $data['details'][] = [
-                    'id_warehouse' => $detail->id_warehouse,
-                    'id_product' => $detail->id_product,
-                    'movement_qty' => -$detail->qty_release * $isi,
+                    'warehouse_id' => $detail->warehouse_id,
+                    'product_id' => $detail->product_id,
+                    'movement_qty' => -$detail->total_release * $isi,
                     'trans_value' => $detail->sales_price - $detail->discount,
                 ];
             }
@@ -116,19 +116,19 @@ class GoodMovement extends \yii\base\Behavior
         $model = $event->params[0];
         $data = [
             'movement_type' => MGoodMovement::TYPE_TRANSFER_RELEASE,
-            'id_reff' => $model->id_transfer
+            'reff_id' => $model->id_transfer
         ];
         $data['details'] = [];
         $query_isi = ProductUom::find()->select('isi');
         foreach ($model->transferDtls as $detail) {
             if (!empty($detail->qty_send)) {
                 $isi = $query_isi->where([
-                        'id_product' => $detail->id_product,
-                        'id_uom' => $detail->id_uom_send ? : $detail->id_uom])
+                        'product_id' => $detail->product_id,
+                        'uom_id' => $detail->uom_id_send ? : $detail->uom_id])
                     ->scalar();
                 $data['details'][] = [
-                    'id_warehouse' => $detail->id_warehouse_src,
-                    'id_product' => $detail->id_product,
+                    'warehouse_id' => $detail->warehouse_id_src,
+                    'product_id' => $detail->product_id,
                     'movement_qty' => -$detail->qty_send * $isi,
                 ];
             }
@@ -147,20 +147,20 @@ class GoodMovement extends \yii\base\Behavior
         $model = $event->params[0];
         $data = [
             'movement_type' => MGoodMovement::TYPE_TRANSFER_RECEIVE,
-            'id_reff' => $model->id_transfer
+            'reff_id' => $model->id_transfer
         ];
         $data['details'] = [];
         $query_isi = ProductUom::find()->select('isi');
         foreach ($model->transferDtls as $detail) {
-            if (!empty($detail->qty_receive)) {
+            if (!empty($detail->total_receive)) {
                 $isi = $query_isi->where([
-                        'id_product' => $detail->id_product,
-                        'id_uom' => $detail->id_uom_receive? : $detail->id_uom])
+                        'product_id' => $detail->product_id,
+                        'uom_id' => $detail->uom_id_receive? : $detail->uom_id])
                     ->scalar();
                 $data['details'][] = [
-                    'id_warehouse' => $detail->id_warehouse_dest,
-                    'id_product' => $detail->id_product,
-                    'movement_qty' => $detail->qty_receive * $isi,
+                    'warehouse_id' => $detail->warehouse_id_dest,
+                    'product_id' => $detail->product_id,
+                    'movement_qty' => $detail->total_receive * $isi,
                 ];
             }
         }
@@ -178,31 +178,31 @@ class GoodMovement extends \yii\base\Behavior
         $model = $event->params[0];
         $data = [
             'movement_type' => MGoodMovement::TYPE_TRANSFER_COMPLETE,
-            'id_reff' => $model->id_transfer
+            'reff_id' => $model->id_transfer
         ];
         $data['details'] = [];
         $query_isi = ProductUom::find()->select('isi');
         foreach ($model->transferDtls as $detail) {
             if (!empty($detail->qty_send)) {
                 $isi = $query_isi->where([
-                        'id_product' => $detail->id_product,
-                        'id_uom' => $detail->id_uom_send? : $detail->id_uom])
+                        'product_id' => $detail->product_id,
+                        'uom_id' => $detail->uom_id_send? : $detail->uom_id])
                     ->scalar();
                 $data['details'][] = [
-                    'id_warehouse' => $detail->id_warehouse_src,
-                    'id_product' => $detail->id_product,
+                    'warehouse_id' => $detail->warehouse_id_src,
+                    'product_id' => $detail->product_id,
                     'movement_qty' => -$detail->qty_send * $isi,
                 ];
             }
-            if (!empty($detail->qty_receive)) {
+            if (!empty($detail->total_receive)) {
                 $isi = $query_isi->where([
-                        'id_product' => $detail->id_product,
-                        'id_uom' => $detail->id_uom_receive? : $detail->id_uom])
+                        'product_id' => $detail->product_id,
+                        'uom_id' => $detail->uom_id_receive? : $detail->uom_id])
                     ->scalar();
                 $data['details'][] = [
-                    'id_warehouse' => $detail->id_warehouse_dest,
-                    'id_product' => $detail->id_product,
-                    'movement_qty' => $detail->qty_receive * $isi,
+                    'warehouse_id' => $detail->warehouse_id_dest,
+                    'product_id' => $detail->product_id,
+                    'movement_qty' => $detail->total_receive * $isi,
                 ];
             }
         }
@@ -220,18 +220,18 @@ class GoodMovement extends \yii\base\Behavior
         $model = $event->params[0];
         $data = [
             'movement_type' => MGoodMovement::TYPE_ADJUSTMENT,
-            'id_reff' => $model->id_adjustment
+            'reff_id' => $model->id_adjustment
         ];
         $data['details'] = [];
         $query_isi = ProductUom::find()->select('isi');
         foreach ($model->stockAdjustmentDtls as $detail) {
             $isi = $query_isi->where([
-                    'id_product' => $detail->id_product,
-                    'id_uom' => $detail->id_uom])
+                    'product_id' => $detail->product_id,
+                    'uom_id' => $detail->uom_id])
                 ->scalar();
             $data['details'][] = [
-                'id_warehouse' => $model->id_warehouse,
-                'id_product' => $detail->id_product,
+                'warehouse_id' => $model->warehouse_id,
+                'product_id' => $detail->product_id,
                 'movement_qty' => $detail->qty * $isi,
                 'item_value' => $detail->item_value
             ];

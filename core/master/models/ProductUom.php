@@ -5,18 +5,18 @@ namespace biz\core\master\models;
 use Yii;
 
 /**
- * This is the model class for table "product_uom".
+ * This is the model class for table "{{%product_uom}}".
  *
- * @property integer $id_product
- * @property integer $id_uom
+ * @property integer $product_id
+ * @property integer $uom_id
  * @property integer $isi
  * @property string $created_at
  * @property integer $created_by
  * @property string $updated_at
  * @property integer $updated_by
  *
- * @property Product $idProduct
- * @property Uom $idUom
+ * @property Product $product
+ * @property Uom $uom
  */
 class ProductUom extends \yii\db\ActiveRecord
 {
@@ -25,7 +25,7 @@ class ProductUom extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'product_uom';
+        return '{{%product_uom}}';
     }
 
     /**
@@ -34,8 +34,8 @@ class ProductUom extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_product', 'id_uom', 'isi', 'created_by', 'updated_by'], 'required'],
-            [['id_product', 'id_uom', 'isi', 'created_by', 'updated_by'], 'integer'],
+            [['product_id', 'uom_id', 'isi'], 'required'],
+            [['product_id', 'uom_id', 'isi', 'created_by', 'updated_by'], 'integer'],
             [['created_at', 'updated_at'], 'safe']
         ];
     }
@@ -46,8 +46,8 @@ class ProductUom extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_product' => 'Id Product',
-            'id_uom' => 'Id Uom',
+            'product_id' => 'Product ID',
+            'uom_id' => 'Uom ID',
             'isi' => 'Isi',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
@@ -59,16 +59,27 @@ class ProductUom extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdProduct()
+    public function getProduct()
     {
-        return $this->hasOne(Product::className(), ['id_product' => 'id_product']);
+        return $this->hasOne(Product::className(), ['id' => 'product_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdUom()
+    public function getUom()
     {
-        return $this->hasOne(Uom::className(), ['id_uom' => 'id_uom']);
+        return $this->hasOne(Uom::className(), ['id' => 'uom_id']);
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return[
+            'BizTimestampBehavior',
+            'BizBlameableBehavior'
+        ];
     }
 }

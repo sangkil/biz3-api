@@ -130,12 +130,12 @@ class Invoice extends \biz\core\base\Api
         $received = GoodMovement::find()->select('id_movement')
                 ->where([
                     'type_reff' => GoodMovement::TYPE_PURCHASE,
-                    'id_reff' => $ids
+                    'reff_id' => $ids
                 ])->column();
-        $invoiced = InvoiceDtl::find()->select('id_reff')
+        $invoiced = InvoiceDtl::find()->select('reff_id')
                 ->where([
                     'type_reff' => InvoiceDtl::TYPE_PURCHASE_GR,
-                    'id_reff' => $received,
+                    'reff_id' => $received,
                 ])->column();
         $new = array_diff($received, $invoiced);
         $values = GoodMovement::find()
@@ -146,7 +146,7 @@ class Invoice extends \biz\core\base\Api
                 }])
                 ->andWhere([
                     'hdr.type_reff' => GoodMovement::TYPE_PURCHASE,
-                    'hdr.id_reff' => $new
+                    'hdr.reff_id' => $new
                 ])
                 ->groupBy('hdr.id_movement')
                 ->indexBy('id_movement')
@@ -159,7 +159,7 @@ class Invoice extends \biz\core\base\Api
         foreach ($new as $id) {
             $details[] = [
                 'type_reff' => InvoiceDtl::TYPE_PURCHASE_GR,
-                'id_reff' => $id,
+                'reff_id' => $id,
                 'trans_value' => $values[$id]['jml']
             ];
         }
@@ -170,16 +170,16 @@ class Invoice extends \biz\core\base\Api
             ->andWhere(['<>', 'discount', null])
             ->asArray()->indexBy('id_purchase')
             ->all();
-        $invoiced = InvoiceDtl::find()->select('id_reff')
+        $invoiced = InvoiceDtl::find()->select('reff_id')
                 ->where([
                     'type_reff' => InvoiceDtl::TYPE_PURCHASE_DISCOUNT,
-                    'id_reff' => array_keys($completed),
+                    'reff_id' => array_keys($completed),
                 ])->column();
         $new = array_diff(array_keys($completed), $invoiced);
         foreach ($new as $id) {
             $details[] = [
                 'type_reff' => InvoiceDtl::TYPE_PURCHASE_DISCOUNT,
-                'id_reff' => $id,
+                'reff_id' => $id,
                 'trans_value' => -$completed['discount']
             ];
         }
@@ -210,12 +210,12 @@ class Invoice extends \biz\core\base\Api
         $released = GoodMovement::find()->select('id_movement')
                 ->where([
                     'type_reff' => GoodMovement::TYPE_SALES,
-                    'id_reff' => $ids
+                    'reff_id' => $ids
                 ])->column();
-        $invoiced = InvoiceDtl::find()->select('id_reff')
+        $invoiced = InvoiceDtl::find()->select('reff_id')
                 ->where([
                     'type_reff' => InvoiceDtl::TYPE_SALES_GI,
-                    'id_reff' => $released,
+                    'reff_id' => $released,
                 ])->column();
         $new = array_diff($released, $invoiced);
         $values = GoodMovement::find()
@@ -226,7 +226,7 @@ class Invoice extends \biz\core\base\Api
                 }])
                 ->where([
                     'hdr.type_reff' => GoodMovement::TYPE_SALES,
-                    'hdr.id_reff' => $new
+                    'hdr.reff_id' => $new
                 ])
                 ->groupBy('hdr.id_movement')
                 ->indexBy('id_movement')
@@ -239,7 +239,7 @@ class Invoice extends \biz\core\base\Api
         foreach ($new as $id) {
             $details[] = [
                 'type_reff' => InvoiceDtl::TYPE_SALES_GI,
-                'id_reff' => $id,
+                'reff_id' => $id,
                 'trans_value' => $values[$id]['jml']
             ];
         }
@@ -250,16 +250,16 @@ class Invoice extends \biz\core\base\Api
             ->andWhere(['<>', 'discount', null])
             ->asArray()->indexBy('id_sales')
             ->all();
-        $invoiced = InvoiceDtl::find()->select('id_reff')
+        $invoiced = InvoiceDtl::find()->select('reff_id')
                 ->where([
                     'type_reff' => InvoiceDtl::TYPE_SALES_DISCOUNT,
-                    'id_reff' => array_keys($completed),
+                    'reff_id' => array_keys($completed),
                 ])->column();
         $new = array_diff(array_keys($completed), $invoiced);
         foreach ($new as $id) {
             $details[] = [
                 'type_reff' => InvoiceDtl::TYPE_SALES_DISCOUNT,
-                'id_reff' => $id,
+                'reff_id' => $id,
                 'trans_value' => -$completed['discount']
             ];
         }

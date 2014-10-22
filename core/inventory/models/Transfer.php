@@ -5,13 +5,13 @@ namespace biz\core\inventory\models;
 use Yii;
 
 /**
- * This is the model class for table "transfer".
+ * This is the model class for table "{{%transfer}}".
  *
- * @property integer $id_transfer
- * @property string $transfer_num
- * @property integer $id_branch
- * @property integer $id_branch_dest
- * @property string $transfer_date
+ * @property integer $id
+ * @property string $number
+ * @property integer $branch_id
+ * @property integer $branch_dest_id
+ * @property string $date
  * @property integer $status
  * @property string $created_at
  * @property integer $created_by
@@ -36,10 +36,10 @@ class Transfer extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['transfer_num', 'id_branch', 'id_branch_dest', 'transfer_date', 'status', 'created_by', 'updated_by'], 'required'],
-            [['id_branch', 'id_branch_dest', 'status', 'created_by', 'updated_by'], 'integer'],
-            [['transfer_date', 'created_at', 'updated_at'], 'safe'],
-            [['transfer_num'], 'string', 'max' => 16]
+            [['number', 'branch_id', 'branch_dest_id', 'date', 'status'], 'required'],
+            [['branch_id', 'branch_dest_id', 'status', 'created_by', 'updated_by'], 'integer'],
+            [['date', 'created_at', 'updated_at'], 'safe'],
+            [['number'], 'string', 'max' => 16]
         ];
     }
 
@@ -49,11 +49,11 @@ class Transfer extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_transfer' => 'Id Transfer',
-            'transfer_num' => 'Transfer Num',
-            'id_branch' => 'Id Branch',
-            'id_branch_dest' => 'Id Branch Dest',
-            'transfer_date' => 'Transfer Date',
+            'id' => 'ID',
+            'number' => 'Number',
+            'branch_id' => 'Branch ID',
+            'branch_dest_id' => 'Branch Dest ID',
+            'date' => 'Date',
             'status' => 'Status',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
@@ -67,6 +67,30 @@ class Transfer extends \yii\db\ActiveRecord
      */
     public function getTransferDtls()
     {
-        return $this->hasMany(TransferDtl::className(), ['id_transfer' => 'id_transfer']);
+        return $this->hasMany(TransferDtl::className(), ['transfer_id' => 'id']);
     }
-}
+    
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return[
+            'BizTimestampBehavior',
+            'BizBlameableBehavior',
+            [
+                'class' => 'mdm\autonumber\Behavior',
+                'digit' => 6,
+                'attribute' => 'number',
+                'value' => 'IT' . date('y.?')
+            ],
+            [
+                'class' => 'mdm\converter\DateConverter',
+                'attributes' => [
+                    'Date' => 'date',
+                ]
+            ],
+            'BizStatusConverter',
+            'mdm\behaviors\ar\RelatedBehavior',
+        ];
+    }}

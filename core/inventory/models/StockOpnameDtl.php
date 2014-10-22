@@ -5,14 +5,14 @@ namespace biz\core\inventory\models;
 use Yii;
 
 /**
- * This is the model class for table "stock_opname_dtl".
+ * This is the model class for table "{{%stock_opname_dtl}}".
  *
- * @property integer $id_opname
- * @property integer $id_product
- * @property integer $id_uom
+ * @property integer $opname_id
+ * @property integer $product_id
+ * @property integer $uom_id
  * @property double $qty
  *
- * @property StockOpname $stockOpname
+ * @property StockOpname $opname
  */
 class StockOpnameDtl extends \yii\db\ActiveRecord
 {
@@ -30,8 +30,8 @@ class StockOpnameDtl extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_opname', 'id_product', 'id_uom', 'qty'], 'required'],
-            [['id_opname', 'id_product', 'id_uom'], 'integer'],
+            [['opname_id', 'product_id', 'uom_id', 'qty'], 'required'],
+            [['opname_id', 'product_id', 'uom_id'], 'integer'],
             [['qty'], 'number']
         ];
     }
@@ -42,9 +42,9 @@ class StockOpnameDtl extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_opname' => 'Id Opname',
-            'id_product' => 'Id Product',
-            'id_uom' => 'Id Uom',
+            'opname_id' => 'Opname ID',
+            'product_id' => 'Product ID',
+            'uom_id' => 'Uom ID',
             'qty' => 'Qty',
         ];
     }
@@ -52,8 +52,8 @@ class StockOpnameDtl extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getStockOpname()
+    public function getOpname()
     {
-        return $this->hasOne(StockOpname::className(), ['id_opname' => 'id_opname']);
+        return $this->hasOne(StockOpname::className(), ['id' => 'opname_id']);
     }
 }

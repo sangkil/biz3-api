@@ -5,18 +5,18 @@ namespace biz\core\master\models;
 use Yii;
 
 /**
- * This is the model class for table "product_stock".
+ * This is the model class for table "{{%product_stock}}".
  *
- * @property integer $id_warehouse
- * @property integer $id_product
- * @property integer $qty_stock
+ * @property integer $warehouse_id
+ * @property integer $product_id
+ * @property integer $qty
  * @property string $created_at
  * @property integer $created_by
  * @property string $updated_at
  * @property integer $updated_by
  *
- * @property Warehouse $idWarehouse
- * @property Product $idProduct
+ * @property Warehouse $warehouse
+ * @property Product $product
  */
 class ProductStock extends \yii\db\ActiveRecord
 {
@@ -25,7 +25,7 @@ class ProductStock extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'product_stock';
+        return '{{%product_stock}}';
     }
 
     /**
@@ -34,8 +34,8 @@ class ProductStock extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_warehouse', 'id_product', 'qty_stock', 'created_by', 'updated_by'], 'required'],
-            [['id_warehouse', 'id_product', 'qty_stock', 'created_by', 'updated_by'], 'integer'],
+            [['warehouse_id', 'product_id', 'qty'], 'required'],
+            [['warehouse_id', 'product_id', 'qty', 'created_by', 'updated_by'], 'integer'],
             [['created_at', 'updated_at'], 'safe']
         ];
     }
@@ -46,9 +46,9 @@ class ProductStock extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_warehouse' => 'Id Warehouse',
-            'id_product' => 'Id Product',
-            'qty_stock' => 'Qty Stock',
+            'warehouse_id' => 'Warehouse ID',
+            'product_id' => 'Product ID',
+            'qty' => 'Qty',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
             'updated_at' => 'Updated At',
@@ -59,16 +59,27 @@ class ProductStock extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdWarehouse()
+    public function getWarehouse()
     {
-        return $this->hasOne(Warehouse::className(), ['id_warehouse' => 'id_warehouse']);
+        return $this->hasOne(Warehouse::className(), ['id' => 'warehouse_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdProduct()
+    public function getProduct()
     {
-        return $this->hasOne(Product::className(), ['id_product' => 'id_product']);
+        return $this->hasOne(Product::className(), ['id' => 'product_id']);
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return[
+            'BizTimestampBehavior',
+            'BizBlameableBehavior'
+        ];
     }
 }

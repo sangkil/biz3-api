@@ -5,10 +5,10 @@ namespace biz\core\accounting\models;
 use Yii;
 
 /**
- * This is the model class for table "entri_sheet".
+ * This is the model class for table "{{%entri_sheet}}".
  *
- * @property string $cd_esheet
- * @property string $nm_esheet
+ * @property string $id
+ * @property string $name
  * @property string $created_at
  * @property integer $created_by
  * @property string $updated_at
@@ -32,11 +32,11 @@ class EntriSheet extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['cd_esheet', 'nm_esheet', 'created_by', 'updated_by'], 'required'],
+            [['id'], 'required'],
             [['created_at', 'updated_at'], 'safe'],
             [['created_by', 'updated_by'], 'integer'],
-            [['cd_esheet'], 'string', 'max' => 16],
-            [['nm_esheet'], 'string', 'max' => 64]
+            [['id'], 'string', 'max' => 16],
+            [['name'], 'string', 'max' => 64]
         ];
     }
 
@@ -46,8 +46,8 @@ class EntriSheet extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'cd_esheet' => 'Cd Esheet',
-            'nm_esheet' => 'Nm Esheet',
+            'id' => 'ID',
+            'name' => 'Name',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
             'updated_at' => 'Updated At',
@@ -60,6 +60,17 @@ class EntriSheet extends \yii\db\ActiveRecord
      */
     public function getEntriSheetDtls()
     {
-        return $this->hasMany(EntriSheetDtl::className(), ['cd_esheet' => 'cd_esheet']);
+        return $this->hasMany(EntriSheetDtl::className(), ['esheet_id' => 'id']);
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return[
+            'BizTimestampBehavior',
+            'BizBlameableBehavior',
+        ];
     }
 }

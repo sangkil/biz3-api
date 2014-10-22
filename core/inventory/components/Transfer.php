@@ -107,10 +107,10 @@ class Transfer extends \biz\core\base\Api
         $this->fire('_release', [$model]);
 
         if (!empty($data['details'])) {
-            $transferDtls = ArrayHelper::index($model->transferDtls, 'id_product');
+            $transferDtls = ArrayHelper::index($model->transferDtls, 'product_id');
             $this->fire('_release_head', [$model]);
             foreach ($data['details'] as $dataDetail) {
-                $index = $dataDetail['id_product'];
+                $index = $dataDetail['product_id'];
                 $detail = $transferDtls[$index];
                 $detail->scenario = MTransfer::SCENARIO_RELEASE;
                 $detail->load($dataDetail, '');
@@ -151,17 +151,17 @@ class Transfer extends \biz\core\base\Api
         $this->fire('_receive', [$model]);
 
         if (!empty($data['details'])) {
-            $transferDtls = ArrayHelper::index($model->transferDtls, 'id_product');
+            $transferDtls = ArrayHelper::index($model->transferDtls, 'product_id');
             $this->fire('_receive_head', [$model]);
             foreach ($data['details'] as $dataDetail) {
-                $index = $dataDetail['id_product'];
+                $index = $dataDetail['product_id'];
                 if (isset($transferDtls[$index])) {
                     $detail = $transferDtls[$index];
                 } else {
                     $detail = new TransferDtl([
                         'id_transfer' => $model->id_transfer,
-                        'id_product' => $index,
-                        'id_uom' => $dataDetail['id_uom_receive']
+                        'product_id' => $index,
+                        'uom_id' => $dataDetail['uom_id_receive']
                     ]);
                 }
                 $detail->scenario = MTransfer::SCENARIO_RECEIVE;
@@ -201,11 +201,11 @@ class Transfer extends \biz\core\base\Api
         $model->load($data, '');
         $model->status = MTransfer::STATUS_RECEIVE;
         $this->fire('_complete', [$model]);
-        $transferDtls = ArrayHelper::index($model->transferDtls, 'id_product');
+        $transferDtls = ArrayHelper::index($model->transferDtls, 'product_id');
         if (!empty($data['details'])) {
             $this->fire('_complete_head', [$model]);
             foreach ($data['details'] as $dataDetail) {
-                $index = $dataDetail['id_product'];
+                $index = $dataDetail['product_id'];
                 $detail = $transferDtls[$index];
                 $detail->scenario = MTransfer::SCENARIO_COMPLETE;
                 $detail->load($dataDetail, '');
@@ -218,7 +218,7 @@ class Transfer extends \biz\core\base\Api
         }
         $complete = true;
         foreach ($transferDtls as $detail) {
-            $complete = $complete && $detail->transfer_qty_send == $detail->transfer_qty_receive;
+            $complete = $complete && $detail->transfer_qty_send == $detail->transfer_total_receive;
         }
         if (!$complete) {
             $model->addError('details', 'Not balance');

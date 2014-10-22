@@ -31,26 +31,25 @@ class ProductStock extends \yii\base\Behavior
 
     /**
      *
-     * @param  array         $params
-     *                               Required field id_warehouse, id_product, qty
-     *                               Optional field app, id_ref, id_uom, item_value
+     * @param  array $params Required field warehouse_id, product_id, qty
+     * Optional field app, reff_id, uom_id, item_value
      * @return boolean
      * @throws UserException
      */
     public function updateStock($params)
     {
         $stock = MProductStock::findOne([
-                'id_warehouse' => $params['id_warehouse'],
-                'id_product' => $params['id_product'],
+                'warehouse_id' => $params['warehouse_id'],
+                'product_id' => $params['product_id'],
         ]);
-        if (isset($params['id_uom'])) {
+        if (isset($params['uom_id'])) {
             $qty_per_uom = ProductUom::find()->select('isi')
                     ->where([
-                        'id_product' => $params['id_product'],
-                        'id_uom' => $params['id_uom']
+                        'product_id' => $params['product_id'],
+                        'uom-id' => $params['uom-id']
                     ])->scalar();
             if ($qty_per_uom === false) {
-                throw new NotFoundException("Uom '{$params['id_uom']}' not found for product '{$params['id_product']}'");
+                throw new NotFoundException("Uom '{$params['uom-id']}' not found for product '{$params['product_id']}'");
             }
         } else {
             $qty_per_uom = 1;
@@ -58,9 +57,9 @@ class ProductStock extends \yii\base\Behavior
 
         if (!$stock) {
             $stock = new MProductStock([
-                'id_warehouse' => $params['id_warehouse'],
-                'id_product' => $params['id_product'],
-                'qty_stock' => 0,
+                'warehouse_id' => $params['warehouse_id'],
+                'product_id' => $params['product_id'],
+                'qty' => 0,
             ]);
         }
         // update cogs
@@ -72,7 +71,7 @@ class ProductStock extends \yii\base\Behavior
         $stock->qty_stock = $stock->qty_stock + $params['qty'] * $qty_per_uom;
         if ($stock->canSetProperty('logParams')) {
             $logParams = ['mv_qty' => $params['qty'] * $qty_per_uom];
-            foreach (['app', 'id_ref'] as $key) {
+            foreach (['app', 'reff_id'] as $key) {
                 if (isset($params[$key]) || array_key_exists($key, $params)) {
                     $logParams[$key] = $params[$key];
                 }
@@ -88,15 +87,15 @@ class ProductStock extends \yii\base\Behavior
 
     protected function updateCogs($params)
     {
-        $cogs = Cogs::findOne(['id_product' => $params['id_product']]);
+        $cogs = Cogs::findOne(['product_id' => $params['product_id']]);
         if (!$cogs) {
             $cogs = new Cogs([
-                'id_product' => $params['id_product'],
+                'product_id' => $params['product_id'],
                 'cogs' => 0.0
             ]);
         }
         $current_stock = MProductStock::find()
-            ->where(['id_product' => $params['id_product']])
+            ->where(['product_id' => $params['product_id']])
             ->sum('qty_stock');
         $qty_per_uom = $params['qty_per_uom'];
         $added_stock = $params['qty'] * $qty_per_uom;
@@ -108,7 +107,7 @@ class ProductStock extends \yii\base\Behavior
         if ($cogs->canSetProperty('logParams')) {
             $cogs->logParams = [
                 'app' => $params['app'],
-                'id_ref' => $params['id_ref'],
+                'reff_id' => $params['reff_id'],
             ];
         }
         if (!$cogs->save()) {
@@ -129,12 +128,12 @@ class ProductStock extends \yii\base\Behavior
         $model = $event->params[0];
         foreach ($model->goodMovementDtls as $detail) {
             $this->updateStock([
-                'id_warehouse' => $detail->id_warehouse,
-                'id_product' => $detail->id_product,
-                'qty' => $detail->purch_qty,
+                'warehouse_id' => $detail->warehouse_id,
+                'product_id' => $detail->product_id,
+                'qty' => $detail->qty,
                 'app' => 'good_movement',
                 'price' => $detail->item_value,
-                'id_ref' => $detail->id_movement,
+                'reff_id' => $detail->movement_id,
             ]);
         }
     }
@@ -151,13 +150,13 @@ class ProductStock extends \yii\base\Behavior
         /* @var $detail \biz\core\purchase\models\PurchaseDtl */
         $detail = $event->params[1];
         $this->updateStock([
-            'id_warehouse' => $detail->id_warehouse,
-            'id_product' => $detail->id_product,
-            'id_uom' => $detail->id_uom_receive? : $detail->id_uom,
-            'price' => $detail->purch_price,
-            'qty' => $detail->qty_receive,
+            'warehouse_id' => $detail->warehouse_id,
+            'product_id' => $detail->product_id,
+            'uom_id' => $detail->uom_id_receive? : $detail->uom_id,
+            'price' => $detail->price,
+            'qty' => $detail->receive,
             'app' => 'purchase',
-            'id_ref' => $detail->id_purchase_dtl,
+            'reff_id' => $detail->purchase_id,
         ]);
     }
 
@@ -173,12 +172,12 @@ class ProductStock extends \yii\base\Behavior
         /* @var $detail \biz\core\sales\models\SalesDtl */
         $detail = $event->params[1];
         $this->updateStock([
-            'id_warehouse' => $detail->id_warehouse,
-            'id_product' => $detail->id_product,
-            'id_uom' => $detail->id_uom_release? : $detail->id_uom,
-            'qty' => -$detail->qty_release,
+            'warehouse_id' => $detail->warehouse_id,
+            'product_id' => $detail->product_id,
+            'uom_id' => $detail->uom_id_release? : $detail->uom_id,
+            'qty' => -$detail->total_release,
             'app' => 'sales',
-            'id_ref' => $detail->id_sales_dtl,
+            'reff_id' => $detail->id_sales_dtl,
         ]);
     }
 
@@ -194,12 +193,12 @@ class ProductStock extends \yii\base\Behavior
         /* @var $detail \biz\core\inventory\models\TransferDtl */
         $detail = $event->params[1];
         $this->updateStock([
-            'id_warehouse' => $detail->id_warehouse_src,
-            'id_product' => $detail->id_product,
-            'id_uom' => $detail->id_uom_send? : $detail->id_uom,
+            'warehouse_id' => $detail->warehouse_id_src,
+            'product_id' => $detail->product_id,
+            'uom_id' => $detail->uom_id_send? : $detail->uom_id,
             'qty' => -$detail->qty_send,
             'app' => 'transfer_release',
-            'id_ref' => $detail->id_transfer,
+            'reff_id' => $detail->id_transfer,
         ]);
     }
 
@@ -215,12 +214,12 @@ class ProductStock extends \yii\base\Behavior
         /* @var $detail \biz\core\inventory\models\TransferDtl */
         $detail = $event->params[1];
         $this->updateStock([
-            'id_warehouse' => $detail->id_warehouse_dest,
-            'id_product' => $detail->id_product,
-            'id_uom' => $detail->id_uom_receive? : $detail->id_uom,
-            'qty' => $detail->qty_receive,
+            'warehouse_id' => $detail->warehouse_id_dest,
+            'product_id' => $detail->product_id,
+            'uom_id' => $detail->uom_id_receive? : $detail->uom_id,
+            'qty' => $detail->total_receive,
             'app' => 'transfer_receive',
-            'id_ref' => $detail->id_transfer,
+            'reff_id' => $detail->id_transfer,
         ]);
     }
 
@@ -237,22 +236,22 @@ class ProductStock extends \yii\base\Behavior
         $detail = $event->params[1];
         if (!empty($detail->qty_send)) {
             $this->updateStock([
-                'id_warehouse' => $detail->id_warehouse_src,
-                'id_product' => $detail->id_product,
-                'id_uom' => $detail->id_uom_send? : $detail->id_uom,
+                'warehouse_id' => $detail->warehouse_id_src,
+                'product_id' => $detail->product_id,
+                'uom_id' => $detail->uom_id_send? : $detail->uom_id,
                 'qty' => -$detail->qty_send,
                 'app' => 'transfer_complete',
-                'id_ref' => $detail->id_transfer,
+                'reff_id' => $detail->id_transfer,
             ]);
         }
-        if (!empty($detail->qty_receive)) {
+        if (!empty($detail->total_receive)) {
             $this->updateStock([
-                'id_warehouse' => $detail->id_warehouse_dest,
-                'id_product' => $detail->id_product,
-                'id_uom' => $detail->id_uom_receive? : $detail->id_uom,
-                'qty' => $detail->qty_receive,
+                'warehouse_id' => $detail->warehouse_id_dest,
+                'product_id' => $detail->product_id,
+                'uom_id' => $detail->uom_id_receive? : $detail->uom_id,
+                'qty' => $detail->total_receive,
                 'app' => 'transfer_complete',
-                'id_ref' => $detail->id_transfer,
+                'reff_id' => $detail->id_transfer,
             ]);
         }
     }
@@ -270,12 +269,12 @@ class ProductStock extends \yii\base\Behavior
         $model = $event->params[0];
         foreach ($model->stockAdjustmentDtls as $detail) {
             $this->updateStock([
-                'id_warehouse' => $detail->id_warehouse,
-                'id_product' => $detail->id_product,
+                'warehouse_id' => $detail->warehouse_id,
+                'product_id' => $detail->product_id,
                 'qty' => $detail->qty,
                 'app' => 'stock_adjustment',
                 'price' => $detail->item_value,
-                'id_ref' => $detail->id_adjustment,
+                'reff_id' => $detail->id_adjustment,
             ]);
         }
     }

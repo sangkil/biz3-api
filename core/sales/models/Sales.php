@@ -5,14 +5,14 @@ namespace biz\core\sales\models;
 use Yii;
 
 /**
- * This is the model class for table "sales".
+ * This is the model class for table "{{%sales}}".
  *
- * @property integer $id_sales
- * @property string $sales_num
- * @property integer $id_branch
- * @property integer $id_customer
- * @property string $sales_date
- * @property double $sales_value
+ * @property integer $id
+ * @property string $number
+ * @property integer $branch_id
+ * @property integer $customer_id
+ * @property string $date
+ * @property double $value
  * @property double $discount
  * @property integer $status
  * @property string $created_at
@@ -24,18 +24,12 @@ use Yii;
  */
 class Sales extends \yii\db\ActiveRecord
 {
-    const STATUS_DRAFT = 1;
-    const STATUS_RELEASE = 2;
-    const STATUS_RELEASED = 3;
-
-    const SCENARIO_RELEASE = 'release';
-
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'sales';
+        return '{{%sales}}';
     }
 
     /**
@@ -44,11 +38,11 @@ class Sales extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['sales_num', 'id_branch', 'sales_date', 'sales_value', 'status', 'created_by', 'updated_by'], 'required'],
-            [['id_branch', 'id_customer', 'status', 'created_by', 'updated_by'], 'integer'],
-            [['sales_date', 'created_at', 'updated_at'], 'safe'],
-            [['sales_value', 'discount'], 'number'],
-            [['sales_num'], 'string', 'max' => 16]
+            [['number', 'branch_id', 'date', 'value', 'status', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'required'],
+            [['branch_id', 'customer_id', 'status', 'created_by', 'updated_by'], 'integer'],
+            [['date', 'created_at', 'updated_at'], 'safe'],
+            [['value', 'discount'], 'number'],
+            [['number'], 'string', 'max' => 16]
         ];
     }
 
@@ -58,12 +52,12 @@ class Sales extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_sales' => 'Id Sales',
-            'sales_num' => 'Sales Num',
-            'id_branch' => 'Id Branch',
-            'id_customer' => 'Id Customer',
-            'sales_date' => 'Sales Date',
-            'sales_value' => 'Sales Value',
+            'id' => 'ID',
+            'number' => 'Number',
+            'branch_id' => 'Branch ID',
+            'customer_id' => 'Customer ID',
+            'date' => 'Date',
+            'value' => 'Value',
             'discount' => 'Discount',
             'status' => 'Status',
             'created_at' => 'Created At',
@@ -78,6 +72,30 @@ class Sales extends \yii\db\ActiveRecord
      */
     public function getSalesDtls()
     {
-        return $this->hasMany(SalesDtl::className(), ['id_sales' => 'id_sales']);
+        return $this->hasMany(SalesDtl::className(), ['sales_id' => 'id']);
     }
-}
+    
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return[
+            'BizTimestampBehavior',
+            'BizBlameableBehavior',
+            [
+                'class' => 'mdm\autonumber\Behavior',
+                'digit' => 6,
+                'attribute' => 'number',
+                'value' => 'SA' . date('y.?')
+            ],
+            [
+                'class' => 'mdm\converter\DateConverter',
+                'attributes' => [
+                    'Date' => 'date',
+                ]
+            ],
+            'BizStatusConverter',
+            'mdm\behaviors\ar\RelatedBehavior',
+        ];
+    }}

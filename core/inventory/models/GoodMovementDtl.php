@@ -5,22 +5,19 @@ namespace biz\core\inventory\models;
 use Yii;
 
 /**
- * This is the model class for table "good_movement_dtl".
+ * This is the model class for table "{{%good_movement_dtl}}".
  *
- * @property integer $id_movement
- * @property integer $id_warehouse
- * @property integer $id_product
+ * @property integer $movement_id
+ * @property integer $warehouse_id
+ * @property integer $product_id
  * @property double $qty
- * @property double $item_value Use to change cogs item.
- * When `null` mean no change for cogs.
- * @property double $trans_value Transaction value acording with this item.
- * Value can be purchase price or sales price.
+ * @property double $item_value
+ * @property double $trans_value
  *
- * @property GoodMovement $goodMovement
+ * @property GoodMovement $movement
  */
 class GoodMovementDtl extends \yii\db\ActiveRecord
 {
-
     /**
      * @inheritdoc
      */
@@ -35,9 +32,9 @@ class GoodMovementDtl extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_movement', 'id_warehouse', 'id_product', 'qty'], 'required'],
-            [['id_movement', 'id_warehouse', 'id_product'], 'integer'],
-            [['qty', 'item_value'], 'number']
+            [['movement_id', 'warehouse_id', 'product_id', 'qty'], 'required'],
+            [['movement_id', 'warehouse_id', 'product_id'], 'integer'],
+            [['qty', 'item_value', 'trans_value'], 'number']
         ];
     }
 
@@ -47,19 +44,20 @@ class GoodMovementDtl extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_movement' => 'Id Movement',
-            'id_warehouse' => 'Id Warehouse',
-            'id_product' => 'Id Product',
+            'movement_id' => 'Movement ID',
+            'warehouse_id' => 'Warehouse ID',
+            'product_id' => 'Product ID',
             'qty' => 'Qty',
             'item_value' => 'Item Value',
+            'trans_value' => 'Trans Value',
         ];
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getGoodMovement()
+    public function getMovement()
     {
-        return $this->hasOne(GoodMovement::className(), ['id_movement' => 'id_movement']);
+        return $this->hasOne(GoodMovement::className(), ['id' => 'movement_id']);
     }
 }

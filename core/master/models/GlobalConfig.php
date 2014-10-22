@@ -5,7 +5,7 @@ namespace biz\core\master\models;
 use Yii;
 
 /**
- * This is the model class for table "global_config".
+ * This is the model class for table "{{%global_config}}".
  *
  * @property string $group
  * @property string $name
@@ -23,7 +23,7 @@ class GlobalConfig extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'global_config';
+        return '{{%global_config}}';
     }
 
     /**
@@ -32,7 +32,7 @@ class GlobalConfig extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['group', 'name', 'created_by', 'updated_by'], 'required'],
+            [['group', 'name'], 'required'],
             [['created_at', 'updated_at'], 'safe'],
             [['created_by', 'updated_by'], 'integer'],
             [['group'], 'string', 'max' => 16],
@@ -55,6 +55,17 @@ class GlobalConfig extends \yii\db\ActiveRecord
             'created_by' => 'Created By',
             'updated_at' => 'Updated At',
             'updated_by' => 'Updated By',
+        ];
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return[
+            'BizTimestampBehavior',
+            'BizBlameableBehavior'
         ];
     }
 }

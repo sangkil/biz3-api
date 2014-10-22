@@ -5,18 +5,18 @@ namespace biz\core\master\models;
 use Yii;
 
 /**
- * This is the model class for table "supplier".
+ * This is the model class for table "{{%supplier}}".
  *
- * @property integer $id_supplier
- * @property string $cd_supplier
- * @property string $nm_supplier
+ * @property integer $id
+ * @property string $code
+ * @property string $name
  * @property string $created_at
  * @property integer $created_by
  * @property string $updated_at
  * @property integer $updated_by
  *
  * @property ProductSupplier[] $productSuppliers
- * @property Product[] $idProducts
+ * @property Product[] $products
  */
 class Supplier extends \yii\db\ActiveRecord
 {
@@ -25,7 +25,7 @@ class Supplier extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'supplier';
+        return '{{%supplier}}';
     }
 
     /**
@@ -34,11 +34,11 @@ class Supplier extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['cd_supplier', 'nm_supplier', 'created_by', 'updated_by'], 'required'],
+            [['code', 'name'], 'required'],
             [['created_at', 'updated_at'], 'safe'],
             [['created_by', 'updated_by'], 'integer'],
-            [['cd_supplier'], 'string', 'max' => 4],
-            [['nm_supplier'], 'string', 'max' => 64]
+            [['code'], 'string', 'max' => 4],
+            [['name'], 'string', 'max' => 64]
         ];
     }
 
@@ -48,9 +48,9 @@ class Supplier extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_supplier' => 'Id Supplier',
-            'cd_supplier' => 'Cd Supplier',
-            'nm_supplier' => 'Nm Supplier',
+            'id' => 'ID',
+            'code' => 'Code',
+            'name' => 'Name',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
             'updated_at' => 'Updated At',
@@ -63,14 +63,25 @@ class Supplier extends \yii\db\ActiveRecord
      */
     public function getProductSuppliers()
     {
-        return $this->hasMany(ProductSupplier::className(), ['id_supplier' => 'id_supplier']);
+        return $this->hasMany(ProductSupplier::className(), ['supplier_id' => 'id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdProducts()
+    public function getProducts()
     {
-        return $this->hasMany(Product::className(), ['id_product' => 'id_product'])->viaTable('{product_supplier}', ['id_supplier' => 'id_supplier']);
+        return $this->hasMany(Product::className(), ['id' => 'product_id'])->viaTable('{{%product_supplier}}', ['supplier_id' => 'id']);
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return[
+            'BizTimestampBehavior',
+            'BizBlameableBehavior'
+        ];
     }
 }

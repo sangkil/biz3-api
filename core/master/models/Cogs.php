@@ -5,26 +5,25 @@ namespace biz\core\master\models;
 use Yii;
 
 /**
- * This is the model class for table "{{%product_supplier}}".
+ * This is the model class for table "{{%cogs}}".
  *
  * @property integer $product_id
- * @property integer $supplier_id
+ * @property double $cogs
  * @property string $created_at
  * @property integer $created_by
  * @property string $updated_at
  * @property integer $updated_by
  *
  * @property Product $product
- * @property Supplier $supplier
  */
-class ProductSupplier extends \yii\db\ActiveRecord
+class Cogs extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return '{{%product_supplier}}';
+        return '{{%cogs}}';
     }
 
     /**
@@ -33,8 +32,9 @@ class ProductSupplier extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['product_id', 'supplier_id'], 'required'],
-            [['product_id', 'supplier_id', 'created_by', 'updated_by'], 'integer'],
+            [['product_id', 'cogs'], 'required'],
+            [['product_id', 'created_by', 'updated_by'], 'integer'],
+            [['cogs'], 'number'],
             [['created_at', 'updated_at'], 'safe']
         ];
     }
@@ -46,7 +46,7 @@ class ProductSupplier extends \yii\db\ActiveRecord
     {
         return [
             'product_id' => 'Product ID',
-            'supplier_id' => 'Supplier ID',
+            'cogs' => 'Cogs',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
             'updated_at' => 'Updated At',
@@ -60,14 +60,6 @@ class ProductSupplier extends \yii\db\ActiveRecord
     public function getProduct()
     {
         return $this->hasOne(Product::className(), ['id' => 'product_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSupplier()
-    {
-        return $this->hasOne(Supplier::className(), ['id' => 'supplier_id']);
     }
     
     /**

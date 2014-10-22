@@ -5,16 +5,16 @@ namespace biz\core\master\models;
 use Yii;
 
 /**
- * This is the model class for table "user_to_branch".
+ * This is the model class for table "{{%user_to_branch}}".
  *
- * @property integer $id_branch
- * @property integer $id_user
+ * @property integer $branch_id
+ * @property integer $user_id
  * @property string $created_at
  * @property integer $created_by
  * @property string $updated_at
  * @property integer $updated_by
  *
- * @property Branch $idBranch
+ * @property Branch $branch
  */
 class UserToBranch extends \yii\db\ActiveRecord
 {
@@ -23,7 +23,7 @@ class UserToBranch extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'user_to_branch';
+        return '{{%user_to_branch}}';
     }
 
     /**
@@ -32,8 +32,8 @@ class UserToBranch extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_branch', 'id_user', 'created_by', 'updated_by'], 'required'],
-            [['id_branch', 'id_user', 'created_by', 'updated_by'], 'integer'],
+            [['branch_id', 'user_id'], 'required'],
+            [['branch_id', 'user_id', 'created_by', 'updated_by'], 'integer'],
             [['created_at', 'updated_at'], 'safe']
         ];
     }
@@ -44,8 +44,8 @@ class UserToBranch extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_branch' => 'Id Branch',
-            'id_user' => 'Id User',
+            'branch_id' => 'Branch ID',
+            'user_id' => 'User ID',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
             'updated_at' => 'Updated At',
@@ -56,8 +56,19 @@ class UserToBranch extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdBranch()
+    public function getBranch()
     {
-        return $this->hasOne(Branch::className(), ['id_branch' => 'id_branch']);
+        return $this->hasOne(Branch::className(), ['id' => 'branch_id']);
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return[
+            'BizTimestampBehavior',
+            'BizBlameableBehavior'
+        ];
     }
 }

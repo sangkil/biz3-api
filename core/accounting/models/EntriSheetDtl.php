@@ -5,14 +5,14 @@ namespace biz\core\accounting\models;
 use Yii;
 
 /**
- * This is the model class for table "entri_sheet_dtl".
+ * This is the model class for table "{{%entri_sheet_dtl}}".
  *
- * @property string $cd_esheet
- * @property string $cd_esheet_dtl
- * @property string $nm_esheet_dtl
- * @property integer $id_coa
+ * @property string $esheet_id
+ * @property string $id
+ * @property string $name
+ * @property integer $coa_id
  *
- * @property EntriSheet $entriSheet
+ * @property EntriSheet $esheet
  * @property Coa $coa
  */
 class EntriSheetDtl extends \yii\db\ActiveRecord
@@ -31,10 +31,10 @@ class EntriSheetDtl extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['cd_esheet', 'cd_esheet_dtl', 'nm_esheet_dtl', 'id_coa'], 'required'],
-            [['id_coa'], 'integer'],
-            [['cd_esheet', 'cd_esheet_dtl'], 'string', 'max' => 16],
-            [['nm_esheet_dtl'], 'string', 'max' => 64]
+            [['esheet_id', 'id', 'coa_id'], 'required'],
+            [['coa_id'], 'integer'],
+            [['esheet_id', 'id'], 'string', 'max' => 16],
+            [['name'], 'string', 'max' => 64]
         ];
     }
 
@@ -44,19 +44,19 @@ class EntriSheetDtl extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'cd_esheet' => 'Cd Esheet',
-            'cd_esheet_dtl' => 'Cd Esheet Dtl',
-            'nm_esheet_dtl' => 'Nm Esheet Dtl',
-            'id_coa' => 'Id Coa',
+            'esheet_id' => 'Esheet ID',
+            'id' => 'ID',
+            'name' => 'Name',
+            'coa_id' => 'Coa ID',
         ];
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getEntriSheet()
+    public function getEsheet()
     {
-        return $this->hasOne(EntriSheet::className(), ['cd_esheet' => 'cd_esheet']);
+        return $this->hasOne(EntriSheet::className(), ['id' => 'esheet_id']);
     }
 
     /**
@@ -64,6 +64,6 @@ class EntriSheetDtl extends \yii\db\ActiveRecord
      */
     public function getCoa()
     {
-        return $this->hasOne(Coa::className(), ['id_coa' => 'id_coa']);
+        return $this->hasOne(Coa::className(), ['id' => 'coa_id']);
     }
 }

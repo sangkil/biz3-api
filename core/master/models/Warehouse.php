@@ -5,20 +5,20 @@ namespace biz\core\master\models;
 use Yii;
 
 /**
- * This is the model class for table "warehouse".
+ * This is the model class for table "{{%warehouse}}".
  *
- * @property integer $id_warehouse
- * @property integer $id_branch
- * @property string $cd_whse
- * @property string $nm_whse
+ * @property integer $id
+ * @property integer $branch_id
+ * @property string $code
+ * @property string $name
  * @property string $created_at
  * @property integer $created_by
  * @property string $updated_at
  * @property integer $updated_by
  *
  * @property ProductStock[] $productStocks
- * @property Product[] $idProducts
- * @property Branch $idBranch
+ * @property Product[] $products
+ * @property Branch $branch
  */
 class Warehouse extends \yii\db\ActiveRecord
 {
@@ -27,7 +27,7 @@ class Warehouse extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'warehouse';
+        return '{{%warehouse}}';
     }
 
     /**
@@ -36,11 +36,11 @@ class Warehouse extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_branch', 'cd_whse', 'nm_whse', 'created_by', 'updated_by'], 'required'],
-            [['id_branch', 'created_by', 'updated_by'], 'integer'],
+            [['branch_id', 'code', 'name'], 'required'],
+            [['branch_id', 'created_by', 'updated_by'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
-            [['cd_whse'], 'string', 'max' => 4],
-            [['nm_whse'], 'string', 'max' => 32]
+            [['code'], 'string', 'max' => 4],
+            [['name'], 'string', 'max' => 32]
         ];
     }
 
@@ -50,10 +50,10 @@ class Warehouse extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_warehouse' => 'Id Warehouse',
-            'id_branch' => 'Id Branch',
-            'cd_whse' => 'Cd Whse',
-            'nm_whse' => 'Nm Whse',
+            'id' => 'ID',
+            'branch_id' => 'Branch ID',
+            'code' => 'Code',
+            'name' => 'Name',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
             'updated_at' => 'Updated At',
@@ -66,22 +66,33 @@ class Warehouse extends \yii\db\ActiveRecord
      */
     public function getProductStocks()
     {
-        return $this->hasMany(ProductStock::className(), ['id_warehouse' => 'id_warehouse']);
+        return $this->hasMany(ProductStock::className(), ['warehouse_id' => 'id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdProducts()
+    public function getProducts()
     {
-        return $this->hasMany(Product::className(), ['id_product' => 'id_product'])->viaTable('{product_stock}', ['id_warehouse' => 'id_warehouse']);
+        return $this->hasMany(Product::className(), ['id' => 'product_id'])->viaTable('{{%product_stock}}', ['warehouse_id' => 'id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdBranch()
+    public function getBranch()
     {
-        return $this->hasOne(Branch::className(), ['id_branch' => 'id_branch']);
+        return $this->hasOne(Branch::className(), ['id' => 'branch_id']);
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return[
+            'BizTimestampBehavior',
+            'BizBlameableBehavior'
+        ];
     }
 }

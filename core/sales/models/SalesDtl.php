@@ -6,17 +6,17 @@ use Yii;
 use biz\core\master\models\ProductUom;
 
 /**
- * This is the model class for table "sales_dtl".
+ * This is the model class for table "{{%sales_dtl}}".
  *
- * @property integer $id_sales
- * @property integer $id_product
- * @property integer $id_uom
- * @property double $sales_qty
- * @property double $sales_price
+ * @property integer $sales_id
+ * @property integer $product_id
+ * @property integer $uom_id
+ * @property double $qty
+ * @property double $price
+ * @property double $total_release
  * @property double $cogs
  * @property double $discount
  * @property double $tax
- * @property double $sales_qty_release
  *
  * @property Sales $sales
  */
@@ -25,7 +25,7 @@ class SalesDtl extends \yii\db\ActiveRecord
     /**
      * @var integer Warehouse for release.
      */
-    public $id_warehouse;
+    public $warehouse_id;
 
     /**
      * @var double Quantity for release.
@@ -35,14 +35,14 @@ class SalesDtl extends \yii\db\ActiveRecord
     /**
      * @var integer Uom for receive.
      */
-    public $id_uom_release;
+    public $uom_id_release;
 
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'sales_dtl';
+        return '{{%sales_dtl}}';
     }
 
     /**
@@ -51,11 +51,11 @@ class SalesDtl extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_sales', 'id_product', 'id_uom', 'sales_qty', 'sales_price', 'cogs'], 'required'],
-            [['id_sales', 'id_product', 'id_uom'], 'integer'],
-            [['sales_qty', 'sales_price', 'cogs', 'discount', 'tax'], 'number'],
-            [['id_warehouse', 'qty_release', 'id_uom_release'], 'safe', 'on' => Sales::SCENARIO_RELEASE],
-            [['id_warehouse'], 'required', 'on' => Sales::SCENARIO_RELEASE, 'when' => [$this, 'whenReleased']],
+            [['id_sales', 'product_id', 'uom_id', 'sales_qty', 'sales_price', 'cogs'], 'required'],
+            [['id_sales', 'product_id', 'uom_id'], 'integer'],
+            [['qty', 'price', 'cogs', 'discount', 'tax'], 'number'],
+            [['warehouse_id', 'qty_release', 'uom_id_release'], 'safe', 'on' => Sales::SCENARIO_RELEASE],
+            [['warehouse_id'], 'required', 'on' => Sales::SCENARIO_RELEASE, 'when' => [$this, 'whenReleased']],
             [['qty_receive'], 'double', 'on' => Sales::SCENARIO_RELEASE],
             [['qty_receive'], 'convertRelease', 'on' => Sales::SCENARIO_RELEASE]
         ];
@@ -69,7 +69,7 @@ class SalesDtl extends \yii\db\ActiveRecord
         $scenarios = parent::scenarios();
 
         foreach ($scenarios[Sales::SCENARIO_RELEASE] as $i => $attr) {
-            if (!in_array($attr, ['id_warehouse', 'qty_release', 'id_uom_release']) && $attr[0] != '!') {
+            if (!in_array($attr, ['warehouse_id', 'qty_release', 'uom_id_release']) && $attr[0] != '!') {
                 $scenarios[Sales::SCENARIO_RELEASE][$i] = '!' . $attr;
             }
         }
@@ -79,13 +79,13 @@ class SalesDtl extends \yii\db\ActiveRecord
 
     public function convertRelease($attribute)
     {
-        if ($this->id_uom_release === null || $this->id_uom == $this->id_uom_release) {
-            $this->sales_qty_release += $this->qty_release;
+        if ($this->uom_id_release === null || $this->uom_id == $this->uom_id_release) {
+            $this->total_release += $this->qty_release;
         } else {
-            $uoms = ProductUom::find()->where(['id_product' => $this->id_product])->indexBy('id_uom')->all();
-            $this->sales_qty_release += $this->qty_release * $uoms[$this->id_uom_release]->isi / $uoms[$this->id_uom]->isi;
+            $uoms = ProductUom::find()->where(['product_id' => $this->product_id])->indexBy('uom_id')->all();
+            $this->total_release += $this->qty_release * $uoms[$this->uom_id_release]->isi / $uoms[$this->uom_id]->isi;
         }
-        if ($this->sales_qty_release > $this->sales_qty) {
+        if ($this->total_release > $this->qty) {
             $this->addError($attribute, 'Total qty release large than sales qty');
         }
     }
@@ -107,11 +107,12 @@ class SalesDtl extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_sales' => 'Id Sales',
-            'id_product' => 'Id Product',
-            'id_uom' => 'Id Uom',
-            'sales_qty' => 'Sales Qty',
-            'sales_price' => 'Sales Price',
+            'sales_id' => 'Sales ID',
+            'product_id' => 'Product ID',
+            'uom_id' => 'Uom ID',
+            'qty' => 'Qty',
+            'price' => 'Price',
+            'total_release' => 'Qty Release',
             'cogs' => 'Cogs',
             'discount' => 'Discount',
             'tax' => 'Tax',
@@ -123,6 +124,6 @@ class SalesDtl extends \yii\db\ActiveRecord
      */
     public function getSales()
     {
-        return $this->hasOne(Sales::className(), ['id_sales' => 'id_sales']);
+        return $this->hasOne(Sales::className(), ['id' => 'sales_id']);
     }
 }

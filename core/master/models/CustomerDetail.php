@@ -5,23 +5,23 @@ namespace biz\core\master\models;
 use Yii;
 
 /**
- * This is the model class for table "customer_detail".
+ * This is the model class for table "{{%customer_detail}}".
  *
- * @property integer $id_customer
- * @property integer $id_distric
+ * @property integer $id
+ * @property integer $distric_id
  * @property string $addr1
  * @property string $addr2
  * @property double $latitude
  * @property double $longtitude
- * @property integer $id_kab
- * @property integer $id_kec
- * @property integer $id_kel
+ * @property integer $kab_id
+ * @property integer $kec_id
+ * @property integer $kel_id
  * @property string $created_at
  * @property integer $created_by
  * @property string $updated_at
  * @property integer $updated_by
  *
- * @property Customer $idCustomer
+ * @property Customer $id0
  */
 class CustomerDetail extends \yii\db\ActiveRecord
 {
@@ -30,7 +30,7 @@ class CustomerDetail extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'customer_detail';
+        return '{{%customer_detail}}';
     }
 
     /**
@@ -39,8 +39,8 @@ class CustomerDetail extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_customer', 'created_by', 'updated_by'], 'required'],
-            [['id_customer', 'id_distric', 'id_kab', 'id_kec', 'id_kel', 'created_by', 'updated_by'], 'integer'],
+            [['id'], 'required'],
+            [['id', 'distric_id', 'kab_id', 'kec_id', 'kel_id', 'created_by', 'updated_by'], 'integer'],
             [['latitude', 'longtitude'], 'number'],
             [['created_at', 'updated_at'], 'safe'],
             [['addr1', 'addr2'], 'string', 'max' => 128]
@@ -53,15 +53,15 @@ class CustomerDetail extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_customer' => 'Id Customer',
-            'id_distric' => 'Id Distric',
+            'id' => 'ID',
+            'distric_id' => 'Distric ID',
             'addr1' => 'Addr1',
             'addr2' => 'Addr2',
             'latitude' => 'Latitude',
             'longtitude' => 'Longtitude',
-            'id_kab' => 'Id Kab',
-            'id_kec' => 'Id Kec',
-            'id_kel' => 'Id Kel',
+            'kab_id' => 'Kab ID',
+            'kec_id' => 'Kec ID',
+            'kel_id' => 'Kel ID',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
             'updated_at' => 'Updated At',
@@ -72,8 +72,19 @@ class CustomerDetail extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdCustomer()
+    public function getId0()
     {
-        return $this->hasOne(Customer::className(), ['id_customer' => 'id_customer']);
+        return $this->hasOne(Customer::className(), ['id' => 'id']);
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return[
+            'BizTimestampBehavior',
+            'BizBlameableBehavior'
+        ];
     }
 }

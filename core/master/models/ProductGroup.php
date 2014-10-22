@@ -5,11 +5,11 @@ namespace biz\core\master\models;
 use Yii;
 
 /**
- * This is the model class for table "product_group".
+ * This is the model class for table "{{%product_group}}".
  *
- * @property integer $id_group
- * @property string $cd_group
- * @property string $nm_group
+ * @property integer $id
+ * @property string $code
+ * @property string $name
  * @property string $created_at
  * @property integer $created_by
  * @property string $updated_at
@@ -24,7 +24,7 @@ class ProductGroup extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'product_group';
+        return '{{%product_group}}';
     }
 
     /**
@@ -33,11 +33,11 @@ class ProductGroup extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['cd_group', 'nm_group', 'created_by', 'updated_by'], 'required'],
+            [['code', 'name'], 'required'],
             [['created_at', 'updated_at'], 'safe'],
             [['created_by', 'updated_by'], 'integer'],
-            [['cd_group'], 'string', 'max' => 4],
-            [['nm_group'], 'string', 'max' => 32]
+            [['code'], 'string', 'max' => 4],
+            [['name'], 'string', 'max' => 32]
         ];
     }
 
@@ -47,9 +47,9 @@ class ProductGroup extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_group' => 'Id Group',
-            'cd_group' => 'Cd Group',
-            'nm_group' => 'Nm Group',
+            'id' => 'ID',
+            'code' => 'Code',
+            'name' => 'Name',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
             'updated_at' => 'Updated At',
@@ -62,6 +62,17 @@ class ProductGroup extends \yii\db\ActiveRecord
      */
     public function getProducts()
     {
-        return $this->hasMany(Product::className(), ['id_group' => 'id_group']);
+        return $this->hasMany(Product::className(), ['group_id' => 'id']);
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return[
+            'BizTimestampBehavior',
+            'BizBlameableBehavior'
+        ];
     }
 }

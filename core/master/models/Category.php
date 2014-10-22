@@ -5,11 +5,11 @@ namespace biz\core\master\models;
 use Yii;
 
 /**
- * This is the model class for table "category".
+ * This is the model class for table "{{%category}}".
  *
- * @property integer $id_category
- * @property string $cd_category
- * @property string $nm_category
+ * @property integer $id
+ * @property string $code
+ * @property string $name
  * @property string $created_at
  * @property integer $created_by
  * @property string $updated_at
@@ -24,7 +24,7 @@ class Category extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'category';
+        return '{{%category}}';
     }
 
     /**
@@ -33,11 +33,11 @@ class Category extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['cd_category', 'nm_category', 'created_by', 'updated_by'], 'required'],
+            [['code', 'name'], 'required'],
             [['created_at', 'updated_at'], 'safe'],
             [['created_by', 'updated_by'], 'integer'],
-            [['cd_category'], 'string', 'max' => 4],
-            [['nm_category'], 'string', 'max' => 32]
+            [['code'], 'string', 'max' => 4],
+            [['name'], 'string', 'max' => 32]
         ];
     }
 
@@ -47,9 +47,9 @@ class Category extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_category' => 'Id Category',
-            'cd_category' => 'Cd Category',
-            'nm_category' => 'Nm Category',
+            'id' => 'ID',
+            'code' => 'Code',
+            'name' => 'Name',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
             'updated_at' => 'Updated At',
@@ -62,6 +62,17 @@ class Category extends \yii\db\ActiveRecord
      */
     public function getProducts()
     {
-        return $this->hasMany(Product::className(), ['id_category' => 'id_category']);
+        return $this->hasMany(Product::className(), ['category_id' => 'id']);
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return[
+            'BizTimestampBehavior',
+            'BizBlameableBehavior'
+        ];
     }
 }

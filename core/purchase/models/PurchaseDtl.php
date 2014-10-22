@@ -6,15 +6,15 @@ use Yii;
 use biz\core\master\models\ProductUom;
 
 /**
- * This is the model class for table "purchase_dtl".
+ * This is the model class for table "{{%purchase_dtl}}".
  *
- * @property integer $id_purchase
- * @property integer $id_product
- * @property integer $id_uom
- * @property double $purch_qty
- * @property double $purch_price
- * @property double $purch_qty_receive
+ * @property integer $purchase_id
+ * @property integer $product_id
+ * @property integer $uom_id
+ * @property double $qty
+ * @property double $price
  * @property double $discount
+ * @property double $total_receive
  *
  * @property Purchase $purchase
  */
@@ -23,24 +23,24 @@ class PurchaseDtl extends \yii\db\ActiveRecord
     /**
      * @var integer Warehouse for receive.
      */
-    public $id_warehouse;
+    public $warehouse_id;
 
     /**
      * @var double Quantity for receive.
      */
-    public $qty_receive;
+    public $receive;
 
     /**
      * @var integer Uom for receive.
      */
-    public $id_uom_receive;
+    public $uom_id_receive;
 
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'purchase_dtl';
+        return '{{%purchase_dtl}}';
     }
 
     /**
@@ -49,13 +49,13 @@ class PurchaseDtl extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_purchase', 'id_product', 'id_uom', 'purch_qty', 'purch_price'], 'required'],
-            [['id_purchase', 'id_product', 'id_uom'], 'integer'],
-            [['purch_qty', 'purch_price'], 'number'],
-            [['id_warehouse', 'qty_receive', 'id_uom_receive'], 'safe', 'on' => Purchase::SCENARIO_RECEIVE],
-            [['id_warehouse'], 'required', 'on' => Purchase::SCENARIO_RECEIVE, 'when' => [$this, 'whenReceived']],
-            [['qty_receive'], 'double', 'on' => Purchase::SCENARIO_RECEIVE],
-            [['qty_receive'], 'convertReceive', 'on' => Purchase::SCENARIO_RECEIVE]
+            [['purchase_id', 'product_id', 'uom_id', 'qty', 'price'], 'required'],
+            [['purchase_id', 'product_id', 'uom_id'], 'integer'],
+            [['qty', 'price'], 'number'],
+            [['warehouse_id', 'receive', 'uom_id_receive'], 'safe', 'on' => Purchase::SCENARIO_RECEIVE],
+            [['warehouse_id'], 'required', 'on' => Purchase::SCENARIO_RECEIVE, 'when' => [$this, 'whenReceived']],
+            [['receive'], 'double', 'on' => Purchase::SCENARIO_RECEIVE],
+            [['receive'], 'convertReceive', 'on' => Purchase::SCENARIO_RECEIVE]
         ];
     }
 
@@ -67,7 +67,7 @@ class PurchaseDtl extends \yii\db\ActiveRecord
         $scenarios = parent::scenarios();
 
         foreach ($scenarios[Purchase::SCENARIO_RECEIVE] as $i => $attr) {
-            if (!in_array($attr, ['id_warehouse', 'qty_receive', 'id_uom_receive']) && $attr[0] != '!') {
+            if (!in_array($attr, ['warehouse_id', 'receive', 'uom_id_receive']) && $attr[0] != '!') {
                 $scenarios[Purchase::SCENARIO_RECEIVE][$i] = '!' . $attr;
             }
         }
@@ -77,26 +77,26 @@ class PurchaseDtl extends \yii\db\ActiveRecord
 
     public function convertReceive($attribute)
     {
-        if ($this->id_uom_receive === null || $this->id_uom == $this->id_uom_receive) {
-            $this->purch_qty_receive += $this->qty_receive;
+        if ($this->uom_id_receive === null || $this->uom_id == $this->uom_id_receive) {
+            $this->total_receive += $this->receive;
         } else {
-            $uoms = ProductUom::find()->where(['id_product' => $this->id_product])->indexBy('id_uom')->all();
-            $this->purch_qty_receive += $this->qty_receive * $uoms[$this->id_uom_receive]->isi / $uoms[$this->id_uom]->isi;
+            $uoms = ProductUom::find()->where(['product_id' => $this->product_id])->indexBy('uom_id')->all();
+            $this->total_receive += $this->receive * $uoms[$this->uom_id_receive]->isi / $uoms[$this->uom_id]->isi;
         }
-        if ($this->purch_qty_receive > $this->purch_qty) {
+        if ($this->total_receive > $this->qty) {
             $this->addError($attribute, 'Total qty receive large than purch qty');
         }
     }
 
     /**
      * Check when purchase is received.
-     * Indicated with `qty_receive` is setted.
+     * Indicated with `total_receive` is setted.
      *
      * @return boolean
      */
     public function whenReceived()
     {
-        return $this->qty_receive !== null && $this->qty_receive !== '';
+        return $this->receive !== null && $this->receive !== '';
     }
 
     /**
@@ -105,11 +105,13 @@ class PurchaseDtl extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_purchase' => 'Id Purchase',
-            'id_product' => 'Id Product',
-            'id_uom' => 'Id Uom',
-            'purch_qty' => 'Purch Qty',
-            'purch_price' => 'Purch Price',
+            'purchase_id' => 'Purchase ID',
+            'product_id' => 'Product ID',
+            'uom_id' => 'Uom ID',
+            'qty' => 'Qty',
+            'price' => 'Price',
+            'discount' => 'Discount',
+            'total_receive' => 'Qty Receive',
         ];
     }
 
@@ -118,6 +120,6 @@ class PurchaseDtl extends \yii\db\ActiveRecord
      */
     public function getPurchase()
     {
-        return $this->hasOne(Purchase::className(), ['id_purchase' => 'id_purchase']);
+        return $this->hasOne(Purchase::className(), ['id' => 'purchase_id']);
     }
 }

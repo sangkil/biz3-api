@@ -5,21 +5,20 @@ namespace biz\core\purchase\models;
 use Yii;
 
 /**
- * This is the model class for table "purchase".
+ * This is the model class for table "{{%purchase}}".
  *
- * @property integer $id_purchase
- * @property string $purchase_num
- * @property integer $id_supplier
- * @property integer $id_branch
- * @property string $purchase_date
- * @property double $purchase_value
+ * @property integer $id
+ * @property string $number
+ * @property integer $supplier_id
+ * @property integer $branch_id
+ * @property string $date
+ * @property double $value
  * @property double $discount
  * @property integer $status
  * @property string $created_at
  * @property integer $created_by
  * @property string $updated_at
  * @property integer $updated_by
- * @property string $purchaseDate
  *
  * @property PurchaseDtl[] $purchaseDtls
  */
@@ -48,12 +47,11 @@ class Purchase extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['status'], 'default', 'value' => self::STATUS_DRAFT],
-            [['id_supplier', 'id_branch', 'purchase_date', 'purchase_value'], 'required'],
-            [['id_supplier', 'id_branch', 'status', 'created_by', 'updated_by'], 'integer'],
-            [['purchase_date', 'created_at', 'updated_at'], 'safe'],
-            [['purchase_value', 'item_discount'], 'number'],
-            [['purchase_num'], 'string', 'max' => 16]
+            [['number', 'supplier_id', 'branch_id', 'date', 'value', 'status'], 'required'],
+            [['supplier_id', 'branch_id', 'status', 'created_by', 'updated_by'], 'integer'],
+            [['date', 'created_at', 'updated_at'], 'safe'],
+            [['value', 'discount'], 'number'],
+            [['number'], 'string', 'max' => 16]
         ];
     }
 
@@ -63,13 +61,13 @@ class Purchase extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_purchase' => 'Id Purchase',
-            'purchase_num' => 'Purchase Num',
-            'id_supplier' => 'Id Supplier',
-            'id_branch' => 'Id Branch',
-            'purchase_date' => 'Purchase Date',
-            'purchase_value' => 'Purchase Value',
-            'item_discount' => 'Item Discount',
+            'id' => 'ID',
+            'number' => 'Number',
+            'supplier_id' => 'Supplier ID',
+            'branch_id' => 'Branch ID',
+            'date' => 'Date',
+            'value' => 'Value',
+            'discount' => 'Discount',
             'status' => 'Status',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
@@ -83,9 +81,9 @@ class Purchase extends \yii\db\ActiveRecord
      */
     public function getPurchaseDtls()
     {
-        return $this->hasMany(PurchaseDtl::className(), ['id_purchase' => 'id_purchase']);
+        return $this->hasMany(PurchaseDtl::className(), ['purchase_id' => 'id']);
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -97,13 +95,13 @@ class Purchase extends \yii\db\ActiveRecord
             [
                 'class' => 'mdm\autonumber\Behavior',
                 'digit' => 6,
-                'attribute' => 'purchase_num',
+                'attribute' => 'number',
                 'value' => 'PU' . date('y.?')
             ],
             [
                 'class' => 'mdm\converter\DateConverter',
                 'attributes' => [
-                    'purchaseDate' => 'purchase_date',
+                    'Date' => 'date',
                 ]
             ],
             'BizStatusConverter',

@@ -5,16 +5,16 @@ namespace biz\core\master\models;
 use Yii;
 
 /**
- * This is the model class for table "product_child".
+ * This is the model class for table "{{%product_child}}".
  *
  * @property string $barcode
- * @property integer $id_product
+ * @property integer $product_id
  * @property string $created_at
  * @property integer $created_by
  * @property string $updated_at
  * @property integer $updated_by
  *
- * @property Product $idProduct
+ * @property Product $product
  */
 class ProductChild extends \yii\db\ActiveRecord
 {
@@ -23,7 +23,7 @@ class ProductChild extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'product_child';
+        return '{{%product_child}}';
     }
 
     /**
@@ -32,8 +32,8 @@ class ProductChild extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['barcode', 'id_product', 'created_by', 'updated_by'], 'required'],
-            [['id_product', 'created_by', 'updated_by'], 'integer'],
+            [['barcode', 'product_id'], 'required'],
+            [['product_id', 'created_by', 'updated_by'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['barcode'], 'string', 'max' => 13]
         ];
@@ -46,7 +46,7 @@ class ProductChild extends \yii\db\ActiveRecord
     {
         return [
             'barcode' => 'Barcode',
-            'id_product' => 'Id Product',
+            'product_id' => 'Product ID',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
             'updated_at' => 'Updated At',
@@ -57,8 +57,19 @@ class ProductChild extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdProduct()
+    public function getProduct()
     {
-        return $this->hasOne(Product::className(), ['id_product' => 'id_product']);
+        return $this->hasOne(Product::className(), ['id' => 'product_id']);
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return[
+            'BizTimestampBehavior',
+            'BizBlameableBehavior'
+        ];
     }
 }

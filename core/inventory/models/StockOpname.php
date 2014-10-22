@@ -5,12 +5,12 @@ namespace biz\core\inventory\models;
 use Yii;
 
 /**
- * This is the model class for table "stock_opname".
+ * This is the model class for table "{{%stock_opname}}".
  *
- * @property integer $id_opname
- * @property string $opname_num
- * @property integer $id_warehouse
- * @property string $opname_date
+ * @property integer $id
+ * @property string $number
+ * @property integer $warehouse_id
+ * @property string $date
  * @property integer $status
  * @property string $description
  * @property string $operator
@@ -37,10 +37,10 @@ class StockOpname extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['opname_num', 'id_warehouse', 'opname_date', 'status', 'created_by', 'updated_by'], 'required'],
-            [['id_warehouse', 'status', 'created_by', 'updated_by'], 'integer'],
-            [['opname_date', 'created_at', 'updated_at'], 'safe'],
-            [['opname_num'], 'string', 'max' => 16],
+            [['number', 'warehouse_id', 'date', 'status'], 'required'],
+            [['warehouse_id', 'status', 'created_by', 'updated_by'], 'integer'],
+            [['date', 'created_at', 'updated_at'], 'safe'],
+            [['number'], 'string', 'max' => 16],
             [['description', 'operator'], 'string', 'max' => 255]
         ];
     }
@@ -51,10 +51,10 @@ class StockOpname extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_opname' => 'Id Opname',
-            'opname_num' => 'Opname Num',
-            'id_warehouse' => 'Id Warehouse',
-            'opname_date' => 'Opname Date',
+            'id' => 'ID',
+            'number' => 'Number',
+            'warehouse_id' => 'Warehouse ID',
+            'date' => 'Date',
             'status' => 'Status',
             'description' => 'Description',
             'operator' => 'Operator',
@@ -70,6 +70,30 @@ class StockOpname extends \yii\db\ActiveRecord
      */
     public function getStockOpnameDtls()
     {
-        return $this->hasMany(StockOpnameDtl::className(), ['id_opname' => 'id_opname']);
+        return $this->hasMany(StockOpnameDtl::className(), ['opname_id' => 'id']);
     }
-}
+    
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return[
+            'BizTimestampBehavior',
+            'BizBlameableBehavior',
+            [
+                'class' => 'mdm\autonumber\Behavior',
+                'digit' => 6,
+                'attribute' => 'number',
+                'value' => 'IO' . date('y.?')
+            ],
+            [
+                'class' => 'mdm\converter\DateConverter',
+                'attributes' => [
+                    'Date' => 'date',
+                ]
+            ],
+            'BizStatusConverter',
+            'mdm\behaviors\ar\RelatedBehavior',
+        ];
+    }}

@@ -13,9 +13,9 @@ class m140622_165356_create_table_master extends \yii\db\Migration
         }
 
         $this->createTable('{{%orgn}}', [
-            'id_orgn' => Schema::TYPE_PK,
-            'cd_orgn' => Schema::TYPE_STRING . '(4) NOT NULL',
-            'nm_orgn' => Schema::TYPE_STRING . '(32) NOT NULL',
+            'id' => Schema::TYPE_PK,
+            'code' => Schema::TYPE_STRING . '(4) NOT NULL',
+            'name' => Schema::TYPE_STRING . '(32) NOT NULL',
             // history column
             'created_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
             'created_by' => Schema::TYPE_INTEGER . ' NOT NULL',
@@ -24,37 +24,37 @@ class m140622_165356_create_table_master extends \yii\db\Migration
         ], $tableOptions);
 
         $this->createTable('{{%branch}}', [
-            'id_branch' => Schema::TYPE_PK,
-            'id_orgn' => Schema::TYPE_INTEGER . ' NOT NULL',
-            'cd_branch' => Schema::TYPE_STRING . '(4) NOT NULL',
-            'nm_branch' => Schema::TYPE_STRING . '(32) NOT NULL',
+            'id' => Schema::TYPE_PK,
+            'orgn_id' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'code' => Schema::TYPE_STRING . '(4) NOT NULL',
+            'name' => Schema::TYPE_STRING . '(32) NOT NULL',
             // history column
             'created_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
             'created_by' => Schema::TYPE_INTEGER . ' NOT NULL',
             'updated_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
             'updated_by' => Schema::TYPE_INTEGER . ' NOT NULL',
             // constrain
-            'FOREIGN KEY (id_orgn) REFERENCES {{%orgn}} (id_orgn) ON DELETE CASCADE ON UPDATE CASCADE',
+            'FOREIGN KEY ([[orgn_id]]) REFERENCES {{%orgn}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
         ], $tableOptions);
 
         $this->createTable('{{%warehouse}}', [
-            'id_warehouse' => Schema::TYPE_PK,
-            'id_branch' => Schema::TYPE_INTEGER . ' NOT NULL',
-            'cd_whse' => Schema::TYPE_STRING . '(4) NOT NULL',
-            'nm_whse' => Schema::TYPE_STRING . '(32) NOT NULL',
+            'id' => Schema::TYPE_PK,
+            'branch_id' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'code' => Schema::TYPE_STRING . '(4) NOT NULL',
+            'name' => Schema::TYPE_STRING . '(32) NOT NULL',
             // history column
             'created_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
             'created_by' => Schema::TYPE_INTEGER . ' NOT NULL',
             'updated_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
             'updated_by' => Schema::TYPE_INTEGER . ' NOT NULL',
             // constrain
-            'FOREIGN KEY (id_branch) REFERENCES {{%branch}} (id_branch) ON DELETE CASCADE ON UPDATE CASCADE',
+            'FOREIGN KEY ([[branch_id]]) REFERENCES {{%branch}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
         ], $tableOptions);
 
         $this->createTable('{{%product_group}}', [
-            'id_group' => Schema::TYPE_PK,
-            'cd_group' => Schema::TYPE_STRING . '(4) NOT NULL',
-            'nm_group' => Schema::TYPE_STRING . '(32) NOT NULL',
+            'id' => Schema::TYPE_PK,
+            'code' => Schema::TYPE_STRING . '(4) NOT NULL',
+            'name' => Schema::TYPE_STRING . '(32) NOT NULL',
             // history column
             'created_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
             'created_by' => Schema::TYPE_INTEGER . ' NOT NULL',
@@ -63,9 +63,9 @@ class m140622_165356_create_table_master extends \yii\db\Migration
         ], $tableOptions);
 
         $this->createTable('{{%category}}', [
-            'id_category' => Schema::TYPE_PK,
-            'cd_category' => Schema::TYPE_STRING . '(4) NOT NULL',
-            'nm_category' => Schema::TYPE_STRING . '(32) NOT NULL',
+            'id' => Schema::TYPE_PK,
+            'code' => Schema::TYPE_STRING . '(4) NOT NULL',
+            'name' => Schema::TYPE_STRING . '(32) NOT NULL',
             // history column
             'created_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
             'created_by' => Schema::TYPE_INTEGER . ' NOT NULL',
@@ -74,11 +74,11 @@ class m140622_165356_create_table_master extends \yii\db\Migration
         ], $tableOptions);
 
         $this->createTable('{{%product}}', [
-            'id_product' => Schema::TYPE_PK,
-            'id_group' => Schema::TYPE_INTEGER . ' NOT NULL',
-            'id_category' => Schema::TYPE_INTEGER . ' NOT NULL',
-            'cd_product' => Schema::TYPE_STRING . '(13) NOT NULL',
-            'nm_product' => Schema::TYPE_STRING . '(64) NOT NULL',
+            'id' => Schema::TYPE_PK,
+            'group_id' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'category_id' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'code' => Schema::TYPE_STRING . '(13) NOT NULL',
+            'name' => Schema::TYPE_STRING . '(64) NOT NULL',
             'status' => Schema::TYPE_INTEGER . ' NOT NULL',
             // history column
             'created_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
@@ -86,27 +86,26 @@ class m140622_165356_create_table_master extends \yii\db\Migration
             'updated_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
             'updated_by' => Schema::TYPE_INTEGER . ' NOT NULL',
             // constrain
-            'FOREIGN KEY (id_group) REFERENCES {{%product_group}} (id_group) ON DELETE CASCADE ON UPDATE CASCADE',
-            'FOREIGN KEY (id_category) REFERENCES {{%category}} (id_category) ON DELETE CASCADE ON UPDATE CASCADE',
+            'FOREIGN KEY ([[group_id]]) REFERENCES {{%product_group}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
+            'FOREIGN KEY ([[category_id]]) REFERENCES {{%category}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
         ], $tableOptions);
 
         $this->createTable('{{%product_child}}', [
             'barcode' => Schema::TYPE_STRING . '(13) PRIMARY KEY',
-            'id_product' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'product_id' => Schema::TYPE_INTEGER . ' NOT NULL',
             // history column
             'created_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
             'created_by' => Schema::TYPE_INTEGER . ' NOT NULL',
             'updated_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
             'updated_by' => Schema::TYPE_INTEGER . ' NOT NULL',
             // constrain
-            'FOREIGN KEY (id_product) REFERENCES {{%product}} (id_product) ON DELETE CASCADE ON UPDATE CASCADE',
+            'FOREIGN KEY ([[product_id]]) REFERENCES {{%product}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
         ], $tableOptions);
 
         $this->createTable('{{%uom}}', [
-            'id_uom' => Schema::TYPE_PK,
-            'cd_uom' => Schema::TYPE_STRING . '(4) NOT NULL',
-            'nm_uom' => Schema::TYPE_STRING . '(32) NOT NULL',
-            'isi' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'id' => Schema::TYPE_PK,
+            'code' => Schema::TYPE_STRING . '(4) NOT NULL',
+            'name' => Schema::TYPE_STRING . '(32) NOT NULL',
             // history column
             'created_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
             'created_by' => Schema::TYPE_INTEGER . ' NOT NULL',
@@ -115,8 +114,8 @@ class m140622_165356_create_table_master extends \yii\db\Migration
         ], $tableOptions);
 
         $this->createTable('{{%product_uom}}', [
-            'id_product' => Schema::TYPE_INTEGER . ' NOT NULL',
-            'id_uom' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'product_id' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'uom_id' => Schema::TYPE_INTEGER . ' NOT NULL',
             'isi' => Schema::TYPE_INTEGER . ' NOT NULL',
             // history column
             'created_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
@@ -124,30 +123,30 @@ class m140622_165356_create_table_master extends \yii\db\Migration
             'updated_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
             'updated_by' => Schema::TYPE_INTEGER . ' NOT NULL',
             // constrain
-            'PRIMARY KEY (id_product, id_uom)',
-            'FOREIGN KEY (id_product) REFERENCES {{%product}} (id_product) ON DELETE CASCADE ON UPDATE CASCADE',
-            'FOREIGN KEY (id_uom) REFERENCES {{%uom}} (id_uom) ON DELETE CASCADE ON UPDATE CASCADE',
+            'PRIMARY KEY ([[product_id]], [[uom_id]])',
+            'FOREIGN KEY ([[product_id]]) REFERENCES {{%product}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
+            'FOREIGN KEY ([[uom_id]]) REFERENCES {{%uom}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
         ], $tableOptions);
 
         $this->createTable('{{%product_stock}}', [
-            'id_warehouse' => Schema::TYPE_INTEGER . ' NOT NULL',
-            'id_product' => Schema::TYPE_INTEGER . ' NOT NULL',
-            'qty_stock' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'warehouse_id' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'product_id' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'qty' => Schema::TYPE_INTEGER . ' NOT NULL',
             // history column
             'created_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
             'created_by' => Schema::TYPE_INTEGER . ' NOT NULL',
             'updated_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
             'updated_by' => Schema::TYPE_INTEGER . ' NOT NULL',
             // constrain
-            'PRIMARY KEY (id_warehouse , id_product )',
-            'FOREIGN KEY (id_warehouse) REFERENCES {{%warehouse}} (id_warehouse) ON DELETE CASCADE ON UPDATE CASCADE',
-            'FOREIGN KEY (id_product) REFERENCES {{%product}} (id_product) ON DELETE CASCADE ON UPDATE CASCADE',
+            'PRIMARY KEY ([[warehouse_id]], [[product_id]])',
+            'FOREIGN KEY ([[warehouse_id]]) REFERENCES {{%warehouse}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
+            'FOREIGN KEY ([[product_id]]) REFERENCES {{%product}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
         ], $tableOptions);
 
         $this->createTable('{{%supplier}}', [
-            'id_supplier' => Schema::TYPE_PK,
-            'cd_supplier' => Schema::TYPE_STRING . '(4) NOT NULL',
-            'nm_supplier' => Schema::TYPE_STRING . '(64) NOT NULL',
+            'id' => Schema::TYPE_PK,
+            'code' => Schema::TYPE_STRING . '(4) NOT NULL',
+            'name' => Schema::TYPE_STRING . '(64) NOT NULL',
             // history column
             'created_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
             'created_by' => Schema::TYPE_INTEGER . ' NOT NULL',
@@ -156,23 +155,23 @@ class m140622_165356_create_table_master extends \yii\db\Migration
         ], $tableOptions);
 
         $this->createTable('{{%product_supplier}}', [
-            'id_product' => Schema::TYPE_INTEGER,
-            'id_supplier' => Schema::TYPE_INTEGER,
+            'product_id' => Schema::TYPE_INTEGER,
+            'supplier_id' => Schema::TYPE_INTEGER,
             // history column
             'created_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
             'created_by' => Schema::TYPE_INTEGER . ' NOT NULL',
             'updated_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
             'updated_by' => Schema::TYPE_INTEGER . ' NOT NULL',
             // constrain
-            'PRIMARY KEY (id_product , id_supplier )',
-            'FOREIGN KEY (id_product) REFERENCES {{%product}} (id_product) ON DELETE CASCADE ON UPDATE CASCADE',
-            'FOREIGN KEY (id_supplier) REFERENCES {{%supplier}} (id_supplier) ON DELETE CASCADE ON UPDATE CASCADE',
+            'PRIMARY KEY ([[product_id]], [[supplier_id]])',
+            'FOREIGN KEY ([[product_id]]) REFERENCES {{%product}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
+            'FOREIGN KEY ([[supplier_id]]) REFERENCES {{%supplier}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
         ], $tableOptions);
 
         $this->createTable('{{%customer}}', [
-            'id_customer' => Schema::TYPE_PK,
-            'cd_customer' => Schema::TYPE_STRING . '(4) NOT NULL',
-            'nm_customer' => Schema::TYPE_STRING . '(64) NOT NULL',
+            'id' => Schema::TYPE_PK,
+            'code' => Schema::TYPE_STRING . '(4) NOT NULL',
+            'name' => Schema::TYPE_STRING . '(64) NOT NULL',
             'contact_name' => Schema::TYPE_STRING . '(64)',
             'contact_number' => Schema::TYPE_STRING . '(64)',
             'status' => Schema::TYPE_INTEGER . ' NOT NULL',
@@ -184,28 +183,28 @@ class m140622_165356_create_table_master extends \yii\db\Migration
         ], $tableOptions);
 
         $this->createTable('{{%customer_detail}}', [
-            'id_customer' => Schema::TYPE_INTEGER,
-            'id_distric' => Schema::TYPE_INTEGER,
+            'id' => Schema::TYPE_INTEGER,
+            'distric_id' => Schema::TYPE_INTEGER,
             'addr1' => Schema::TYPE_STRING . '(128)',
             'addr2' => Schema::TYPE_STRING . '(128)',
             'latitude' => Schema::TYPE_FLOAT,
             'longtitude' => Schema::TYPE_FLOAT,
-            'id_kab' => Schema::TYPE_INTEGER,
-            'id_kec' => Schema::TYPE_INTEGER,
-            'id_kel' => Schema::TYPE_INTEGER,
+            'kab_id' => Schema::TYPE_INTEGER,
+            'kec_id' => Schema::TYPE_INTEGER,
+            'kel_id' => Schema::TYPE_INTEGER,
             // history column
             'created_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
             'created_by' => Schema::TYPE_INTEGER . ' NOT NULL',
             'updated_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
             'updated_by' => Schema::TYPE_INTEGER . ' NOT NULL',
             // constrain
-            'PRIMARY KEY (id_customer)',
-            'FOREIGN KEY (id_customer) REFERENCES {{%customer}} (id_customer) ON DELETE CASCADE ON UPDATE CASCADE',
+            'PRIMARY KEY ([[id]])',
+            'FOREIGN KEY ([[id]]) REFERENCES {{%customer}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
         ], $tableOptions);
 
         $this->createTable('{{%price_category}}', [
-            'id_price_category' => Schema::TYPE_PK,
-            'nm_price_category' => Schema::TYPE_STRING . '(64) NOT NULL',
+            'id' => Schema::TYPE_PK,
+            'name' => Schema::TYPE_STRING . '(64) NOT NULL',
             'formula' => Schema::TYPE_STRING . '(256)',
             // history column
             'created_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
@@ -215,8 +214,8 @@ class m140622_165356_create_table_master extends \yii\db\Migration
         ], $tableOptions);
 
         $this->createTable('{{%price}}', [
-            'id_product' => Schema::TYPE_INTEGER,
-            'id_price_category' => Schema::TYPE_INTEGER,
+            'product_id' => Schema::TYPE_INTEGER,
+            'price_category_id' => Schema::TYPE_INTEGER,
             'price' => Schema::TYPE_FLOAT,
             // history column
             'created_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
@@ -224,13 +223,13 @@ class m140622_165356_create_table_master extends \yii\db\Migration
             'updated_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
             'updated_by' => Schema::TYPE_INTEGER . ' NOT NULL',
             // constrain
-            'PRIMARY KEY (id_product , id_price_category )',
-            'FOREIGN KEY (id_product) REFERENCES {{%product}} (id_product) ON DELETE CASCADE ON UPDATE CASCADE',
-            'FOREIGN KEY (id_price_category) REFERENCES {{%price_category}} (id_price_category) ON DELETE CASCADE ON UPDATE CASCADE',
+            'PRIMARY KEY ([[product_id]], [[price_category_id]])',
+            'FOREIGN KEY ([[product_id]]) REFERENCES {{%product}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
+            'FOREIGN KEY ([[price_category_id]]) REFERENCES {{%price_category}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
         ], $tableOptions);
 
         $this->createTable('{{%cogs}}', [
-            'id_product' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'product_id' => Schema::TYPE_INTEGER . ' NOT NULL',
             'cogs' => Schema::TYPE_FLOAT . ' NOT NULL',
             // history column
             'created_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
@@ -238,21 +237,21 @@ class m140622_165356_create_table_master extends \yii\db\Migration
             'updated_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
             'updated_by' => Schema::TYPE_INTEGER . ' NOT NULL',
             // constrain
-            'PRIMARY KEY (id_product)',
-            'FOREIGN KEY (id_product) REFERENCES {{%product}} (id_product) ON DELETE CASCADE ON UPDATE CASCADE',
+            'PRIMARY KEY ([[product_id]])',
+            'FOREIGN KEY ([[product_id]]) REFERENCES {{%product}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
         ], $tableOptions);
 
         $this->createTable('{{%user_to_branch}}', [
-            'id_branch' => Schema::TYPE_INTEGER,
-            'id_user' => Schema::TYPE_INTEGER,
+            'branch_id' => Schema::TYPE_INTEGER,
+            'user_id' => Schema::TYPE_INTEGER,
             // history column
             'created_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
             'created_by' => Schema::TYPE_INTEGER . ' NOT NULL',
             'updated_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
             'updated_by' => Schema::TYPE_INTEGER . ' NOT NULL',
             // constrain
-            'PRIMARY KEY (id_branch , id_user )',
-            'FOREIGN KEY (id_branch) REFERENCES {{%branch}} (id_branch) ON DELETE CASCADE ON UPDATE CASCADE',
+            'PRIMARY KEY ([[branch_id]], [[user_id]])',
+            'FOREIGN KEY ([[branch_id]]) REFERENCES {{%branch}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
         ], $tableOptions);
 
         $this->createTable('{{%global_config}}', [
@@ -266,7 +265,7 @@ class m140622_165356_create_table_master extends \yii\db\Migration
             'updated_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
             'updated_by' => Schema::TYPE_INTEGER . ' NOT NULL',
             // constrain
-            'PRIMARY KEY ([[group]] , [[name]])',
+            'PRIMARY KEY ([[group]], [[name]])',
         ], $tableOptions);
     }
 

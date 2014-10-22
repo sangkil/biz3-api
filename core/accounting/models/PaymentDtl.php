@@ -5,11 +5,11 @@ namespace biz\core\accounting\models;
 use Yii;
 
 /**
- * This is the model class for table "payment_dtl".
+ * This is the model class for table "{{%payment_dtl}}".
  *
- * @property integer $id_payment
- * @property integer $id_invoice
- * @property double $payment_value
+ * @property integer $payment_id
+ * @property integer $invoice_id
+ * @property double $value
  *
  * @property Payment $payment
  * @property Invoice $invoice
@@ -21,7 +21,7 @@ class PaymentDtl extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'payment_dtl';
+        return '{{%payment_dtl}}';
     }
 
     /**
@@ -30,9 +30,9 @@ class PaymentDtl extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_payment', 'id_invoice', 'payment_value'], 'required'],
-            [['id_payment', 'id_invoice'], 'integer'],
-            [['payment_value'], 'number']
+            [['payment_id', 'invoice_id', 'value'], 'required'],
+            [['payment_id', 'invoice_id'], 'integer'],
+            [['value'], 'number']
         ];
     }
 
@@ -42,9 +42,9 @@ class PaymentDtl extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_payment' => 'Id Payment',
-            'id_invoice' => 'Id Invoice',
-            'payment_value' => 'Payment Value',
+            'payment_id' => 'Payment ID',
+            'invoice_id' => 'Invoice ID',
+            'value' => 'Value',
         ];
     }
 
@@ -53,7 +53,7 @@ class PaymentDtl extends \yii\db\ActiveRecord
      */
     public function getPayment()
     {
-        return $this->hasOne(Payment::className(), ['id_payment' => 'id_payment']);
+        return $this->hasOne(Payment::className(), ['id' => 'payment_id']);
     }
 
     /**
@@ -61,6 +61,6 @@ class PaymentDtl extends \yii\db\ActiveRecord
      */
     public function getInvoice()
     {
-        return $this->hasOne(Invoice::className(), ['id_invoice' => 'id_invoice']);
+        return $this->hasOne(Invoice::className(), ['id' => 'invoice_id']);
     }
 }

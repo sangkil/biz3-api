@@ -5,23 +5,23 @@ namespace biz\core\accounting\models;
 use Yii;
 
 /**
- * This is the model class for table "coa".
+ * This is the model class for table "{{%coa}}".
  *
- * @property integer $id_coa
- * @property integer $id_parent
- * @property string $cd_account
- * @property string $nm_account
- * @property integer $coa_type
+ * @property integer $id
+ * @property integer $parent_id
+ * @property string $code
+ * @property string $name
+ * @property integer $type
  * @property string $normal_balance
  * @property string $created_at
  * @property integer $created_by
  * @property string $updated_at
  * @property integer $updated_by
  *
- * @property Coa $idParent
+ * @property GlDetail[] $glDetails
+ * @property Coa $parent
  * @property Coa[] $coas
  * @property EntriSheetDtl[] $entriSheetDtls
- * @property GlDetail[] $glDetails
  */
 class Coa extends \yii\db\ActiveRecord
 {
@@ -39,11 +39,11 @@ class Coa extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_parent', 'coa_type', 'created_by', 'updated_by'], 'integer'],
-            [['cd_account', 'nm_account', 'coa_type', 'normal_balance', 'created_by', 'updated_by'], 'required'],
+            [['code', 'name', 'type', 'normal_balance'], 'required'],
+            [['parent_id', 'type', 'created_by', 'updated_by'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
-            [['cd_account'], 'string', 'max' => 16],
-            [['nm_account'], 'string', 'max' => 64],
+            [['code'], 'string', 'max' => 16],
+            [['name'], 'string', 'max' => 64],
             [['normal_balance'], 'string', 'max' => 1]
         ];
     }
@@ -54,11 +54,11 @@ class Coa extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_coa' => 'Id Coa',
-            'id_parent' => 'Id Parent',
-            'cd_account' => 'Cd Account',
-            'nm_account' => 'Nm Account',
-            'coa_type' => 'Coa Type',
+            'id' => 'ID',
+            'parent_id' => 'Parent ID',
+            'code' => 'Code',
+            'name' => 'Name',
+            'type' => 'Type',
             'normal_balance' => 'Normal Balance',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
@@ -70,9 +70,17 @@ class Coa extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdParent()
+    public function getGlDetails()
     {
-        return $this->hasOne(Coa::className(), ['id_coa' => 'id_parent']);
+        return $this->hasMany(GlDetail::className(), ['coa_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getParent()
+    {
+        return $this->hasOne(Coa::className(), ['id' => 'parent_id']);
     }
 
     /**
@@ -80,7 +88,7 @@ class Coa extends \yii\db\ActiveRecord
      */
     public function getCoas()
     {
-        return $this->hasMany(Coa::className(), ['id_parent' => 'id_coa']);
+        return $this->hasMany(Coa::className(), ['parent_id' => 'id']);
     }
 
     /**
@@ -88,14 +96,18 @@ class Coa extends \yii\db\ActiveRecord
      */
     public function getEntriSheetDtls()
     {
-        return $this->hasMany(EntriSheetDtl::className(), ['id_coa' => 'id_coa']);
+        return $this->hasMany(EntriSheetDtl::className(), ['coa_id' => 'id']);
     }
-
+    
     /**
-     * @return \yii\db\ActiveQuery
+     * @inheritdoc
      */
-    public function getGlDetails()
+    public function behaviors()
     {
-        return $this->hasMany(GlDetail::className(), ['id_coa' => 'id_coa']);
+        return[
+            'BizTimestampBehavior',
+            'BizBlameableBehavior',
+        ];
     }
+    
 }

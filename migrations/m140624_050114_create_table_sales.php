@@ -13,12 +13,12 @@ class m140624_050114_create_table_sales extends \yii\db\Migration
         }
 
         $this->createTable('{{%sales}}', [
-            'id_sales' => Schema::TYPE_PK,
-            'sales_num' => Schema::TYPE_STRING . '(16) NOT NULL',
-            'id_branch' => Schema::TYPE_INTEGER . ' NOT NULL',
-            'id_customer' => Schema::TYPE_INTEGER,
-            'sales_date' => Schema::TYPE_DATE . ' NOT NULL',
-            'sales_value' => Schema::TYPE_FLOAT . ' NOT NULL',
+            'id' => Schema::TYPE_PK,
+            'number' => Schema::TYPE_STRING . '(16) NOT NULL',
+            'branch_id' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'customer_id' => Schema::TYPE_INTEGER,
+            'date' => Schema::TYPE_DATE . ' NOT NULL',
+            'value' => Schema::TYPE_FLOAT . ' NOT NULL',
             'discount' => Schema::TYPE_FLOAT . ' NULL',
             'status' => Schema::TYPE_INTEGER . ' NOT NULL',
             // history column
@@ -30,18 +30,18 @@ class m140624_050114_create_table_sales extends \yii\db\Migration
             ], $tableOptions);
 
         $this->createTable('{{%sales_dtl}}', [
-            'id_sales' => Schema::TYPE_INTEGER . ' NOT NULL',
-            'id_product' => Schema::TYPE_INTEGER . ' NOT NULL',
-            'id_uom' => Schema::TYPE_INTEGER . ' NOT NULL',
-            'sales_qty' => Schema::TYPE_FLOAT . ' NOT NULL',
-            'sales_price' => Schema::TYPE_FLOAT . ' NOT NULL',
-            'sales_qty_release' => Schema::TYPE_FLOAT,
+            'sales_id' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'product_id' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'uom_id' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'qty' => Schema::TYPE_FLOAT . ' NOT NULL',
+            'price' => Schema::TYPE_FLOAT . ' NOT NULL',
+            'qty_release' => Schema::TYPE_FLOAT,
             'cogs' => Schema::TYPE_FLOAT . ' NOT NULL',
             'discount' => Schema::TYPE_FLOAT,
             'tax' => Schema::TYPE_FLOAT,
             // constrain
-            'PRIMARY KEY (id_sales , id_product )',
-            'FOREIGN KEY (id_sales) REFERENCES {{%sales}} (id_sales) ON DELETE CASCADE ON UPDATE CASCADE',
+            'PRIMARY KEY ([[sales_id]], [[product_id]])',
+            'FOREIGN KEY ([[sales_id]]) REFERENCES {{%sales}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
             ], $tableOptions);
     }
 

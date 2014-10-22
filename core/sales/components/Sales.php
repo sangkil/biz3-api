@@ -28,7 +28,7 @@ class Sales extends \biz\core\base\Api
 
     /**
      *
-     * @param  array                    $data
+     * @param  array $data
      * @param  \biz\core\sales\models\Sales $model
      * @return \biz\core\sales\models\Sales
      * @throws \Exception
@@ -61,8 +61,8 @@ class Sales extends \biz\core\base\Api
 
     /**
      *
-     * @param  string                   $id
-     * @param  array                    $data
+     * @param  string $id
+     * @param  array $data
      * @param  \biz\core\sales\models\Sales $model
      * @return \biz\core\sales\models\Sales
      * @throws \Exception
@@ -98,8 +98,8 @@ class Sales extends \biz\core\base\Api
 
     /**
      *
-     * @param  string                   $id
-     * @param  array                    $data
+     * @param  string $id
+     * @param  array $data
      * @param  \biz\core\sales\models\Sales $model
      * @return mixed
      * @throws \Exception
@@ -113,11 +113,11 @@ class Sales extends \biz\core\base\Api
         $model->load($data, '');
         $model->status = MSales::STATUS_RELEASE;
         $this->fire('_release', [$model]);
-        $salesDtls = ArrayHelper::index($model->salesDtls, 'id_product');
+        $salesDtls = ArrayHelper::index($model->salesDtls, 'product_id');
         if (!empty($data['details'])) {
             $this->fire('_release_head', [$model]);
             foreach ($data['details'] as $dataDetail) {
-                $index = $dataDetail['id_product'];
+                $index = $dataDetail['product_id'];
                 $detail = $salesDtls[$index];
                 $detail->scenario = MSales::SCENARIO_RELEASE;
                 $detail->load($dataDetail, '');
@@ -130,7 +130,7 @@ class Sales extends \biz\core\base\Api
         }
         $allReleased = true;
         foreach ($salesDtls as $detail) {
-            $allReleased = $allReleased && $detail->sales_qty == $detail->sales_qty_release;
+            $allReleased = $allReleased && $detail->sales_qty == $detail->sales_total_release;
         }
         if ($allReleased) {
             $model->status = MSales::STATUS_RELEASED;

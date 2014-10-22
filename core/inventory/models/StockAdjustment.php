@@ -5,13 +5,13 @@ namespace biz\core\inventory\models;
 use Yii;
 
 /**
- * This is the model class for table "stock_adjustment".
+ * This is the model class for table "{{%stock_adjustment}}".
  *
- * @property integer $id_adjustment
- * @property string $adjustment_num
- * @property integer $id_warehouse
- * @property string $adjustment_date
- * @property integer $id_reff
+ * @property integer $id
+ * @property string $number
+ * @property integer $warehouse_id
+ * @property string $date
+ * @property integer $reff_id
  * @property string $description
  * @property integer $status
  * @property string $created_at
@@ -40,10 +40,10 @@ class StockAdjustment extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['adjustment_num', 'id_warehouse', 'adjustment_date', 'status', 'created_by', 'updated_by'], 'required'],
-            [['id_warehouse', 'id_reff', 'status', 'created_by', 'updated_by'], 'integer'],
-            [['adjustment_date', 'created_at', 'updated_at'], 'safe'],
-            [['adjustment_num'], 'string', 'max' => 16],
+            [['number', 'warehouse_id', 'date', 'status'], 'required'],
+            [['warehouse_id', 'reff_id', 'status', 'created_by', 'updated_by'], 'integer'],
+            [['date', 'created_at', 'updated_at'], 'safe'],
+            [['number'], 'string', 'max' => 16],
             [['description'], 'string', 'max' => 255]
         ];
     }
@@ -54,11 +54,11 @@ class StockAdjustment extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_adjustment' => 'Id Adjustment',
-            'adjustment_num' => 'Adjustment Num',
-            'id_warehouse' => 'Id Warehouse',
-            'adjustment_date' => 'Adjustment Date',
-            'id_reff' => 'Id Reff',
+            'id' => 'ID',
+            'number' => 'Number',
+            'warehouse_id' => 'Warehouse ID',
+            'date' => 'Date',
+            'reff_id' => 'Reff ID',
             'description' => 'Description',
             'status' => 'Status',
             'created_at' => 'Created At',
@@ -73,6 +73,30 @@ class StockAdjustment extends \yii\db\ActiveRecord
      */
     public function getStockAdjustmentDtls()
     {
-        return $this->hasMany(StockAdjustmentDtl::className(), ['id_adjustment' => 'id_adjustment']);
+        return $this->hasMany(StockAdjustmentDtl::className(), ['adjustment_id' => 'id']);
     }
-}
+    
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return[
+            'BizTimestampBehavior',
+            'BizBlameableBehavior',
+            [
+                'class' => 'mdm\autonumber\Behavior',
+                'digit' => 6,
+                'attribute' => 'number',
+                'value' => 'IA' . date('y.?')
+            ],
+            [
+                'class' => 'mdm\converter\DateConverter',
+                'attributes' => [
+                    'Date' => 'date',
+                ]
+            ],
+            'BizStatusConverter',
+            'mdm\behaviors\ar\RelatedBehavior',
+        ];
+    }}

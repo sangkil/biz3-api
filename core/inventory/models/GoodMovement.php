@@ -5,14 +5,14 @@ namespace biz\core\inventory\models;
 use Yii;
 
 /**
- * This is the model class for table "good_movement".
+ * This is the model class for table "{{%good_movement}}".
  *
- * @property integer $id_movement
- * @property string $movement_num
- * @property string $movement_date
- * @property integer $movement_type
- * @property integer $type_reff
- * @property integer $id_reff
+ * @property integer $id
+ * @property string $number
+ * @property string $date
+ * @property integer $type
+ * @property integer $reff_type
+ * @property integer $reff_id
  * @property string $description
  * @property integer $status
  * @property string $created_at
@@ -45,10 +45,10 @@ class GoodMovement extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['movement_num', 'movement_date', 'movement_type', 'status'], 'required'],
-            [['movement_date', 'created_at', 'updated_at'], 'safe'],
-            [['movement_type', 'type_reff', 'id_reff', 'status', 'created_by', 'updated_by'], 'integer'],
-            [['movement_num'], 'string', 'max' => 16],
+            [['number', 'date', 'type', 'status'], 'required'],
+            [['date', 'created_at', 'updated_at'], 'safe'],
+            [['type', 'reff_type', 'reff_id', 'status', 'created_by', 'updated_by'], 'integer'],
+            [['number'], 'string', 'max' => 16],
             [['description'], 'string', 'max' => 255]
         ];
     }
@@ -59,12 +59,12 @@ class GoodMovement extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_movement' => 'Id Movement',
-            'movement_num' => 'Movement Num',
-            'movement_date' => 'Movement Date',
-            'movement_type' => 'Movement Type',
-            'type_reff' => 'Type Reff',
-            'id_reff' => 'Id Reff',
+            'id' => 'ID',
+            'number' => 'Number',
+            'date' => 'Date',
+            'type' => 'Type',
+            'reff_type' => 'Reff Type',
+            'reff_id' => 'Reff ID',
             'description' => 'Description',
             'status' => 'Status',
             'created_at' => 'Created At',
@@ -79,6 +79,30 @@ class GoodMovement extends \yii\db\ActiveRecord
      */
     public function getGoodMovementDtls()
     {
-        return $this->hasMany(GoodMovementDtl::className(), ['id_movement' => 'id_movement']);
+        return $this->hasMany(GoodMovementDtl::className(), ['movement_id' => 'id']);
     }
-}
+    
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return[
+            'BizTimestampBehavior',
+            'BizBlameableBehavior',
+            [
+                'class' => 'mdm\autonumber\Behavior',
+                'digit' => 6,
+                'attribute' => 'number',
+                'value' => 'IM' . date('ymd.?')
+            ],
+            [
+                'class' => 'mdm\converter\DateConverter',
+                'attributes' => [
+                    'Date' => 'date',
+                ]
+            ],
+            'BizStatusConverter',
+            'mdm\behaviors\ar\RelatedBehavior',
+        ];
+    }}

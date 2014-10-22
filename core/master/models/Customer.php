@@ -5,11 +5,11 @@ namespace biz\core\master\models;
 use Yii;
 
 /**
- * This is the model class for table "customer".
+ * This is the model class for table "{{%customer}}".
  *
- * @property integer $id_customer
- * @property string $cd_customer
- * @property string $nm_customer
+ * @property integer $id
+ * @property string $code
+ * @property string $name
  * @property string $contact_name
  * @property string $contact_number
  * @property integer $status
@@ -27,7 +27,7 @@ class Customer extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'customer';
+        return '{{%customer}}';
     }
 
     /**
@@ -36,11 +36,11 @@ class Customer extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['cd_customer', 'nm_customer', 'status', 'created_by', 'updated_by'], 'required'],
+            [['code', 'name', 'status'], 'required'],
             [['status', 'created_by', 'updated_by'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
-            [['cd_customer'], 'string', 'max' => 4],
-            [['nm_customer', 'contact_name', 'contact_number'], 'string', 'max' => 64]
+            [['code'], 'string', 'max' => 4],
+            [['name', 'contact_name', 'contact_number'], 'string', 'max' => 64]
         ];
     }
 
@@ -50,9 +50,9 @@ class Customer extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_customer' => 'Id Customer',
-            'cd_customer' => 'Cd Customer',
-            'nm_customer' => 'Nm Customer',
+            'id' => 'ID',
+            'code' => 'Code',
+            'name' => 'Name',
             'contact_name' => 'Contact Name',
             'contact_number' => 'Contact Number',
             'status' => 'Status',
@@ -68,6 +68,17 @@ class Customer extends \yii\db\ActiveRecord
      */
     public function getCustomerDetail()
     {
-        return $this->hasOne(CustomerDetail::className(), ['id_customer' => 'id_customer']);
+        return $this->hasOne(CustomerDetail::className(), ['id' => 'id']);
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return[
+            'BizTimestampBehavior',
+            'BizBlameableBehavior'
+        ];
     }
 }

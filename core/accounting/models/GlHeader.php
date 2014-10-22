@@ -5,15 +5,15 @@ namespace biz\core\accounting\models;
 use Yii;
 
 /**
- * This is the model class for table "gl_header".
+ * This is the model class for table "{{%gl_header}}".
  *
- * @property integer $id_gl
- * @property string $gl_num
- * @property string $gl_date
- * @property integer $id_periode
- * @property integer $id_branch
- * @property integer $type_reff
- * @property integer $id_reff
+ * @property integer $id
+ * @property string $number
+ * @property string $date
+ * @property integer $periode_id
+ * @property integer $branch_id
+ * @property integer $reff_type
+ * @property integer $reff_id
  * @property string $description
  * @property integer $status
  * @property string $created_at
@@ -40,10 +40,10 @@ class GlHeader extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['gl_num', 'gl_date', 'id_periode', 'id_branch', 'type_reff', 'description', 'status'], 'required'],
-            [['gl_date', 'created_at', 'updated_at'], 'safe'],
-            [['id_periode', 'id_branch', 'type_reff', 'id_reff', 'status', 'created_by', 'updated_by'], 'integer'],
-            [['gl_num'], 'string', 'max' => 16],
+            [['number', 'date', 'periode_id', 'branch_id', 'reff_type', 'description', 'status'], 'required'],
+            [['date', 'created_at', 'updated_at'], 'safe'],
+            [['periode_id', 'branch_id', 'reff_type', 'reff_id', 'status', 'created_by', 'updated_by'], 'integer'],
+            [['number'], 'string', 'max' => 16],
             [['description'], 'string', 'max' => 255]
         ];
     }
@@ -54,13 +54,13 @@ class GlHeader extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_gl' => 'Id Gl',
-            'gl_num' => 'Gl Num',
-            'gl_date' => 'Gl Date',
-            'id_periode' => 'Id Periode',
-            'id_branch' => 'Id Branch',
-            'type_reff' => 'Type Reff',
-            'id_reff' => 'Id Reff',
+            'id' => 'ID',
+            'number' => 'Number',
+            'date' => 'Date',
+            'periode_id' => 'Periode ID',
+            'branch_id' => 'Branch ID',
+            'reff_type' => 'Reff Type',
+            'reff_id' => 'Reff ID',
             'description' => 'Description',
             'status' => 'Status',
             'created_at' => 'Created At',
@@ -75,7 +75,7 @@ class GlHeader extends \yii\db\ActiveRecord
      */
     public function getGlDetails()
     {
-        return $this->hasMany(GlDetail::className(), ['id_gl' => 'id_gl']);
+        return $this->hasMany(GlDetail::className(), ['header_id' => 'id']);
     }
 
     /**
@@ -83,6 +83,31 @@ class GlHeader extends \yii\db\ActiveRecord
      */
     public function getPeriode()
     {
-        return $this->hasOne(AccPeriode::className(), ['id_periode' => 'id_periode']);
+        return $this->hasOne(AccPeriode::className(), ['id' => 'periode_id']);
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return[
+            'BizTimestampBehavior',
+            'BizBlameableBehavior',
+            [
+                'class' => 'mdm\autonumber\Behavior',
+                'digit' => 6,
+                'attribute' => 'number',
+                'value' => 'GL' . date('ymd.?')
+            ],
+            [
+                'class' => 'mdm\converter\DateConverter',
+                'attributes' => [
+                    'Date' => 'date',
+                ]
+            ],
+            'BizStatusConverter',
+            'mdm\behaviors\ar\RelatedBehavior',
+        ];
     }
 }
