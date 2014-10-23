@@ -24,6 +24,8 @@ use Yii;
  */
 class Sales extends \yii\db\ActiveRecord
 {
+    const SCENARIO_RELAESE = 'release';
+
     /**
      * @inheritdoc
      */
@@ -38,7 +40,7 @@ class Sales extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['number', 'branch_id', 'date', 'value', 'status', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'required'],
+            [['number', 'branch_id', 'date', 'value', 'status'], 'required'],
             [['branch_id', 'customer_id', 'status', 'created_by', 'updated_by'], 'integer'],
             [['date', 'created_at', 'updated_at'], 'safe'],
             [['value', 'discount'], 'number'],
