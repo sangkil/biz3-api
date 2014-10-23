@@ -16,9 +16,9 @@
 	],
 	"require": {
 		"yiisoft/yii2": "*",
-		"mdmsoft/yii2-autonumber": "dev-master",
-		"mdmsoft/yii2-format-converter": "dev-master",
-		"mdmsoft/yii2-ar-behaviors": "dev-master"
+		"mdmsoft/yii2-autonumber": "*",
+		"mdmsoft/yii2-format-converter": "*",
+		"mdmsoft/yii2-ar-behaviors": "*"
 	},
 	"autoload": {
 		"psr-4": {
