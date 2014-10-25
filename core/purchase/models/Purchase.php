@@ -47,7 +47,7 @@ class Purchase extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['number', 'supplier_id', 'branch_id', 'date', 'value', 'status'], 'required'],
+            [['supplier_id', 'branch_id', 'date', 'value', 'status'], 'required'],
             [['supplier_id', 'branch_id', 'status', 'created_by', 'updated_by'], 'integer'],
             [['date', 'created_at', 'updated_at'], 'safe'],
             [['value', 'discount'], 'number'],
