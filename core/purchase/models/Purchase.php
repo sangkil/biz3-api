@@ -47,8 +47,9 @@ class Purchase extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['supplier_id', 'branch_id', 'date', 'value', 'status'], 'required'],
+            [['supplier_id', 'branch_id', 'date', 'value'], 'required'],
             [['supplier_id', 'branch_id', 'status', 'created_by', 'updated_by'], 'integer'],
+            [['status'], 'default', 'value' => self::STATUS_DRAFT],
             [['date', 'created_at', 'updated_at'], 'safe'],
             [['value', 'discount'], 'number'],
             [['number'], 'string', 'max' => 16]
@@ -83,7 +84,7 @@ class Purchase extends \yii\db\ActiveRecord
     {
         return $this->hasMany(PurchaseDtl::className(), ['purchase_id' => 'id']);
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -97,12 +98,6 @@ class Purchase extends \yii\db\ActiveRecord
                 'digit' => 6,
                 'attribute' => 'number',
                 'value' => 'PU' . date('y.?')
-            ],
-            [
-                'class' => 'mdm\converter\DateConverter',
-                'attributes' => [
-                    'Date' => 'date',
-                ]
             ],
             'BizStatusConverter',
             'mdm\behaviors\ar\RelatedBehavior',

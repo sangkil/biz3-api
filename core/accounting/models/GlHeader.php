@@ -100,12 +100,6 @@ class GlHeader extends \yii\db\ActiveRecord
                 'attribute' => 'number',
                 'value' => 'GL' . date('ymd.?')
             ],
-            [
-                'class' => 'mdm\converter\DateConverter',
-                'attributes' => [
-                    'Date' => 'date',
-                ]
-            ],
             'BizStatusConverter',
             'mdm\behaviors\ar\RelatedBehavior',
         ];

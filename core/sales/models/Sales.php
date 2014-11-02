@@ -25,6 +25,8 @@ use Yii;
 class Sales extends \yii\db\ActiveRecord
 {
     const SCENARIO_RELAESE = 'release';
+    const STATUS_DRAFT = 1;
+    
 
     /**
      * @inheritdoc
@@ -90,12 +92,6 @@ class Sales extends \yii\db\ActiveRecord
                 'digit' => 6,
                 'attribute' => 'number',
                 'value' => 'SA' . date('y.?')
-            ],
-            [
-                'class' => 'mdm\converter\DateConverter',
-                'attributes' => [
-                    'Date' => 'date',
-                ]
             ],
             'BizStatusConverter',
             'mdm\behaviors\ar\RelatedBehavior',

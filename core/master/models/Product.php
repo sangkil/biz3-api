@@ -33,6 +33,9 @@ use Yii;
  */
 class Product extends \yii\db\ActiveRecord
 {
+    const STATUS_ACTIVE = 1;
+    const STATUS_CLOSE = 2;
+
     /**
      * @inheritdoc
      */
@@ -47,8 +50,9 @@ class Product extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['group_id', 'category_id', 'code', 'name', 'status'], 'required'],
+            [['group_id', 'category_id', 'code', 'name'], 'required'],
             [['group_id', 'category_id', 'status', 'created_by', 'updated_by'], 'integer'],
+            [['status'], 'default', 'value' => self::STATUS_ACTIVE],
             [['created_at', 'updated_at'], 'safe'],
             [['code'], 'string', 'max' => 13],
             [['name'], 'string', 'max' => 64]
@@ -169,7 +173,7 @@ class Product extends \yii\db\ActiveRecord
     {
         return $this->hasMany(ProductChild::className(), ['product_id' => 'id']);
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -177,7 +181,8 @@ class Product extends \yii\db\ActiveRecord
     {
         return[
             'BizTimestampBehavior',
-            'BizBlameableBehavior'
+            'BizBlameableBehavior',
+            'BizStatusConverter',
         ];
     }
 }

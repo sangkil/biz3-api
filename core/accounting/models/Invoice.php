@@ -107,13 +107,6 @@ class Invoice extends \yii\db\ActiveRecord
                 'attribute' => 'number',
                 'value' => 'AI' . date('y.?')
             ],
-            [
-                'class' => 'mdm\converter\DateConverter',
-                'attributes' => [
-                    'Date' => 'date',
-                    'DueDate' => 'due_date',
-                ]
-            ],
             'BizStatusConverter',
             'mdm\behaviors\ar\RelatedBehavior',
         ];

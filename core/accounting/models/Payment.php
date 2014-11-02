@@ -89,12 +89,6 @@ class Payment extends \yii\db\ActiveRecord
                 'attribute' => 'number',
                 'value' => 'AP' . date('y.?')
             ],
-            [
-                'class' => 'mdm\converter\DateConverter',
-                'attributes' => [
-                    'Date' => 'date',
-                ]
-            ],
             'BizStatusConverter',
             'mdm\behaviors\ar\RelatedBehavior',
         ];

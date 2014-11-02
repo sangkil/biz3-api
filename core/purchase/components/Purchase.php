@@ -45,10 +45,9 @@ class Purchase extends \biz\core\base\Api
         if (!empty($data['details'])) {
             $this->fire('_create', [$model]);
             $success = $model->save();
-            $success = $model->saveRelated('purchaseDtls', $data['details'], $success);
+            $success = $model->saveRelated('purchaseDtls', $data['details'], $success, false);
             if ($success) {
                 $this->fire('_created', [$model]);
-                $transaction->commit();
             } else {
                 if ($model->hasRelatedErrors('purchaseDtls')) {
                     $model->addError('details', 'Details validation error');
@@ -83,7 +82,7 @@ class Purchase extends \biz\core\base\Api
             $this->fire('_update', [$model]);
             $success = $model->save();
             if (!empty($data['details'])) {
-                $success = $model->saveRelated('purchaseDtls', $data['details'], $success);
+                $success = $model->saveRelated('purchaseDtls', $data['details'], $success, false);
             }
             if ($success) {
                 $this->fire('_updated', [$model]);

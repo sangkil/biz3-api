@@ -90,12 +90,6 @@ class StockAdjustment extends \yii\db\ActiveRecord
                 'attribute' => 'number',
                 'value' => 'IA' . date('y.?')
             ],
-            [
-                'class' => 'mdm\converter\DateConverter',
-                'attributes' => [
-                    'Date' => 'date',
-                ]
-            ],
             'BizStatusConverter',
             'mdm\behaviors\ar\RelatedBehavior',
         ];

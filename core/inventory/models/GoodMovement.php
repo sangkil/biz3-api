@@ -96,12 +96,6 @@ class GoodMovement extends \yii\db\ActiveRecord
                 'attribute' => 'number',
                 'value' => 'IM' . date('ymd.?')
             ],
-            [
-                'class' => 'mdm\converter\DateConverter',
-                'attributes' => [
-                    'Date' => 'date',
-                ]
-            ],
             'BizStatusConverter',
             'mdm\behaviors\ar\RelatedBehavior',
         ];
