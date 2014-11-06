@@ -253,25 +253,10 @@ class m140622_165356_create_table_master extends \yii\db\Migration
             'PRIMARY KEY ([[branch_id]], [[user_id]])',
             'FOREIGN KEY ([[branch_id]]) REFERENCES {{%branch}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
             ], $tableOptions);
-
-        $this->createTable('{{%global_config}}', [
-            'group' => Schema::TYPE_STRING . '(32) NOT NULL',
-            'name' => Schema::TYPE_STRING . '(32) NOT NULL',
-            'value' => Schema::TYPE_TEXT,
-            'description' => Schema::TYPE_STRING,
-            // history column
-            'created_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
-            'created_by' => Schema::TYPE_INTEGER,
-            'updated_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
-            'updated_by' => Schema::TYPE_INTEGER,
-            // constrain
-            'PRIMARY KEY ([[group]], [[name]])',
-            ], $tableOptions);
     }
 
     public function safeDown()
     {
-        $this->dropTable('{{%global_config}}');
         $this->dropTable('{{%user_to_branch}}');
         $this->dropTable('{{%cogs}}');
         $this->dropTable('{{%price}}');
