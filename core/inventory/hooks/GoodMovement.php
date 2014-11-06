@@ -52,7 +52,7 @@ class GoodMovement extends \yii\base\Behavior
         /* @var $model Purchase */
         $model = $event->params[0];
         $data = [
-            'movement_type' => MGoodMovement::TYPE_PURCHASE,
+            'reff_type' => MGoodMovement::TYPE_PURCHASE,
             'reff_id' => $model->id_purchase
         ];
         $data['details'] = [];

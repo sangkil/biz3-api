@@ -23,9 +23,9 @@ class m140624_050114_create_table_sales extends \yii\db\Migration
             'status' => Schema::TYPE_INTEGER . ' NOT NULL',
             // history column
             'created_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
-            'created_by' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'created_by' => Schema::TYPE_INTEGER,
             'updated_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
-            'updated_by' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'updated_by' => Schema::TYPE_INTEGER,
             // constrain
             ], $tableOptions);
 

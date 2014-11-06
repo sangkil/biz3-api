@@ -14,6 +14,7 @@ use Yii;
  * @property integer $reff_type
  * @property integer $reff_id
  * @property string $description
+ * @property integer $warehouse_id
  * @property integer $status
  * @property string $created_at
  * @property integer $created_by
@@ -24,12 +25,17 @@ use Yii;
  */
 class GoodMovement extends \yii\db\ActiveRecord
 {
+    // source document
     const TYPE_PURCHASE = 100;
     const TYPE_SALES = 200;
-    const TYPE_TRANSFER = 300;
-
+    const TYPE_TRANSFER_RECEIVE = 300;
+    const TYPE_TRANSFER_ISSUE = 400;
+    // status GoodMovement
     const STATUS_OPEN = 1;
     const STATUS_CLOSE = 2;
+    // type movement
+    const TYPE_RECEIVE = 1;
+    const TYPE_ISSUE = 2;
 
     /**
      * @inheritdoc
@@ -45,9 +51,10 @@ class GoodMovement extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['number', 'date', 'type', 'status'], 'required'],
+            [['status'], 'default', 'value' => self::STATUS_OPEN],
+            [['date', 'warehouse_id', 'type'], 'required'],
             [['date', 'created_at', 'updated_at'], 'safe'],
-            [['type', 'reff_type', 'reff_id', 'status', 'created_by', 'updated_by'], 'integer'],
+            [['reff_type', 'reff_id', 'warehouse_id', 'status', 'created_by', 'updated_by'], 'integer'],
             [['number'], 'string', 'max' => 16],
             [['description'], 'string', 'max' => 255]
         ];
@@ -63,6 +70,7 @@ class GoodMovement extends \yii\db\ActiveRecord
             'number' => 'Number',
             'date' => 'Date',
             'type' => 'Type',
+            'warehouse_id' => 'Warehouse ID',
             'reff_type' => 'Reff Type',
             'reff_id' => 'Reff ID',
             'description' => 'Description',
@@ -81,7 +89,7 @@ class GoodMovement extends \yii\db\ActiveRecord
     {
         return $this->hasMany(GoodMovementDtl::className(), ['movement_id' => 'id']);
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -99,4 +107,5 @@ class GoodMovement extends \yii\db\ActiveRecord
             'BizStatusConverter',
             'mdm\behaviors\ar\RelatedBehavior',
         ];
-    }}
+    }
+}

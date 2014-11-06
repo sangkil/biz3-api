@@ -19,7 +19,7 @@ class ProductStock extends \yii\base\Behavior
     public function events()
     {
         return [
-            'e_good-movement_created' => 'goodMovement',
+            'e_good-movement_applied' => 'goodMovement',
             'e_purchase_receive_body' => 'purchaseReceiveBody',
             'e_sales_release_body' => 'salesReleaseBody',
             'e_transfer_release_body' => 'transferReleaseBody',

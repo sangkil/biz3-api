@@ -10,6 +10,7 @@ use Yii;
  * @property string $group
  * @property string $name
  * @property string $value
+ * @property mixed $serializeValue
  * @property string $description
  * @property string $created_at
  * @property integer $created_by
@@ -18,6 +19,7 @@ use Yii;
  */
 class GlobalConfig extends \yii\db\ActiveRecord
 {
+
     /**
      * @inheritdoc
      */
@@ -57,15 +59,21 @@ class GlobalConfig extends \yii\db\ActiveRecord
             'updated_by' => 'Updated By',
         ];
     }
-    
+
     /**
      * @inheritdoc
      */
     public function behaviors()
     {
         return[
+            [
+                'class' => 'mdm\converter\SerializeConverter',
+                'attributes' => [
+                    'serializeValue' => 'value'
+                ]
+            ],
             'BizTimestampBehavior',
-            'BizBlameableBehavior'
+            'BizBlameableBehavior',
         ];
     }
 }

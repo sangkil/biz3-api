@@ -6,6 +6,7 @@ use Yii;
 use yii\db\ActiveRecord;
 use yii\base\InvalidConfigException;
 use yii\helpers\Inflector;
+use yii\web\ServerErrorHttpException;
 
 /**
  * Api is base class for API.
@@ -54,7 +55,7 @@ class Api extends \yii\base\Object
     protected static function processOutput($success, $model)
     {
         if (!$success && !$model->hasErrors()) {
-            throw new \yii\web\ServerErrorHttpException('Error with unknown reason.');
+            throw new ServerErrorHttpException('Error with unknown reason.');
         }
 
         return $model;

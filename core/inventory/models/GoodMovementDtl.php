@@ -8,7 +8,6 @@ use Yii;
  * This is the model class for table "{{%good_movement_dtl}}".
  *
  * @property integer $movement_id
- * @property integer $warehouse_id
  * @property integer $product_id
  * @property double $qty
  * @property double $item_value
@@ -32,8 +31,8 @@ class GoodMovementDtl extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['movement_id', 'warehouse_id', 'product_id', 'qty'], 'required'],
-            [['movement_id', 'warehouse_id', 'product_id'], 'integer'],
+            [['movement_id', 'product_id', 'qty'], 'required'],
+            [['movement_id', 'product_id'], 'integer'],
             [['qty', 'item_value', 'trans_value'], 'number']
         ];
     }
@@ -45,7 +44,6 @@ class GoodMovementDtl extends \yii\db\ActiveRecord
     {
         return [
             'movement_id' => 'Movement ID',
-            'warehouse_id' => 'Warehouse ID',
             'product_id' => 'Product ID',
             'qty' => 'Qty',
             'item_value' => 'Item Value',

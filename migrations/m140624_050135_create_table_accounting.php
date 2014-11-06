@@ -21,9 +21,9 @@ class m140624_050135_create_table_accounting extends \yii\db\Migration
             'normal_balance' => Schema::TYPE_STRING . '(1) NOT NULL',
             // history column
             'created_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
-            'created_by' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'created_by' => Schema::TYPE_INTEGER,
             'updated_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
-            'updated_by' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'updated_by' => Schema::TYPE_INTEGER,
             // constrain
             'FOREIGN KEY ([[parent_id]]) REFERENCES {{%coa}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
         ], $tableOptions);
@@ -36,9 +36,9 @@ class m140624_050135_create_table_accounting extends \yii\db\Migration
             'status' => Schema::TYPE_INTEGER . ' NOT NULL',
             // history column
             'created_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
-            'created_by' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'created_by' => Schema::TYPE_INTEGER,
             'updated_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
-            'updated_by' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'updated_by' => Schema::TYPE_INTEGER,
         ], $tableOptions);
 //
         $this->createTable('{{%entri_sheet}}', [
@@ -46,9 +46,9 @@ class m140624_050135_create_table_accounting extends \yii\db\Migration
             'name' => Schema::TYPE_STRING . '(64)',
             // history column
             'created_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
-            'created_by' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'created_by' => Schema::TYPE_INTEGER,
             'updated_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
-            'updated_by' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'updated_by' => Schema::TYPE_INTEGER,
             // constrain
             'PRIMARY KEY ([[id]])',
         ], $tableOptions);
@@ -76,9 +76,9 @@ class m140624_050135_create_table_accounting extends \yii\db\Migration
             'status' => Schema::TYPE_INTEGER . ' NOT NULL',
             // history column
             'created_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
-            'created_by' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'created_by' => Schema::TYPE_INTEGER,
             'updated_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
-            'updated_by' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'updated_by' => Schema::TYPE_INTEGER,
             // constrain
             'FOREIGN KEY ([[periode_id]]) REFERENCES {{%acc_periode}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
         ], $tableOptions);
@@ -104,9 +104,9 @@ class m140624_050135_create_table_accounting extends \yii\db\Migration
             'status' => Schema::TYPE_INTEGER . ' NOT NULL',
             // history column
             'created_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
-            'created_by' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'created_by' => Schema::TYPE_INTEGER,
             'updated_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
-            'updated_by' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'updated_by' => Schema::TYPE_INTEGER,
         ], $tableOptions);
 
         $this->createTable('{{%invoice_dtl}}', [
@@ -127,9 +127,9 @@ class m140624_050135_create_table_accounting extends \yii\db\Migration
             'type' => Schema::TYPE_INTEGER . ' NOT NULL',
             // history column
             'created_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
-            'created_by' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'created_by' => Schema::TYPE_INTEGER,
             'updated_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
-            'updated_by' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'updated_by' => Schema::TYPE_INTEGER,
         ], $tableOptions);
 
         $this->createTable('{{%payment_dtl}}', [

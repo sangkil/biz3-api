@@ -21,9 +21,9 @@ class m140624_050056_create_table_inventory extends \yii\db\Migration
             'status' => Schema::TYPE_INTEGER . ' NOT NULL',
             // history column
             'created_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
-            'created_by' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'created_by' => Schema::TYPE_INTEGER,
             'updated_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
-            'updated_by' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'updated_by' => Schema::TYPE_INTEGER,
             ], $tableOptions);
 
         $this->createTable('{{%transfer_dtl}}', [
@@ -48,9 +48,9 @@ class m140624_050056_create_table_inventory extends \yii\db\Migration
             'operator' => Schema::TYPE_STRING,
             // history column
             'created_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
-            'created_by' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'created_by' => Schema::TYPE_INTEGER,
             'updated_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
-            'updated_by' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'updated_by' => Schema::TYPE_INTEGER,
             ], $tableOptions);
 
         $this->createTable('{{%stock_opname_dtl}}', [
@@ -73,9 +73,9 @@ class m140624_050056_create_table_inventory extends \yii\db\Migration
             'status' => Schema::TYPE_INTEGER . ' NOT NULL',
             // history column
             'created_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
-            'created_by' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'created_by' => Schema::TYPE_INTEGER,
             'updated_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
-            'updated_by' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'updated_by' => Schema::TYPE_INTEGER,
             ], $tableOptions);
 
         $this->createTable('{{%stock_adjustment_dtl}}', [
@@ -92,6 +92,7 @@ class m140624_050056_create_table_inventory extends \yii\db\Migration
         $this->createTable('{{%good_movement}}', [
             'id' => Schema::TYPE_PK,
             'number' => Schema::TYPE_STRING . '(16) NOT NULL',
+            'warehouse_id' => Schema::TYPE_INTEGER . ' NOT NULL',
             'date' => Schema::TYPE_DATE . ' NOT NULL',
             'type' => Schema::TYPE_INTEGER . ' NOT NULL',
             'reff_type' => Schema::TYPE_INTEGER,
@@ -100,20 +101,19 @@ class m140624_050056_create_table_inventory extends \yii\db\Migration
             'status' => Schema::TYPE_INTEGER . ' NOT NULL',
             // history column
             'created_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
-            'created_by' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'created_by' => Schema::TYPE_INTEGER,
             'updated_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
-            'updated_by' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'updated_by' => Schema::TYPE_INTEGER,
             ], $tableOptions);
 
         $this->createTable('{{%good_movement_dtl}}', [
             'movement_id' => Schema::TYPE_INTEGER . ' NOT NULL',
-            'warehouse_id' => Schema::TYPE_INTEGER . ' NOT NULL',
             'product_id' => Schema::TYPE_INTEGER . ' NOT NULL',
             'qty' => Schema::TYPE_FLOAT . ' NOT NULL',
             'item_value' => Schema::TYPE_FLOAT,
             'trans_value' => Schema::TYPE_FLOAT,
             // constrain
-            'PRIMARY KEY ([[movement_id]], [[warehouse_id]], [[product_id]])',
+            'PRIMARY KEY ([[movement_id]], [[product_id]])',
             'FOREIGN KEY ([[movement_id]]) REFERENCES {{%good_movement}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
             ], $tableOptions);
 
