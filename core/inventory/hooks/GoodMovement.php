@@ -38,7 +38,8 @@ class GoodMovement extends \yii\base\Behavior
     protected function createMovementDoc($data)
     {
         /* @var $model MGoodMovement */
-        $model = ApiGoodMovement::create($data);
+        $api = new ApiGoodMovement();
+        $model = $api->create($data);
         if ($model->hasErrors) {
             throw new UserException(implode("\n", $model->firstErrors));
         }
