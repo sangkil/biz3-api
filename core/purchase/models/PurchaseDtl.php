@@ -64,7 +64,7 @@ class PurchaseDtl extends \yii\db\ActiveRecord
 
     public function checkQty($attribute)
     {
-        if ($this->total_receive + $this->receive > $this->qty) {
+        if ($this->receive > $this->qty - $this->total_receive) {
             $this->addError($attribute, 'Total qty receive large than purch qty');
         }
     }

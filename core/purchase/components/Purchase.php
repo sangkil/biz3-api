@@ -111,29 +111,23 @@ class Purchase extends \biz\core\base\Api
         $model->load($data, '');
         $model->status = MPurchase::STATUS_RECEIVE;
         $model->scenario = MPurchase::SCENARIO_RECEIVE;
-        
+
         $this->fire('_receive', [$model]);
         $purchaseDtls = ArrayHelper::index($model->purchaseDtls, 'product_id');
         if (!empty($data['details'])) {
-            $this->fire('_receive_head', [$model]);
             foreach ($data['details'] as $dataDetail) {
                 $index = $dataDetail['product_id'];
                 $detail = $purchaseDtls[$index];
                 $detail->scenario = MPurchase::SCENARIO_RECEIVE;
                 $detail->load($dataDetail, '');
-                $success = $success && $detail->save();
-                $this->fire('_receive_body', [$model, $detail]);
+                $success = $success && $detail->validate();
                 $purchaseDtls[$index] = $detail;
             }
             $model->populateRelation('purchaseDtls', array_values($purchaseDtls));
-            $this->fire('_receive_end', [$model]);
-        }
-        $allReceived = true;
-        foreach ($purchaseDtls as $detail) {
-            $allReceived = $allReceived && $detail->qty == $detail->total_receive;
-        }
-        if ($allReceived) {
-            $model->status = MPurchase::STATUS_RECEIVED;
+        } else {
+            $model->validate();
+            $model->addError('details', 'Details cannot be blank');
+            $success = false;
         }
         if ($success && $model->save()) {
             $this->fire('_received', [$model]);

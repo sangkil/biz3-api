@@ -18,19 +18,17 @@ use yii\web\ServerErrorHttpException;
 class Api extends \yii\base\Object
 {
     /**
-     *
-     * @var string 
+     * @var string Model class name
      */
     public $modelClass;
 
     /**
-     *
-     * @var string 
+     * @var string prefix event name
      */
     public $prefixEventName;
 
     /**
-     * 
+     * @inheritdoc
      */
     public function init()
     {
@@ -45,7 +43,7 @@ class Api extends \yii\base\Object
     }
 
     /**
-     *
+     * Process output. Throw error when not success with unknown reason.
      * @param boolean      $success
      * @param ActiveRecord $model
      *
@@ -62,8 +60,8 @@ class Api extends \yii\base\Object
     }
 
     /**
-     *
-     * @param array        $data
+     * Create document
+     * @param array $data
      * @param ActiveRecord $model
      *
      * @return ActiveRecord
@@ -84,10 +82,10 @@ class Api extends \yii\base\Object
     }
 
     /**
-     *
-     * @param  string       $id
-     * @param  array        $data
-     * @param  ActiveRecord $model
+     * Update document
+     * @param string $id
+     * @param array $data
+     * @param ActiveRecord $model
      * @return ActiveRecord
      */
     public function update($id, $data, $model = null)
@@ -106,7 +104,7 @@ class Api extends \yii\base\Object
     }
 
     /**
-     *
+     * Delete document
      * @param  string       $id
      * @param  ActiveRecord $model
      * @return boolean
@@ -137,12 +135,12 @@ class Api extends \yii\base\Object
     /**
      * Returns the data model based on the primary key given.
      * If the data model is not found, a 404 HTTP exception will be raised.
-     * @param  string            $id             the ID of the model to be loaded. If the model has a composite primary key,
-     *                                           the ID must be a string of the primary key values separated by commas.
-     *                                           The order of the primary key values should follow that returned by the `primaryKey()` method
-     *                                           of the model.
-     * @param  boolean           $throwException
-     * @return ActiveRecord      the model found
+     * @param string $id the ID of the model to be loaded. If the model has a composite primary key,
+     * the ID must be a string of the primary key values separated by commas.
+     * The order of the primary key values should follow that returned by the `primaryKey()` method
+     * of the model.
+     * @param  boolean  $throwException
+     * @return ActiveRecord  the model found
      * @throws NotFoundException if the model cannot be found
      */
     public function findModel($id, $throwException = true)

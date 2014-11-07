@@ -26,12 +26,6 @@ class GoodMovement extends \yii\base\Behavior
     public function events()
     {
         return [
-//            'e_purchase_receive_end' => 'purchaseReceive',
-//            'e_sales_release_end' => 'salesRelease',
-//            'e_transfer_release_end' => 'transferRelease',
-//            'e_transfer_receive_end' => 'transferReceive',
-//            'e_transfer_completed' => 'transferComplete',
-//            'e_stock-adjustment_applied' => 'adjustmentApplied',
             'e_good-movement_applied' => 'goodMovementApplied',
         ];
     }
