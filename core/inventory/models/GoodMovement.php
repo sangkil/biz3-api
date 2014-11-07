@@ -20,7 +20,9 @@ use Yii;
  * @property integer $created_by
  * @property string $updated_at
  * @property integer $updated_by
- *
+ * 
+ * @property \yii\db\ActiveRecord $reffDoc
+ * @property \yii\db\ActiveRecord[] $reffDocDtls
  * @property GoodMovementDtl[] $goodMovementDtls
  */
 class GoodMovement extends \yii\db\ActiveRecord
@@ -36,6 +38,11 @@ class GoodMovement extends \yii\db\ActiveRecord
     // type movement
     const TYPE_RECEIVE = 1;
     const TYPE_ISSUE = 2;
+
+    /**
+     * @var array 
+     */
+    public static $reffTypes;
 
     /**
      * @inheritdoc
@@ -91,6 +98,59 @@ class GoodMovement extends \yii\db\ActiveRecord
     }
 
     /**
+     * Get reference configuration
+     * @param type $reff_type
+     * @return null
+     */
+    public static function reffConfig($reff_type)
+    {
+        if (isset(static::$reffTypes[$reff_type])) {
+            return static::$reffTypes[$this->reff_type];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Set type of document depending reference document
+     */
+    public function resolveType()
+    {
+        if (isset(static::$reffTypes[$this->reff_type])) {
+            $this->type = static::$reffTypes[$this->reff_type]['type'];
+        } else {
+            $this->addError('reff_type', "Reference type {$this->reff_type} not recognize");
+        }
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getReffDoc()
+    {
+        $config = static::reffConfig($this->reff_type);
+        if ($config && isset($config['class'])) {
+            return $this->hasOne($config['class'], ['id' => 'reff_id']);
+        }
+        return null;
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getReffDocDtls()
+    {
+        if (($reff = $this->reffDoc) !== null) {
+            $config = static::reffConfig($this->reff_type);
+            $relation = $reff->getRelation($config['relation']);
+            return $this->hasMany($relation->modelClass, $relation->link)
+                    ->via('reffDoc')
+                    ->indexBy('product_id');
+        }
+        return null;
+    }
+
+    /**
      * @inheritdoc
      */
     public function behaviors()
@@ -109,3 +169,6 @@ class GoodMovement extends \yii\db\ActiveRecord
         ];
     }
 }
+// Load refference
+GoodMovement::$reffTypes = require(__DIR__ . DIRECTORY_SEPARATOR . 'reff_types');
+

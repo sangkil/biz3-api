@@ -14,14 +14,12 @@ use yii\helpers\ArrayHelper;
 class Purchase extends \biz\core\base\Api
 {
     /**
-     *
-     * @var string 
+     * @inheritdoc
      */
     public $modelClass = 'biz\core\purchase\models\Purchase';
 
     /**
-     *
-     * @var string 
+     * @inheritdoc
      */
     public $prefixEventName = 'e_purchase';
 
@@ -39,7 +37,6 @@ class Purchase extends \biz\core\base\Api
         /* @var $model MPurchase */
         $model = $model ? : $this->createNewModel();
         $success = false;
-        $model->scenario = MPurchase::SCENARIO_DEFAULT;
         $model->load($data, '');
 
         if (!empty($data['details'])) {
@@ -75,7 +72,6 @@ class Purchase extends \biz\core\base\Api
         $model = $model ? : $this->findModel($id);
 
         $success = false;
-        $model->scenario = MPurchase::SCENARIO_DEFAULT;
         $model->load($data, '');
 
         if (!isset($data['details']) || $data['details'] !== []) {
@@ -100,7 +96,7 @@ class Purchase extends \biz\core\base\Api
     }
 
     /**
-     *
+     * Purchase receive
      * @param  string $id
      * @param  array $data
      * @param  \biz\core\purchase\models\Purchase $model
@@ -112,9 +108,10 @@ class Purchase extends \biz\core\base\Api
         $model = $model ? : $this->findModel($id);
         /* @var $detail \biz\core\purchase\models\PurchaseDtl */
         $success = true;
-        $model->scenario = MPurchase::SCENARIO_DEFAULT;
         $model->load($data, '');
         $model->status = MPurchase::STATUS_RECEIVE;
+        $model->scenario = MPurchase::SCENARIO_RECEIVE;
+        
         $this->fire('_receive', [$model]);
         $purchaseDtls = ArrayHelper::index($model->purchaseDtls, 'product_id');
         if (!empty($data['details'])) {

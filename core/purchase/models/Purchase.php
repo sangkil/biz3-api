@@ -34,6 +34,11 @@ class Purchase extends \yii\db\ActiveRecord
     const SCENARIO_RECEIVE = 'receive';
 
     /**
+     * @var integer warehouse id
+     */
+    public $warehouse_id;
+
+    /**
      * @inheritdoc
      */
     public static function tableName()
@@ -52,7 +57,8 @@ class Purchase extends \yii\db\ActiveRecord
             [['status'], 'default', 'value' => self::STATUS_DRAFT],
             [['date', 'created_at', 'updated_at'], 'safe'],
             [['value', 'discount'], 'number'],
-            [['number'], 'string', 'max' => 16]
+            [['number'], 'string', 'max' => 16],
+            [['warehouse_id'], 'required', 'on' => self::SCENARIO_RECEIVE]
         ];
     }
 

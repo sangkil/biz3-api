@@ -3,7 +3,6 @@
 namespace biz\core\purchase\models;
 
 use Yii;
-use biz\core\master\models\ProductUom;
 
 /**
  * This is the model class for table "{{%purchase_dtl}}".
@@ -21,19 +20,9 @@ use biz\core\master\models\ProductUom;
 class PurchaseDtl extends \yii\db\ActiveRecord
 {
     /**
-     * @var integer Warehouse for receive.
-     */
-    public $warehouse_id;
-
-    /**
      * @var double Quantity for receive.
      */
     public $receive;
-
-    /**
-     * @var integer Uom for receive.
-     */
-    public $uom_id_receive;
 
     /**
      * @inheritdoc
@@ -52,10 +41,8 @@ class PurchaseDtl extends \yii\db\ActiveRecord
             [['purchase_id', 'product_id', 'uom_id', 'qty', 'price'], 'required'],
             [['purchase_id', 'product_id', 'uom_id'], 'integer'],
             [['qty', 'price'], 'number'],
-            [['warehouse_id', 'receive', 'uom_id_receive'], 'safe', 'on' => Purchase::SCENARIO_RECEIVE],
-            [['warehouse_id'], 'required', 'on' => Purchase::SCENARIO_RECEIVE, 'when' => [$this, 'whenReceived']],
             [['receive'], 'double', 'on' => Purchase::SCENARIO_RECEIVE],
-            [['receive'], 'convertReceive', 'on' => Purchase::SCENARIO_RECEIVE]
+            [['receive'], 'checkQty', 'on' => Purchase::SCENARIO_RECEIVE],
         ];
     }
 
@@ -67,7 +54,7 @@ class PurchaseDtl extends \yii\db\ActiveRecord
         $scenarios = parent::scenarios();
 
         foreach ($scenarios[Purchase::SCENARIO_RECEIVE] as $i => $attr) {
-            if (!in_array($attr, ['warehouse_id', 'receive', 'uom_id_receive']) && $attr[0] != '!') {
+            if (!in_array($attr, ['receive',]) && $attr[0] != '!') {
                 $scenarios[Purchase::SCENARIO_RECEIVE][$i] = '!' . $attr;
             }
         }
@@ -75,28 +62,11 @@ class PurchaseDtl extends \yii\db\ActiveRecord
         return $scenarios;
     }
 
-    public function convertReceive($attribute)
+    public function checkQty($attribute)
     {
-        if ($this->uom_id_receive === null || $this->uom_id == $this->uom_id_receive) {
-            $this->total_receive += $this->receive;
-        } else {
-            $uoms = ProductUom::find()->where(['product_id' => $this->product_id])->indexBy('uom_id')->all();
-            $this->total_receive += $this->receive * $uoms[$this->uom_id_receive]->isi / $uoms[$this->uom_id]->isi;
-        }
-        if ($this->total_receive > $this->qty) {
+        if ($this->total_receive + $this->receive > $this->qty) {
             $this->addError($attribute, 'Total qty receive large than purch qty');
         }
-    }
-
-    /**
-     * Check when purchase is received.
-     * Indicated with `total_receive` is setted.
-     *
-     * @return boolean
-     */
-    public function whenReceived()
-    {
-        return $this->receive !== null && $this->receive !== '';
     }
 
     /**

@@ -18,6 +18,11 @@ use Yii;
 class GoodMovementDtl extends \yii\db\ActiveRecord
 {
     /**
+     * @var double 
+     */
+    public $avaliable;
+
+    /**
      * @inheritdoc
      */
     public static function tableName()
@@ -33,7 +38,11 @@ class GoodMovementDtl extends \yii\db\ActiveRecord
         return [
             [['movement_id', 'product_id', 'qty'], 'required'],
             [['movement_id', 'product_id'], 'integer'],
-            [['qty', 'item_value', 'trans_value'], 'number']
+            [['qty', 'item_value', 'trans_value', 'avaliable'], 'number'],
+            [['qty'], 'compare', 'compareAttribute' => 'avaliable', 'operator' => '<=',
+                'when' => function($obj) {
+                return $obj->avaliable !== null && $obj->avaliable !== '';
+            }]
         ];
     }
 

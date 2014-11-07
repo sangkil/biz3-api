@@ -12,6 +12,7 @@ use biz\core\inventory\models\Transfer;
 use biz\core\master\models\ProductUom;
 use yii\base\UserException;
 use biz\core\inventory\models\StockAdjustment;
+use yii\helpers\ArrayHelper;
 
 /**
  * Description of CreateTransferNotice
@@ -25,15 +26,21 @@ class GoodMovement extends \yii\base\Behavior
     public function events()
     {
         return [
-            'e_purchase_receive_end' => 'purchaseReceive',
-            'e_sales_release_end' => 'salesRelease',
-            'e_transfer_release_end' => 'transferRelease',
-            'e_transfer_receive_end' => 'transferReceive',
-            'e_transfer_completed' => 'transferComplete',
-            'e_stock-adjustment_applied' => 'adjustmentApplied'
+//            'e_purchase_receive_end' => 'purchaseReceive',
+//            'e_sales_release_end' => 'salesRelease',
+//            'e_transfer_release_end' => 'transferRelease',
+//            'e_transfer_receive_end' => 'transferReceive',
+//            'e_transfer_completed' => 'transferComplete',
+//            'e_stock-adjustment_applied' => 'adjustmentApplied',
+            'e_good-movement_applied' => 'goodMovementApplied',
         ];
     }
 
+    /**
+     * Create Good Movement document
+     * @param array $data
+     * @throws UserException
+     */
     protected function createMovementDoc($data)
     {
         /* @var $model MGoodMovement */
@@ -44,7 +51,6 @@ class GoodMovement extends \yii\base\Behavior
     }
 
     /**
-     *
      * @param Event $event
      */
     public function purchaseReceive($event)

@@ -7,6 +7,8 @@ use biz\core\master\models\ProductUom;
 use biz\core\base\NotFoundException;
 use yii\base\UserException;
 use biz\core\master\models\Cogs;
+use biz\core\inventory\models\GoodMovement as MGoodMovement;
+use yii\helpers\ArrayHelper;
 
 /**
  * Description of Stock
@@ -19,7 +21,7 @@ class ProductStock extends \yii\base\Behavior
     public function events()
     {
         return [
-            'e_good-movement_applied' => 'goodMovement',
+            'e_good-movement_applied' => 'goodMovementApplied',
             'e_purchase_receive_body' => 'purchaseReceiveBody',
             'e_sales_release_body' => 'salesReleaseBody',
             'e_transfer_release_body' => 'transferReleaseBody',
@@ -122,24 +124,36 @@ class ProductStock extends \yii\base\Behavior
      * It used to update stock
      * @param \biz\core\base\Event $event
      */
-    public function goodMovement($event)
+    public function goodMovementApplied($event)
     {
-        /* @var $model \biz\core\inventory\models\GoodMovement */
+        /* @var $model MGoodMovement */
         $model = $event->params[0];
+        $warehouse_id = $model->warehouse_id;
+        $config = MGoodMovement::reffConfig($model->reff_type);
+        if ($config && isset($config['uom_field'])) {
+            $class = $config['class'];
+            $reffModel = $class::findOne($model->reff_id);
+            $populations = ArrayHelper::index($reffModel->{$config['relation']}, 'product_id');
+        } else {
+            $populations = [];
+        }
         foreach ($model->goodMovementDtls as $detail) {
-            $this->updateStock([
-                'warehouse_id' => $detail->warehouse_id,
+            $params = [
+                'warehouse_id' => $warehouse_id,
                 'product_id' => $detail->product_id,
                 'qty' => $detail->qty,
                 'app' => 'good_movement',
                 'price' => $detail->item_value,
                 'reff_id' => $detail->movement_id,
-            ]);
+            ];
+            if (isset($populations[$detail->product_id])) {
+                $params['uom_id'] = $populations[$detail->product_id]->{$config['uom_field']};
+            }
+            $this->updateStock($params);
         }
     }
 
     /**
-     *
      * @param \biz\core\base\Event $event
      */
     public function purchaseReceiveBody($event)
