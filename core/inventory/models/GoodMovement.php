@@ -105,7 +105,7 @@ class GoodMovement extends \yii\db\ActiveRecord
     public static function reffConfig($reff_type)
     {
         if (isset(static::$reffTypes[$reff_type])) {
-            return static::$reffTypes[$this->reff_type];
+            return static::$reffTypes[$reff_type];
         } else {
             return null;
         }
@@ -170,5 +170,5 @@ class GoodMovement extends \yii\db\ActiveRecord
     }
 }
 // Load refference
-GoodMovement::$reffTypes = require(__DIR__ . DIRECTORY_SEPARATOR . 'reff_types');
+GoodMovement::$reffTypes = require(__DIR__ . DIRECTORY_SEPARATOR . 'reff_types.php');
 

@@ -50,9 +50,9 @@ class Product extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['status'], 'default', 'value' => self::STATUS_ACTIVE],
             [['group_id', 'category_id', 'code', 'name'], 'required'],
             [['group_id', 'category_id', 'status', 'created_by', 'updated_by'], 'integer'],
-            [['status'], 'default', 'value' => self::STATUS_ACTIVE],
             [['created_at', 'updated_at'], 'safe'],
             [['code'], 'string', 'max' => 13],
             [['name'], 'string', 'max' => 64]
