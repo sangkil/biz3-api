@@ -25,6 +25,8 @@ use Yii;
  * @property \yii\db\ActiveRecord[] $reffDocDtls
  * @property GoodMovementDtl[] $goodMovementDtls
  * 
+ * @property array $reffConfig
+ * 
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
  * @since 3.0
  */
@@ -113,6 +115,11 @@ class GoodMovement extends \yii\db\ActiveRecord
         } else {
             return null;
         }
+    }
+
+    public function getReffConfig()
+    {
+        return static::reffConfig($this->reff_type);
     }
 
     /**
