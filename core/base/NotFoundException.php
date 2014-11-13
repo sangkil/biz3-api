@@ -5,7 +5,8 @@ namespace biz\core\base;
 /**
  * Description of NotFoundException
  *
- * @author Misbahul D Munir (mdmunir) <misbahuldmunir@gmail.com>
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class NotFoundException extends \yii\base\Exception
 {

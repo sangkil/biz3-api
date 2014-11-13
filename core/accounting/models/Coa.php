@@ -22,6 +22,9 @@ use Yii;
  * @property Coa $parent
  * @property Coa[] $coas
  * @property EntriSheetDtl[] $entriSheetDtls
+ * 
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class Coa extends \yii\db\ActiveRecord
 {

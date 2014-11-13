@@ -14,6 +14,9 @@ use Yii;
  * @property double $item_value
  *
  * @property StockAdjustment $adjustment
+ * 
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class StockAdjustmentDtl extends \yii\db\ActiveRecord
 {

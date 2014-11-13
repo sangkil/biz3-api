@@ -16,6 +16,9 @@ use Yii;
  * @property integer $updated_by
  *
  * @property Product[] $products
+ * 
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class ProductGroup extends \yii\db\ActiveRecord
 {

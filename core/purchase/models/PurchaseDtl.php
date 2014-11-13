@@ -16,6 +16,9 @@ use Yii;
  * @property double $total_receive
  *
  * @property Purchase $purchase
+ * 
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class PurchaseDtl extends \yii\db\ActiveRecord
 {
@@ -83,6 +86,16 @@ class PurchaseDtl extends \yii\db\ActiveRecord
             'discount' => 'Discount',
             'total_receive' => 'Qty Receive',
         ];
+    }
+
+    /**
+     * Set default value for GR detail
+     * @param \biz\core\inventory\models\GoodMovementDtl $model
+     */
+    public function applyGR($model)
+    {
+        $model->avaliable = $this->qty - $this->total_receive;
+        $model->item_value = $model->trans_value = $this->price;
     }
 
     /**

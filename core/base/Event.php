@@ -5,7 +5,8 @@ namespace biz\core\base;
 /**
  * Description of Event
  *
- * @author MDMunir
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class Event extends \yii\base\Event
 {

@@ -21,6 +21,9 @@ use Yii;
  * @property integer $updated_by
  *
  * @property SalesDtl[] $salesDtls
+ * 
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class Sales extends \yii\db\ActiveRecord
 {

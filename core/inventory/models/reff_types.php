@@ -12,9 +12,7 @@ return[
         'type' => GoodMovement::TYPE_RECEIVE,
         'class' => 'biz\core\purchase\models\Purchase',
         'relation' => 'purchaseDtls',
-        'qty_field' => 'qty',
-        'total_field' => 'total_receive',
+        'apply_method' => 'applyGR',
         'uom_field' => 'uom_id',
-        'status_complete' => 3
     ],
 ];

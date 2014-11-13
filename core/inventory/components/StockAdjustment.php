@@ -10,7 +10,8 @@ use biz\core\master\models\ProductUom;
 /**
  * Description of StockAdjusment
  *
- * @author Misbahul D Munir (mdmunir) <misbahuldmunir@gmail.com>
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class StockAdjustment extends \biz\core\base\Api
 {

@@ -2,6 +2,11 @@
 
 use yii\db\Schema;
 
+/**
+ * 
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
+ */
 class m140624_050056_create_table_inventory extends \yii\db\Migration
 {
 
@@ -124,16 +129,16 @@ class m140624_050056_create_table_inventory extends \yii\db\Migration
             'qty' => Schema::TYPE_FLOAT . ' NOT NULL',
             // constrain
             'PRIMARY KEY ([[time]], [[warehouse_id]], [[product_id]])',
-        ], $tableOptions);
+            ], $tableOptions);
     }
 
     public function safeDown()
     {
         $this->dropTable('{{%product_stock_history}}');
-        
+
         $this->dropTable('{{%good_movement_dtl}}');
         $this->dropTable('{{%good_movement}}');
-        
+
         $this->dropTable('{{%stock_adjustment_dtl}}');
         $this->dropTable('{{%stock_adjustment}}');
 

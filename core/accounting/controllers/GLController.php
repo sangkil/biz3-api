@@ -5,7 +5,8 @@ namespace biz\core\accounting\controllers;
 /**
  * Description of GLController
  *
- * @author Misbahul D Munir (mdmunir) <misbahuldmunir@gmail.com>
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class GLController extends \biz\core\base\rest\Controller
 {

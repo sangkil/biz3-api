@@ -9,7 +9,7 @@ use yii\helpers\Inflector;
 /**
  * Description of CreateAction
  *
- * @author Misbahul D Munir (mdmunir) <misbahuldmunir@gmail.com>
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  * @since 3.0
  */
 class CustomCreateAction extends Action
 {

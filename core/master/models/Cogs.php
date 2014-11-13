@@ -15,6 +15,9 @@ use Yii;
  * @property integer $updated_by
  *
  * @property Product $product
+ * 
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class Cogs extends \yii\db\ActiveRecord
 {

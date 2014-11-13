@@ -9,7 +9,8 @@ use yii\helpers\ArrayHelper;
 /**
  * Description of Purchase
  *
- * @author Misbahul D Munir (mdmunir) <misbahuldmunir@gmail.com>
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class Purchase extends \biz\core\base\Api
 {

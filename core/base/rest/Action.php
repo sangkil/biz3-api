@@ -9,7 +9,7 @@ use biz\core\base\Api;
 /**
  * Description of Action
  *
- * @author Misbahul D Munir (mdmunir) <misbahuldmunir@gmail.com>
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  * @since 3.0
  */
 class Action extends \yii\base\Action
 {

@@ -17,6 +17,9 @@ use Yii;
  *
  * @property Product $product
  * @property Uom $uom
+ * 
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class ProductUom extends \yii\db\ActiveRecord
 {

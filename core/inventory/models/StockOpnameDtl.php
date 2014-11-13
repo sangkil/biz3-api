@@ -13,6 +13,9 @@ use Yii;
  * @property double $qty
  *
  * @property StockOpname $opname
+ * 
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class StockOpnameDtl extends \yii\db\ActiveRecord
 {

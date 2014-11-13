@@ -17,6 +17,9 @@ use Yii;
  *
  * @property Product $product
  * @property PriceCategory $priceCategory
+ * 
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class Price extends \yii\db\ActiveRecord
 {

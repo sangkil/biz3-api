@@ -22,6 +22,9 @@ use Yii;
  * @property integer $updated_by
  *
  * @property Customer $id0
+ * 
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class CustomerDetail extends \yii\db\ActiveRecord
 {

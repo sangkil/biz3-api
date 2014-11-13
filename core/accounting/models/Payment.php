@@ -18,6 +18,9 @@ use Yii;
  *
  * @property PaymentDtl[] $paymentDtls
  * @property Invoice[] $invoices
+ * 
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class Payment extends \yii\db\ActiveRecord
 {

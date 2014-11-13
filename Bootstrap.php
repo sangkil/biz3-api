@@ -7,35 +7,24 @@ use Yii;
 /**
  * Description of Bootstrap
  *
- * @author Misbahul D Munir (mdmunir) <misbahuldmunir@gmail.com>
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class Bootstrap implements \yii\base\BootstrapInterface
 {
 
+    /**
+     * Initialize application before process request
+     * @param \yii\base\Application $app
+     */
     public function bootstrap($app)
     {
-        $configs = [
-            'BizTimestampBehavior' => [
-                'class' => 'yii\behaviors\TimestampBehavior',
-                'createdAtAttribute' => 'created_at',
-                'updatedAtAttribute' => 'updated_at',
-                'value' => new \yii\db\Expression('NOW()')
-            ],
-            'BizBlameableBehavior' => [
-                'class' => 'yii\behaviors\BlameableBehavior',
-                'createdByAttribute' => 'created_by',
-                'updatedByAttribute' => 'updated_by',
-            ],
-            'BizStatusConverter' => [
-                'class' => 'mdm\converter\EnumConverter',
-                'attributes' => [
-                    'nmStatus' => 'status'
-                ],
-                'enumPrefix' => 'STATUS_'
-            ],
-        ];
-        foreach ($configs as $name => $definision) {
-            Yii::$container->set($name, $definision);
+        $definitions = require(__DIR__ . '/definitions.php');
+        foreach ($definitions as $name => $definition) {
+            Yii::$container->set($name, $definition);
         }
+
+        $hooks = require(__DIR__ . '/hooks.php');
+        $app->attachBehaviors(array_combine($hooks, $hooks));
     }
 }

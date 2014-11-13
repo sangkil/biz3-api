@@ -16,6 +16,9 @@ use Yii;
  * @property integer $updated_by
  *
  * @property Branch[] $branches
+ * 
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class Orgn extends \yii\db\ActiveRecord
 {

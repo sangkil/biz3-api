@@ -14,6 +14,9 @@ use Yii;
  *
  * @property EntriSheet $esheet
  * @property Coa $coa
+ * 
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class EntriSheetDtl extends \yii\db\ActiveRecord
 {

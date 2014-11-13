@@ -10,10 +10,13 @@ use Yii;
  * @property integer $movement_id
  * @property integer $product_id
  * @property double $qty
- * @property double $item_value
- * @property double $trans_value
+ * @property double $item_value cogs value
+ * @property double $trans_value invoice value
  *
  * @property GoodMovement $movement
+ * 
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class GoodMovementDtl extends \yii\db\ActiveRecord
 {
@@ -42,7 +45,7 @@ class GoodMovementDtl extends \yii\db\ActiveRecord
             [['qty'], 'compare', 'compareAttribute' => 'avaliable', 'operator' => '<=',
                 'when' => function($obj) {
                 return $obj->avaliable !== null && $obj->avaliable !== '';
-            }]
+            }],
         ];
     }
 

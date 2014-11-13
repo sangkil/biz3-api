@@ -20,6 +20,9 @@ use Yii;
  * @property integer $updated_by
  *
  * @property StockAdjustmentDtl[] $stockAdjustmentDtls
+ * 
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class StockAdjustment extends \yii\db\ActiveRecord
 {

@@ -19,6 +19,9 @@ use biz\core\master\models\ProductUom;
  * @property double $tax
  *
  * @property Sales $sales
+ * 
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class SalesDtl extends \yii\db\ActiveRecord
 {

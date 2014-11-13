@@ -24,14 +24,12 @@ use Yii;
  * @property \yii\db\ActiveRecord $reffDoc
  * @property \yii\db\ActiveRecord[] $reffDocDtls
  * @property GoodMovementDtl[] $goodMovementDtls
+ * 
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class GoodMovement extends \yii\db\ActiveRecord
 {
-    // source document
-    const TYPE_PURCHASE = 100;
-    const TYPE_SALES = 200;
-    const TYPE_TRANSFER_RECEIVE = 300;
-    const TYPE_TRANSFER_ISSUE = 400;
     // status GoodMovement
     const STATUS_OPEN = 1;
     const STATUS_CLOSE = 2;
@@ -59,11 +57,17 @@ class GoodMovement extends \yii\db\ActiveRecord
     {
         return [
             [['status'], 'default', 'value' => self::STATUS_OPEN],
+            [['reff_type'], 'resolveType'],
             [['date', 'warehouse_id', 'type'], 'required'],
             [['date', 'created_at', 'updated_at'], 'safe'],
             [['reff_type', 'reff_id', 'warehouse_id', 'status', 'created_by', 'updated_by'], 'integer'],
             [['number'], 'string', 'max' => 16],
-            [['description'], 'string', 'max' => 255]
+            [['description'], 'string', 'max' => 255],
+            [['reff_id'], 'unique', 'targetAttribute' => ['reff_id', 'reff_type', 'status'],
+                'when' => function($obj) {
+                return $obj->status == self::STATUS_OPEN && $obj->reff_type != null;
+            }
+            ]
         ];
     }
 
@@ -165,7 +169,9 @@ class GoodMovement extends \yii\db\ActiveRecord
                 'value' => 'IM' . date('ymd.?')
             ],
             'BizStatusConverter',
-            'mdm\behaviors\ar\RelatedBehavior',
+            [
+                'class' => 'mdm\behaviors\ar\RelatedBehavior',
+            ],
         ];
     }
 }

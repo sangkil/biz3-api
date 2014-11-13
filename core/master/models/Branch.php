@@ -19,6 +19,9 @@ use Yii;
  * @property UserToBranch[] $userToBranches
  * @property Orgn $orgn
  * @property Warehouse[] $warehouses
+ * 
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class Branch extends \yii\db\ActiveRecord
 {

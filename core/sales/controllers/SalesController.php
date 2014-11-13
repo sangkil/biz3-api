@@ -9,7 +9,8 @@ use biz\core\sales\components\Sales as ApiSales;
  * Description of PurchaseController
  *
  * @property ApiSales $api
- * @author Misbahul D Munir (mdmunir) <misbahuldmunir@gmail.com>
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class SalesController extends \biz\core\base\rest\Controller
 {

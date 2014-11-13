@@ -16,6 +16,9 @@ use Yii;
  *
  * @property Product $product
  * @property Supplier $supplier
+ * 
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class ProductSupplier extends \yii\db\ActiveRecord
 {

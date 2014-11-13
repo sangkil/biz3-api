@@ -18,6 +18,9 @@ use Yii;
  * @property integer $updated_by
  *
  * @property GlHeader[] $glHeaders
+ * 
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class AccPeriode extends \yii\db\ActiveRecord
 {

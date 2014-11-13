@@ -2,6 +2,11 @@
 
 use yii\db\Schema;
 
+/**
+ * 
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
+ */
 class m140624_050030_create_table_purchase extends \yii\db\Migration
 {
 
@@ -26,7 +31,7 @@ class m140624_050030_create_table_purchase extends \yii\db\Migration
             'created_by' => Schema::TYPE_INTEGER,
             'updated_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
             'updated_by' => Schema::TYPE_INTEGER,
-        ], $tableOptions);
+            ], $tableOptions);
 
         $this->createTable('{{%purchase_dtl}}', [
             'purchase_id' => Schema::TYPE_INTEGER . ' NOT NULL',
@@ -39,8 +44,7 @@ class m140624_050030_create_table_purchase extends \yii\db\Migration
             // constrain
             'PRIMARY KEY ([[purchase_id]], [[product_id]])',
             'FOREIGN KEY ([[purchase_id]]) REFERENCES {{%purchase}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
-        ], $tableOptions);
-
+            ], $tableOptions);
     }
 
     public function safeDown()

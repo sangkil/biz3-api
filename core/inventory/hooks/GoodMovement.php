@@ -17,7 +17,8 @@ use yii\helpers\ArrayHelper;
 /**
  * Description of CreateTransferNotice
  *
- * @author MDMunir
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class GoodMovement extends \yii\base\Behavior
 {

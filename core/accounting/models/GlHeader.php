@@ -23,6 +23,9 @@ use Yii;
  *
  * @property GlDetail[] $glDetails
  * @property AccPeriode $periode
+ * 
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class GlHeader extends \yii\db\ActiveRecord
 {

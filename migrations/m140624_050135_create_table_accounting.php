@@ -2,6 +2,11 @@
 
 use yii\db\Schema;
 
+/**
+ * 
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
+ */
 class m140624_050135_create_table_accounting extends \yii\db\Migration
 {
 
@@ -26,7 +31,7 @@ class m140624_050135_create_table_accounting extends \yii\db\Migration
             'updated_by' => Schema::TYPE_INTEGER,
             // constrain
             'FOREIGN KEY ([[parent_id]]) REFERENCES {{%coa}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
-        ], $tableOptions);
+            ], $tableOptions);
 
         $this->createTable('{{%acc_periode}}', [
             'id' => Schema::TYPE_PK,
@@ -39,7 +44,7 @@ class m140624_050135_create_table_accounting extends \yii\db\Migration
             'created_by' => Schema::TYPE_INTEGER,
             'updated_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
             'updated_by' => Schema::TYPE_INTEGER,
-        ], $tableOptions);
+            ], $tableOptions);
 //
         $this->createTable('{{%entri_sheet}}', [
             'id' => Schema::TYPE_STRING . '(16) NOT NULL',
@@ -51,7 +56,7 @@ class m140624_050135_create_table_accounting extends \yii\db\Migration
             'updated_by' => Schema::TYPE_INTEGER,
             // constrain
             'PRIMARY KEY ([[id]])',
-        ], $tableOptions);
+            ], $tableOptions);
 
         $this->createTable('{{%entri_sheet_dtl}}', [
             'esheet_id' => Schema::TYPE_STRING . '(16) NOT NULL',
@@ -62,7 +67,7 @@ class m140624_050135_create_table_accounting extends \yii\db\Migration
             'PRIMARY KEY ([[esheet_id]], [[id]])',
             'FOREIGN KEY ([[esheet_id]]) REFERENCES {{%entri_sheet}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
             'FOREIGN KEY ([[coa_id]]) REFERENCES {{%coa}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
-        ], $tableOptions);
+            ], $tableOptions);
 
         $this->createTable('{{%gl_header}}', [
             'id' => Schema::TYPE_PK,
@@ -81,7 +86,7 @@ class m140624_050135_create_table_accounting extends \yii\db\Migration
             'updated_by' => Schema::TYPE_INTEGER,
             // constrain
             'FOREIGN KEY ([[periode_id]]) REFERENCES {{%acc_periode}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
-        ], $tableOptions);
+            ], $tableOptions);
 
         $this->createTable('{{%gl_detail}}', [
             'id' => Schema::TYPE_PK,
@@ -91,7 +96,7 @@ class m140624_050135_create_table_accounting extends \yii\db\Migration
             // constrain
             'FOREIGN KEY ([[header_id]]) REFERENCES {{%gl_header}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
             'FOREIGN KEY ([[coa_id]]) REFERENCES {{%coa}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
-        ], $tableOptions);
+            ], $tableOptions);
 
         $this->createTable('{{%invoice}}', [
             'id' => Schema::TYPE_PK,
@@ -107,7 +112,7 @@ class m140624_050135_create_table_accounting extends \yii\db\Migration
             'created_by' => Schema::TYPE_INTEGER,
             'updated_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
             'updated_by' => Schema::TYPE_INTEGER,
-        ], $tableOptions);
+            ], $tableOptions);
 
         $this->createTable('{{%invoice_dtl}}', [
             'invoice_id' => Schema::TYPE_INTEGER . ' NOT NULL',
@@ -118,7 +123,7 @@ class m140624_050135_create_table_accounting extends \yii\db\Migration
             // constrain
             'PRIMARY KEY ([[invoice_id]], [[reff_id]])',
             'FOREIGN KEY ([[invoice_id]]) REFERENCES {{%invoice}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
-        ], $tableOptions);
+            ], $tableOptions);
 
         $this->createTable('{{%payment}}', [
             'id' => Schema::TYPE_PK,
@@ -130,7 +135,7 @@ class m140624_050135_create_table_accounting extends \yii\db\Migration
             'created_by' => Schema::TYPE_INTEGER,
             'updated_at' => Schema::TYPE_TIMESTAMP . ' NOT NULL',
             'updated_by' => Schema::TYPE_INTEGER,
-        ], $tableOptions);
+            ], $tableOptions);
 
         $this->createTable('{{%payment_dtl}}', [
             'payment_id' => Schema::TYPE_INTEGER . ' NOT NULL',
@@ -140,7 +145,7 @@ class m140624_050135_create_table_accounting extends \yii\db\Migration
             'PRIMARY KEY ([[payment_id]], [[invoice_id]])',
             'FOREIGN KEY ([[payment_id]]) REFERENCES {{%payment}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
             'FOREIGN KEY ([[invoice_id]]) REFERENCES {{%invoice}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
-        ], $tableOptions);
+            ], $tableOptions);
     }
 
     public function safeDown()

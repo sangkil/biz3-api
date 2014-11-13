@@ -30,6 +30,9 @@ use Yii;
  * @property ProductUom[] $productUoms
  * @property Uom[] $uoms
  * @property ProductChild[] $productChildren
+ * 
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class Product extends \yii\db\ActiveRecord
 {

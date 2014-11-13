@@ -9,7 +9,8 @@ use yii\web\ServerErrorHttpException;
 /**
  * Description of GoodMovement
  *
- * @author Misbahul D Munir (mdmunir) <misbahuldmunir@gmail.com>
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class GoodMovement extends \biz\core\base\Api
 {
@@ -102,7 +103,7 @@ class GoodMovement extends \biz\core\base\Api
     /**
      * 
      */
-    public function apply($id, $data = null, $model = null)
+    public function apply($id, $model = null)
     {
         /* @var $model MGoodMovement */
         $model = $model ? : $this->findModel($id);

@@ -19,6 +19,9 @@ use Yii;
  * @property ProductStock[] $productStocks
  * @property Product[] $products
  * @property Branch $branch
+ * 
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class Warehouse extends \yii\db\ActiveRecord
 {

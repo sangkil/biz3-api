@@ -11,7 +11,8 @@ use yii\base\UserException;
 /**
  * Description of Payment
  *
- * @author Misbahul D Munir (mdmunir) <misbahuldmunir@gmail.com>
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class Payment extends \biz\core\base\Api
 {

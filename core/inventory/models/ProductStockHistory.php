@@ -11,6 +11,9 @@ use Yii;
  * @property integer $warehouse_id
  * @property integer $product_id
  * @property double $qty
+ * 
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class ProductStockHistory extends \yii\db\ActiveRecord
 {

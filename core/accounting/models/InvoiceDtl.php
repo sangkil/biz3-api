@@ -14,6 +14,9 @@ use Yii;
  * @property double $value
  *
  * @property Invoice $invoice
+ * 
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class InvoiceDtl extends \yii\db\ActiveRecord
 {

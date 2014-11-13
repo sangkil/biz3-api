@@ -17,6 +17,9 @@ use Yii;
  *
  * @property Warehouse $warehouse
  * @property Product $product
+ * 
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class ProductStock extends \yii\db\ActiveRecord
 {

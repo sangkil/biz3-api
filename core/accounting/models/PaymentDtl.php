@@ -13,6 +13,9 @@ use Yii;
  *
  * @property Payment $payment
  * @property Invoice $invoice
+ * 
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class PaymentDtl extends \yii\db\ActiveRecord
 {

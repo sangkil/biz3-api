@@ -9,7 +9,8 @@ use biz\core\purchase\components\Purchase as ApiPurchase;
  * Description of PurchaseController
  *
  * @property ApiPurchase $api
- * @author Misbahul D Munir (mdmunir) <misbahuldmunir@gmail.com>
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class PurchaseController extends \biz\core\base\rest\Controller
 {

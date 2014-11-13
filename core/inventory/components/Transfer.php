@@ -10,7 +10,8 @@ use yii\helpers\ArrayHelper;
 /**
  * Description of InventoryTransfer
  *
- * @author Misbahul D Munir (mdmunir) <misbahuldmunir@gmail.com>
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class Transfer extends \biz\core\base\Api
 {

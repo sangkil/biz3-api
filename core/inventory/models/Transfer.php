@@ -19,6 +19,9 @@ use Yii;
  * @property integer $updated_by
  *
  * @property TransferDtl[] $transferDtls
+ * 
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class Transfer extends \yii\db\ActiveRecord
 {

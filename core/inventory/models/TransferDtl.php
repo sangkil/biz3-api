@@ -15,6 +15,9 @@ use Yii;
  * @property double $total_receive
  *
  * @property Transfer $transfer
+ * 
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @since 3.0
  */
 class TransferDtl extends \yii\db\ActiveRecord
 {

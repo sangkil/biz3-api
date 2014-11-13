@@ -14,7 +14,8 @@ use biz\core\inventory\models\GoodMovementDtl;
 /**
  * Description of Invoice
  *
- * @author Misbahul D Munir (mdmunir) <misbahuldmunir@gmail.com>
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>
+ * @since 3.0
  */
 class Invoice extends \biz\core\base\Api
 {
