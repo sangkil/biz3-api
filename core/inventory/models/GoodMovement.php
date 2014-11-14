@@ -16,6 +16,8 @@ use Yii;
  * @property string $description
  * @property integer $warehouse_id
  * @property integer $status
+ * @property double $trans_value
+ * @property double $total_invoiced
  * @property string $created_at
  * @property integer $created_by
  * @property string $updated_at
@@ -66,13 +68,25 @@ class GoodMovement extends \yii\db\ActiveRecord
             [['date', 'created_at', 'updated_at'], 'safe'],
             [['reff_type', 'reff_id', 'warehouse_id', 'status', 'created_by', 'updated_by'], 'integer'],
             [['number'], 'string', 'max' => 16],
+            [['trans_value', 'total_invoiced'], 'number'],
             [['description'], 'string', 'max' => 255],
             [['reff_id'], 'unique', 'targetAttribute' => ['reff_id', 'reff_type', 'status'],
                 'when' => function($obj) {
                 return $obj->status == self::STATUS_DRAFT && $obj->reff_type != null;
             }
-            ]
+            ],
+            [['goodMovementDtls'], 'checkDetails'],
         ];
+    }
+
+    public function checkDetails()
+    {
+        foreach ($this->goodMovementDtls as $detail) {
+            if (!empty($detail->qty)) {
+                return;
+            }
+        }
+        $this->addError('goodMovementDtls', 'Details cannot be blank');
     }
 
     /**
@@ -179,7 +193,10 @@ class GoodMovement extends \yii\db\ActiveRecord
             ],
             'BizStatusConverter',
             [
-                'class' => 'mdm\behaviors\ar\RelatedBehavior',
+                'class' => 'mdm\behaviors\ar\RelationBehavior',
+                'beforeRSave' => function($child) {
+                return !empty($child->qty);
+            }
             ],
         ];
     }

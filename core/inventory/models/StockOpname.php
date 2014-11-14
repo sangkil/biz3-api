@@ -91,6 +91,6 @@ class StockOpname extends \yii\db\ActiveRecord
                 'value' => 'IO' . date('y.?')
             ],
             'BizStatusConverter',
-            'mdm\behaviors\ar\RelatedBehavior',
+            'mdm\behaviors\ar\RelationBehavior',
         ];
     }}

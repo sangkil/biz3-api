@@ -35,27 +35,17 @@ class GoodMovement extends \biz\core\base\Api
         /* @var $model MGoodMovement */
         $model = $model ? : $this->createNewModel();
         $success = false;
-        $model->scenario = MGoodMovement::SCENARIO_DEFAULT;
         $model->load($data, '');
         if (!empty($data['details'])) {
-            $data['details'] = array_filter($data['details'], function($val) {
-                return !empty($val['qty']);
-            });
-        }
-        if (!empty($data['details'])) {
             $this->fire('_create', [$model]);
+            $model->goodMovementDtls = $data['details'];
             $success = $model->save();
-            $success = $model->saveRelated('goodMovementDtls', $data, $success, 'details');
             if ($success) {
                 $this->fire('_created', [$model]);
-            } else {
-                if ($model->hasRelatedErrors('goodMovementDtls')) {
-                    $model->addError('details', 'Details validation error');
-                }
             }
         } else {
             $model->validate();
-            $model->addError('details', 'Details cannot be blank');
+            $model->addError('goodMovementDtls', 'Details cannot be blank');
         }
 
         return $this->processOutput($success, $model);
@@ -72,29 +62,19 @@ class GoodMovement extends \biz\core\base\Api
             throw new ServerErrorHttpException('Document can not be update');
         }
         $success = false;
-        $model->scenario = MGoodMovement::SCENARIO_DEFAULT;
         $model->load($data, '');
-        if (!empty($data['details'])) {
-            $data['details'] = array_filter($data['details'], function($val) {
-                return !empty($val['qty']);
-            });
-        }
         if (!isset($data['details']) || $data['details'] !== []) {
             $this->fire('_update', [$model]);
-            $success = $model->save();
             if (!empty($data['details'])) {
-                $success = $model->saveRelated('goodMovementDtls', $data, $success, 'details');
+                $model->goodMovementDtls = $data['details'];
             }
+            $success = $model->save();
             if ($success) {
                 $this->fire('_updated', [$model]);
-            } else {
-                if ($model->hasRelatedErrors('goodMovementDtls')) {
-                    $model->addError('details', 'Details validation error');
-                }
             }
         } else {
             $model->validate();
-            $model->addError('details', 'Details cannot be blank');
+            $model->addError('goodMovementDtls', 'Details cannot be blank');
         }
 
         return $this->processOutput($success, $model);

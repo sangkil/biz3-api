@@ -93,7 +93,7 @@ class Payment extends \yii\db\ActiveRecord
                 'value' => 'AP' . date('y.?')
             ],
             'BizStatusConverter',
-            'mdm\behaviors\ar\RelatedBehavior',
+            'mdm\behaviors\ar\RelationBehavior',
         ];
     }
 }

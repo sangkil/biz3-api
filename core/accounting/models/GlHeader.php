@@ -104,7 +104,7 @@ class GlHeader extends \yii\db\ActiveRecord
                 'value' => 'GL' . date('ymd.?')
             ],
             'BizStatusConverter',
-            'mdm\behaviors\ar\RelatedBehavior',
+            'mdm\behaviors\ar\RelationBehavior',
         ];
     }
 }

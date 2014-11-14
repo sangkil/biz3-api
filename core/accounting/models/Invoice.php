@@ -111,7 +111,7 @@ class Invoice extends \yii\db\ActiveRecord
                 'value' => 'AI' . date('y.?')
             ],
             'BizStatusConverter',
-            'mdm\behaviors\ar\RelatedBehavior',
+            'mdm\behaviors\ar\RelationBehavior',
         ];
     }
 }

@@ -61,8 +61,16 @@ class Purchase extends \yii\db\ActiveRecord
             [['date', 'created_at', 'updated_at'], 'safe'],
             [['value', 'discount'], 'number'],
             [['number'], 'string', 'max' => 16],
-            [['warehouse_id'], 'required', 'on' => self::SCENARIO_RECEIVE]
+            [['warehouse_id'], 'required', 'on' => self::SCENARIO_RECEIVE],
+            [['purchaseDtls'], 'checkDetails'],
         ];
+    }
+
+    public function checkDetails()
+    {
+        if (count($this->purchaseDtls) == 0) {
+            $this->addError('purchaseDtls', 'Details cannot be blank');
+        }
     }
 
     /**
@@ -109,7 +117,7 @@ class Purchase extends \yii\db\ActiveRecord
                 'value' => 'PU' . date('y.?')
             ],
             'BizStatusConverter',
-            'mdm\behaviors\ar\RelatedBehavior',
+            'mdm\behaviors\ar\RelationBehavior',
         ];
     }
 }

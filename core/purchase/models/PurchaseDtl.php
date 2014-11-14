@@ -41,7 +41,7 @@ class PurchaseDtl extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['purchase_id', 'product_id', 'uom_id', 'qty', 'price'], 'required'],
+            [['product_id', 'uom_id', 'qty', 'price'], 'required'],
             [['purchase_id', 'product_id', 'uom_id'], 'integer'],
             [['qty', 'price'], 'number'],
             [['receive'], 'double', 'on' => Purchase::SCENARIO_RECEIVE],

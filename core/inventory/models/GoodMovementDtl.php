@@ -39,7 +39,7 @@ class GoodMovementDtl extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['movement_id', 'product_id', 'qty'], 'required'],
+            [['product_id', 'qty'], 'required'],
             [['movement_id', 'product_id'], 'integer'],
             [['qty', 'item_value', 'trans_value', 'avaliable'], 'number'],
             [['qty'], 'compare', 'compareAttribute' => 'avaliable', 'operator' => '<=',

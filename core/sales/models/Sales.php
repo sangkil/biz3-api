@@ -102,6 +102,6 @@ class Sales extends \yii\db\ActiveRecord
                 'value' => 'SA' . date('y.?')
             ],
             'BizStatusConverter',
-            'mdm\behaviors\ar\RelatedBehavior',
+            'mdm\behaviors\ar\RelationBehavior',
         ];
     }}

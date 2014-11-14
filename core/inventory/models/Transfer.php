@@ -88,6 +88,6 @@ class Transfer extends \yii\db\ActiveRecord
                 'value' => 'IT' . date('y.?')
             ],
             'BizStatusConverter',
-            'mdm\behaviors\ar\RelatedBehavior',
+            'mdm\behaviors\ar\RelationBehavior',
         ];
     }}
