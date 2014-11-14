@@ -36,8 +36,8 @@ use Yii;
  */
 class Product extends \yii\db\ActiveRecord
 {
-    const STATUS_ACTIVE = 1;
-    const STATUS_CLOSE = 2;
+    const STATUS_ACTIVE = 10;
+    const STATUS_INACTIVE = 20;
 
     /**
      * @inheritdoc

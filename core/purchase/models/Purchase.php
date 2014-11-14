@@ -27,9 +27,9 @@ use Yii;
  */
 class Purchase extends \yii\db\ActiveRecord
 {
-    const STATUS_DRAFT = 1;
-    const STATUS_RECEIVE = 2;
-    const STATUS_RECEIVED = 3;
+    const STATUS_DRAFT = 10;
+    const STATUS_PARTIAL_RECEIVE = 20;
+    const STATUS_COMPLETE_RECEIVE = 30;
 
     /**
      * Scenario when purchase received.

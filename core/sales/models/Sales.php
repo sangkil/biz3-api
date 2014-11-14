@@ -27,8 +27,13 @@ use Yii;
  */
 class Sales extends \yii\db\ActiveRecord
 {
+    // status sales
+    const STATUS_DRAFT = 10;
+    const STATUS_PARTIAL_ISSUE = 20;
+    const STATUS_COMPLETE_ISSUE = 30;
+    
+    // scenario
     const SCENARIO_RELAESE = 'release';
-    const STATUS_DRAFT = 1;
     
 
     /**

@@ -33,11 +33,13 @@ use Yii;
 class GoodMovement extends \yii\db\ActiveRecord
 {
     // status GoodMovement
-    const STATUS_OPEN = 1;
-    const STATUS_CLOSE = 2;
+    const STATUS_DRAFT = 10;
+    const STATUS_APPLIED = 20;
+    const STATUS_INVOICED = 30;
+    const STATUS_CLOSED = 40;
     // type movement
-    const TYPE_RECEIVE = 1;
-    const TYPE_ISSUE = 2;
+    const TYPE_RECEIVE = 10;
+    const TYPE_ISSUE = 20;
 
     /**
      * @var array 
@@ -58,7 +60,7 @@ class GoodMovement extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['status'], 'default', 'value' => self::STATUS_OPEN],
+            [['status'], 'default', 'value' => self::STATUS_DRAFT],
             [['reff_type'], 'resolveType'],
             [['date', 'warehouse_id', 'type'], 'required'],
             [['date', 'created_at', 'updated_at'], 'safe'],
@@ -67,7 +69,7 @@ class GoodMovement extends \yii\db\ActiveRecord
             [['description'], 'string', 'max' => 255],
             [['reff_id'], 'unique', 'targetAttribute' => ['reff_id', 'reff_type', 'status'],
                 'when' => function($obj) {
-                return $obj->status == self::STATUS_OPEN && $obj->reff_type != null;
+                return $obj->status == self::STATUS_DRAFT && $obj->reff_type != null;
             }
             ]
         ];

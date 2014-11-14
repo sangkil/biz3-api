@@ -68,7 +68,7 @@ class GoodMovement extends \biz\core\base\Api
     {
         /* @var $model MGoodMovement */
         $model = $model ? : $this->findModel($id);
-        if ($model->status != MGoodMovement::STATUS_OPEN) {
+        if ($model->status != MGoodMovement::STATUS_DRAFT) {
             throw new ServerErrorHttpException('Document can not be update');
         }
         $success = false;
@@ -101,20 +101,22 @@ class GoodMovement extends \biz\core\base\Api
     }
 
     /**
-     * 
+     * Apply good movement.
+     * Update stock
      */
     public function apply($id, $model = null)
     {
         /* @var $model MGoodMovement */
         $model = $model ? : $this->findModel($id);
-        if ($model->status != MGoodMovement::STATUS_OPEN) {
+        if ($model->status != MGoodMovement::STATUS_DRAFT) {
             throw new ServerErrorHttpException('Document can not be applied');
         }
-        $model->status = MGoodMovement::STATUS_CLOSE;
+        $model->status = MGoodMovement::STATUS_APPLIED;
         if ($model->save()) {
             $this->fire('_applied', [$model]);
+            return true;
         }
-        return $this->processOutput($success, $model);
+        return false;
     }
 
     /**
@@ -124,7 +126,7 @@ class GoodMovement extends \biz\core\base\Api
     {
         /* @var $model MGoodMovement */
         $model = $model ? : $this->findModel($id);
-        if ($model->status != MGoodMovement::STATUS_OPEN) {
+        if ($model->status != MGoodMovement::STATUS_DRAFT) {
             throw new ServerErrorHttpException('Document can not be delete');
         }
         return parent::delete($id, $model);
