@@ -55,22 +55,20 @@ class Purchase extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['supplier_id', 'branch_id', 'date', 'value'], 'required'],
+            [['supplier_id', 'branch_id', 'date', 'purchaseDtls'], 'required'],
             [['supplier_id', 'branch_id', 'status', 'created_by', 'updated_by'], 'integer'],
             [['status'], 'default', 'value' => self::STATUS_DRAFT],
             [['date', 'created_at', 'updated_at'], 'safe'],
-            [['value', 'discount'], 'number'],
+            [['discount'], 'number'],
             [['number'], 'string', 'max' => 16],
             [['warehouse_id'], 'required', 'on' => self::SCENARIO_RECEIVE],
-            [['purchaseDtls'], 'checkDetails'],
+            [['purchaseDtls'], 'calcDetails'],
         ];
     }
 
-    public function checkDetails()
+    public function calcDetails()
     {
-        if (count($this->purchaseDtls) == 0) {
-            $this->addError('purchaseDtls', 'Details cannot be blank');
-        }
+        
     }
 
     /**
