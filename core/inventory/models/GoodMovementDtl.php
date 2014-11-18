@@ -9,6 +9,7 @@ use Yii;
  *
  * @property integer $movement_id
  * @property integer $product_id
+ * @property integer $uom_id
  * @property double $qty
  * @property double $item_value cogs value
  * @property double $trans_value invoice value
@@ -39,8 +40,10 @@ class GoodMovementDtl extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['product_id', 'qty'], 'required'],
-            [['movement_id', 'product_id'], 'integer'],
+            [['product_id', 'uom_id'], 'required', 'when' => function($obj) {
+                return $obj->qty !== null && $obj->qty !== '';
+            }],
+            [['movement_id', 'product_id', 'uom_id'], 'integer'],
             [['qty', 'item_value', 'trans_value', 'avaliable'], 'number'],
             [['qty'], 'compare', 'compareAttribute' => 'avaliable', 'operator' => '<=',
                 'when' => function($obj) {

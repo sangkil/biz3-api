@@ -96,6 +96,7 @@ class PurchaseDtl extends \yii\db\ActiveRecord
     {
         $model->avaliable = $this->qty - $this->total_receive;
         $model->item_value = $model->trans_value = $this->price;
+        $model->uom_id = $this->uom_id;
     }
 
     /**

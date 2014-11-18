@@ -116,6 +116,7 @@ class m140624_050056_create_table_inventory extends \yii\db\Migration
         $this->createTable('{{%good_movement_dtl}}', [
             'movement_id' => Schema::TYPE_INTEGER . ' NOT NULL',
             'product_id' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'uom_id' => Schema::TYPE_INTEGER . ' NOT NULL',
             'qty' => Schema::TYPE_FLOAT . ' NOT NULL',
             'item_value' => Schema::TYPE_FLOAT,
             'trans_value' => Schema::TYPE_FLOAT,
