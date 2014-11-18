@@ -59,7 +59,7 @@ class Purchase extends \yii\db\ActiveRecord
             [['supplier_id', 'branch_id', 'status', 'created_by', 'updated_by'], 'integer'],
             [['status'], 'default', 'value' => self::STATUS_DRAFT],
             [['date', 'created_at', 'updated_at'], 'safe'],
-            [['value', 'discount'], 'number'],
+            [['discount'], 'number'],
             [['number'], 'string', 'max' => 16],
             [['warehouse_id'], 'required', 'on' => self::SCENARIO_RECEIVE],
             [['purchaseDtls'], 'calcDetails'],
