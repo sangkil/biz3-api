@@ -58,7 +58,7 @@ class ProductStock extends \yii\base\Behavior
             ]);
         }
         // update cogs
-        if (isset($params['price'])) {
+        if (isset($params['price']) && $params['price'] !== '') {
             $params['qty_per_uom'] = $qty_per_uom;
             $this->updateCogs($params);
         }
@@ -122,24 +122,16 @@ class ProductStock extends \yii\base\Behavior
         /* @var $model MGoodMovement */
         $model = $event->params[0];
         $warehouse_id = $model->warehouse_id;
-        $reffDtls = $model->reffDocDtls;
-        if ($reffDtls === null) {
-            $reffDtls = [];
-        }
-        $config = $model->reffConfig;
-        $uom_field = $config && isset($config['uom_field']) ? $config['uom_field'] : null;
         foreach ($model->goodMovementDtls as $detail) {
             $params = [
                 'warehouse_id' => $warehouse_id,
                 'product_id' => $detail->product_id,
                 'qty' => $detail->qty,
+                'uom_id' => $detail->uom_id,
                 'app' => 'good_movement',
                 'price' => $detail->item_value,
                 'reff_id' => $detail->movement_id,
             ];
-            if (isset($reffDtls[$detail->product_id]) && $uom_field) {
-                $params['uom_id'] = $reffDtls[$detail->product_id]->$uom_field;
-            }
             $this->updateStock($params);
         }
     }

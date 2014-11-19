@@ -43,28 +43,18 @@ class Invoice extends \biz\core\base\Api
         /* @var $model MInvoice */
         $model = $model ? : $this->createNewModel();
         $success = false;
-        $model->scenario = MInvoice::SCENARIO_DEFAULT;
         $model->status = MInvoice::STATUS_DRAFT;
         $model->load($data, '');
         if (!empty($data['details'])) {
-            $total = 0;
-            foreach ($data['details'] as $detail) {
-                $total += $detail['trans_value'];
-            }
-            $model->invoice_value = $total;
             $this->fire('_create', [$model]);
+            $model->invoiveDtls = $data['details'];
             $success = $model->save();
-            $success = $model->saveRelated('invoiveDtls', $data, $success, 'details');
             if ($success) {
                 $this->fire('_created', [$model]);
-            } else {
-                if ($model->hasRelatedErrors('invoiveDtls')) {
-                    $model->addError('details', 'Details validation error');
-                }
             }
         } else {
             $model->validate();
-            $model->addError('details', 'Details cannot be blank');
+            $model->addError('invoiveDtls', 'Details cannot be blank');
         }
 
         return $this->processOutput($success, $model);
@@ -83,29 +73,19 @@ class Invoice extends \biz\core\base\Api
         /* @var $model MInvoice */
         $model = $model ? : $this->findModel($id);
         $success = false;
-        $model->scenario = MInvoice::SCENARIO_DEFAULT;
         $model->load($data, '');
         if (!isset($data['details']) || $data['details'] !== []) {
-            $total = 0;
-            foreach ($data['details'] as $detail) {
-                $total += $detail['trans_value'];
-            }
-            $model->invoice_value = $total;
             $this->fire('_update', [$model]);
-            $success = $model->save();
             if (!empty($data['details'])) {
-                $success = $model->saveRelated('invoiveDtls', $data, $success, 'details');
+                $model->invoiveDtls = $data['details'];
             }
+            $success = $model->save();
             if ($success) {
                 $this->fire('_updated', [$model]);
-            } else {
-                if ($model->hasRelatedErrors('invoiveDtls')) {
-                    $model->addError('details', 'Details validation error');
-                }
             }
         } else {
             $model->validate();
-            $model->addError('details', 'Details cannot be blank');
+            $model->addError('invoiveDtls', 'Details cannot be blank');
         }
 
         return $this->processOutput($success, $model);

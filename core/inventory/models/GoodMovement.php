@@ -3,6 +3,7 @@
 namespace biz\core\inventory\models;
 
 use Yii;
+use biz\core\base\Configs;
 
 /**
  * This is the model class for table "{{%good_movement}}".
@@ -44,11 +45,6 @@ class GoodMovement extends \yii\db\ActiveRecord
     const TYPE_ISSUE = 20;
 
     /**
-     * @var array 
-     */
-    public static $reffTypes;
-
-    /**
      * @inheritdoc
      */
     public static function tableName()
@@ -64,7 +60,8 @@ class GoodMovement extends \yii\db\ActiveRecord
         return [
             [['status'], 'default', 'value' => self::STATUS_DRAFT],
             [['reff_type'], 'resolveType'],
-            [['date', 'warehouse_id', 'type'], 'required'],
+            [['date', 'warehouse_id', 'type', 'goodMovementDtls'], 'required'],
+            [['type'], 'in', 'range' => [self::TYPE_RECEIVE, self::TYPE_ISSUE]],
             [['date', 'created_at', 'updated_at'], 'safe'],
             [['reff_type', 'reff_id', 'warehouse_id', 'status', 'created_by', 'updated_by'], 'integer'],
             [['number'], 'string', 'max' => 16],
@@ -126,16 +123,12 @@ class GoodMovement extends \yii\db\ActiveRecord
      */
     public static function reffConfig($reff_type)
     {
-        if (isset(static::$reffTypes[$reff_type])) {
-            return static::$reffTypes[$reff_type];
-        } else {
-            return null;
-        }
+        return Configs::movement($reff_type);
     }
 
     public function getReffConfig()
     {
-        return static::reffConfig($this->reff_type);
+        return Configs::movement($this->reff_type);
     }
 
     /**
@@ -143,8 +136,8 @@ class GoodMovement extends \yii\db\ActiveRecord
      */
     public function resolveType()
     {
-        if (isset(static::$reffTypes[$this->reff_type])) {
-            $this->type = static::$reffTypes[$this->reff_type]['type'];
+        if (($config = Configs::movement($this->reff_type) !== null)) {
+            $this->type = $config['type'];
         } else {
             $this->addError('reff_type', "Reference type {$this->reff_type} not recognize");
         }
@@ -155,8 +148,7 @@ class GoodMovement extends \yii\db\ActiveRecord
      */
     public function getReffDoc()
     {
-        $config = static::reffConfig($this->reff_type);
-        if ($config && isset($config['class'])) {
+        if (($config = $this->reffConfig) && isset($config['class'])) {
             return $this->hasOne($config['class'], ['id' => 'reff_id']);
         }
         return null;
@@ -168,7 +160,7 @@ class GoodMovement extends \yii\db\ActiveRecord
     public function getReffDocDtls()
     {
         if (($reff = $this->reffDoc) !== null) {
-            $config = static::reffConfig($this->reff_type);
+            $config = $this->reffConfig;
             $relation = $reff->getRelation($config['relation']);
             return $this->hasMany($relation->modelClass, $relation->link)
                     ->via('reffDoc')
@@ -201,6 +193,3 @@ class GoodMovement extends \yii\db\ActiveRecord
         ];
     }
 }
-// Load refference
-GoodMovement::$reffTypes = require(__DIR__ . DIRECTORY_SEPARATOR . 'reff_types.php');
-

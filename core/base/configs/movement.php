@@ -13,6 +13,5 @@ return[
         'class' => 'biz\core\purchase\models\Purchase',
         'relation' => 'purchaseDtls',
         'apply_method' => 'applyGR',
-        'uom_field' => 'uom_id',
     ],
 ];

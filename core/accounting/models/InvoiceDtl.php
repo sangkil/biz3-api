@@ -34,7 +34,7 @@ class InvoiceDtl extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['invoice_id', 'reff_type', 'reff_id', 'value'], 'required'],
+            [['value'], 'required'],
             [['invoice_id', 'reff_type', 'reff_id'], 'integer'],
             [['value'], 'number'],
             [['description'], 'string', 'max' => 64]

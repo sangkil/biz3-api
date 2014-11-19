@@ -105,6 +105,8 @@ class m140624_050135_create_table_accounting extends \yii\db\Migration
             'due_date' => Schema::TYPE_DATE . ' NOT NULL',
             'type' => Schema::TYPE_INTEGER . ' NOT NULL',
             'vendor_id' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'reff_type' => Schema::TYPE_INTEGER,
+            'reff_id' => Schema::TYPE_INTEGER,
             'value' => Schema::TYPE_FLOAT . ' NOT NULL',
             'status' => Schema::TYPE_INTEGER . ' NOT NULL',
             // history column
@@ -115,13 +117,13 @@ class m140624_050135_create_table_accounting extends \yii\db\Migration
             ], $tableOptions);
 
         $this->createTable('{{%invoice_dtl}}', [
+            'id' => Schema::TYPE_PK,
+            'reff_type' => Schema::TYPE_INTEGER,
+            'reff_id' => Schema::TYPE_INTEGER,
             'invoice_id' => Schema::TYPE_INTEGER . ' NOT NULL',
-            'reff_type' => Schema::TYPE_INTEGER . ' NOT NULL',
-            'reff_id' => Schema::TYPE_INTEGER . ' NOT NULL',
             'description' => Schema::TYPE_STRING . '(64) NULL',
             'value' => Schema::TYPE_FLOAT . ' NOT NULL',
             // constrain
-            'PRIMARY KEY ([[invoice_id]], [[reff_id]])',
             'FOREIGN KEY ([[invoice_id]]) REFERENCES {{%invoice}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
             ], $tableOptions);
 
