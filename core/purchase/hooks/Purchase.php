@@ -3,7 +3,7 @@
 namespace biz\core\purchase\hooks;
 
 use Yii;
-use biz\core\inventory\models\GoodMovement as MGoodMovement;
+use biz\core\inventory\models\GoodsMovement as MGoodsMovement;
 use biz\core\purchase\models\Purchase as MPurchase;
 use yii\helpers\ArrayHelper;
 
@@ -19,7 +19,7 @@ class Purchase extends \yii\base\Behavior
     public function events()
     {
         return [
-            'e_good-movement_applied' => 'goodMovementApplied',
+            'e_good-movement_applied' => 'goodsMovementApplied',
         ];
     }
 
@@ -28,9 +28,9 @@ class Purchase extends \yii\base\Behavior
      * It used to update stock
      * @param \biz\core\base\Event $event
      */
-    public function goodMovementApplied($event)
+    public function goodsMovementApplied($event)
     {
-        /* @var $model MGoodMovement */
+        /* @var $model MGoodsMovement */
         $model = $event->params[0];
         if (!in_array($model->reff_type, [100])) {
             return;
@@ -40,7 +40,7 @@ class Purchase extends \yii\base\Behavior
         $purchaseDtls = ArrayHelper::index($purchase->purchaseDtls, 'product_id');
         // change total qty for reff document
         /* @var $purcDtl \biz\core\purchase\models\PurchaseDtl */
-        foreach ($model->goodMovementDtls as $detail) {
+        foreach ($model->goodsMovementDtls as $detail) {
             $purcDtl = $purchaseDtls[$detail->product_id];
             $purcDtl->total_receive += $detail->qty;
             $purcDtl->save(false);

@@ -6,7 +6,7 @@ use Yii;
 use biz\core\base\Configs;
 
 /**
- * This is the model class for table "{{%good_movement}}".
+ * This is the model class for table "{{%goods_movement}}".
  *
  * @property integer $id
  * @property string $number
@@ -26,16 +26,16 @@ use biz\core\base\Configs;
  * 
  * @property \yii\db\ActiveRecord $reffDoc
  * @property \yii\db\ActiveRecord[] $reffDocDtls
- * @property GoodMovementDtl[] $goodMovementDtls
+ * @property GoodsMovementDtl[] $goodsMovementDtls
  * 
  * @property array $reffConfig
  * 
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
  * @since 3.0
  */
-class GoodMovement extends \yii\db\ActiveRecord
+class GoodsMovement extends \yii\db\ActiveRecord
 {
-    // status GoodMovement
+    // status GoodsMovement
     const STATUS_DRAFT = 10;
     const STATUS_APPLIED = 20;
     const STATUS_INVOICED = 30;
@@ -49,7 +49,7 @@ class GoodMovement extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%good_movement}}';
+        return '{{%goods_movement}}';
     }
 
     /**
@@ -60,7 +60,7 @@ class GoodMovement extends \yii\db\ActiveRecord
         return [
             [['status'], 'default', 'value' => self::STATUS_DRAFT],
             [['reff_type'], 'resolveType'],
-            [['date', 'warehouse_id', 'type', 'goodMovementDtls'], 'required'],
+            [['date', 'warehouse_id', 'type', 'goodsMovementDtls'], 'required'],
             [['type'], 'in', 'range' => [self::TYPE_RECEIVE, self::TYPE_ISSUE]],
             [['date', 'created_at', 'updated_at'], 'safe'],
             [['reff_type', 'reff_id', 'warehouse_id', 'status', 'created_by', 'updated_by'], 'integer'],
@@ -72,18 +72,18 @@ class GoodMovement extends \yii\db\ActiveRecord
                 return $obj->status == self::STATUS_DRAFT && $obj->reff_type != null;
             }
             ],
-            [['goodMovementDtls'], 'checkDetails'],
+            [['goodsMovementDtls'], 'checkDetails'],
         ];
     }
 
     public function checkDetails()
     {
-        foreach ($this->goodMovementDtls as $detail) {
+        foreach ($this->goodsMovementDtls as $detail) {
             if (!empty($detail->qty)) {
                 return;
             }
         }
-        $this->addError('goodMovementDtls', 'Details cannot be blank');
+        $this->addError('goodsMovementDtls', 'Details cannot be blank');
     }
 
     /**
@@ -111,9 +111,9 @@ class GoodMovement extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getGoodMovementDtls()
+    public function getGoodsMovementDtls()
     {
-        return $this->hasMany(GoodMovementDtl::className(), ['movement_id' => 'id']);
+        return $this->hasMany(GoodsMovementDtl::className(), ['movement_id' => 'id']);
     }
 
     /**

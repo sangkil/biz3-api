@@ -3,8 +3,6 @@
 namespace biz\core\base;
 
 use Yii;
-use yii\base\UnknownMethodException;
-use yii\base\UnknownPropertyException;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -15,7 +13,7 @@ use yii\helpers\ArrayHelper;
  */
 class Configs
 {
-    public static $avaliables = [
+    public static $configs = [
         'movement' => '@biz/core/base/configs/movement.php',
         'invoice' => '@biz/core/base/configs/invoice.php',
     ];
@@ -24,18 +22,22 @@ class Configs
     private static function initialize($name)
     {
         if (!isset(static::$_configs[$name])) {
-            static::$_configs[$name] = require(Yii::getAlias(static::$avaliables[$name]));
+            if (isset(static::$configs[$name])) {
+                $config = static::$configs[$name];
+                if (is_string($config)) {
+                    $config = require(Yii::getAlias(static::$configs[$name]));
+                }
+                static::$_configs[$name] = $config;
+            } else {
+                static::$_configs[$name] = [];
+            }
         }
     }
 
     public static function __callStatic($name, $arguments)
     {
-        if (isset(static::$avaliables[$name])) {
-            $type = reset($arguments);
-            return static::getConfigFor($name, $type);
-        } else {
-            throw new UnknownMethodException('Calling unknown method: ' . get_called_class() . "::$name()");
-        }
+        $type = reset($arguments);
+        return static::getConfigFor($name, $type);
     }
 
     protected static function getConfigFor($name, $type = false)
@@ -50,20 +52,16 @@ class Configs
 
     public static function merge($name, $configs)
     {
-        if (isset(static::$avaliables[$name])) {
-            static::initialize($name);
-            if (is_string($configs)) {
-                $configs = require(Yii::getAlias($configs));
+        static::initialize($name);
+        if (is_string($configs)) {
+            $configs = require(Yii::getAlias($configs));
+        }
+        foreach ($configs as $key => $value) {
+            if (isset(static::$_configs[$name][$key])) {
+                static::$_configs[$name][$key] = ArrayHelper::merge(static::$_configs[$name][$key], $value);
+            } else {
+                static::$_configs[$name][$key] = $value;
             }
-            foreach ($configs as $key => $value) {
-                if (isset(static::$_configs[$name][$key])) {
-                    static::$_configs[$name][$key] = ArrayHelper::merge(static::$_configs[$name][$key], $value);
-                } else {
-                    static::$_configs[$name][$key] = $value;
-                }
-            }
-        } else {
-            throw new UnknownPropertyException('Merge unknown config: ' . $name);
         }
     }
 

@@ -8,8 +8,8 @@ use biz\core\accounting\models\InvoiceDtl;
 use biz\core\purchase\models\Purchase;
 use biz\core\sales\models\Sales;
 use yii\base\UserException;
-use biz\core\inventory\models\GoodMovement;
-use biz\core\inventory\models\GoodMovementDtl;
+use biz\core\inventory\models\GoodsMovement;
+use biz\core\inventory\models\GoodsMovementDtl;
 
 /**
  * Description of Invoice
@@ -108,9 +108,9 @@ class Invoice extends \biz\core\base\Api
             throw new UserException('Vendor harus sama');
         }
         // invoice for GR
-        $received = GoodMovement::find()->select('id_movement')
+        $received = GoodsMovement::find()->select('id_movement')
                 ->where([
-                    'type_reff' => GoodMovement::TYPE_PURCHASE,
+                    'type_reff' => GoodsMovement::TYPE_PURCHASE,
                     'reff_id' => $ids
                 ])->column();
         $invoiced = InvoiceDtl::find()->select('reff_id')
@@ -119,14 +119,14 @@ class Invoice extends \biz\core\base\Api
                     'reff_id' => $received,
                 ])->column();
         $new = array_diff($received, $invoiced);
-        $values = GoodMovement::find()
+        $values = GoodsMovement::find()
                 ->select(['hdr.id_movement', 'jml' => 'sum(dtl.qty*dtl.trans_value)'])
-                ->from(GoodMovement::tableName() . ' hdr')
-                ->joinWith(['goodMovementDtls' => function($q) {
-                    $q->from(GoodMovementDtl::tableName() . ' dtl');
+                ->from(GoodsMovement::tableName() . ' hdr')
+                ->joinWith(['goodsMovementDtls' => function($q) {
+                    $q->from(GoodsMovementDtl::tableName() . ' dtl');
                 }])
                 ->andWhere([
-                    'hdr.type_reff' => GoodMovement::TYPE_PURCHASE,
+                    'hdr.type_reff' => GoodsMovement::TYPE_PURCHASE,
                     'hdr.reff_id' => $new
                 ])
                 ->groupBy('hdr.id_movement')
@@ -188,9 +188,9 @@ class Invoice extends \biz\core\base\Api
             throw new UserException('Vendor harus sama');
         }
         // invoice for GI
-        $released = GoodMovement::find()->select('id_movement')
+        $released = GoodsMovement::find()->select('id_movement')
                 ->where([
-                    'type_reff' => GoodMovement::TYPE_SALES,
+                    'type_reff' => GoodsMovement::TYPE_SALES,
                     'reff_id' => $ids
                 ])->column();
         $invoiced = InvoiceDtl::find()->select('reff_id')
@@ -199,14 +199,14 @@ class Invoice extends \biz\core\base\Api
                     'reff_id' => $released,
                 ])->column();
         $new = array_diff($released, $invoiced);
-        $values = GoodMovement::find()
+        $values = GoodsMovement::find()
                 ->select(['hdr.id_movement', 'jml' => 'sum(dtl.qty*dtl.trans_value)'])
-                ->from(GoodMovement::tableName() . ' hdr')
-                ->joinWith(['goodMovementDtls' => function($q) {
-                    $q->from(GoodMovementDtl::tableName() . ' dtl');
+                ->from(GoodsMovement::tableName() . ' hdr')
+                ->joinWith(['goodsMovementDtls' => function($q) {
+                    $q->from(GoodsMovementDtl::tableName() . ' dtl');
                 }])
                 ->where([
-                    'hdr.type_reff' => GoodMovement::TYPE_SALES,
+                    'hdr.type_reff' => GoodsMovement::TYPE_SALES,
                     'hdr.reff_id' => $new
                 ])
                 ->groupBy('hdr.id_movement')

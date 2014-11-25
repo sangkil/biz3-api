@@ -94,7 +94,7 @@ class m140624_050056_create_table_inventory extends \yii\db\Migration
             'FOREIGN KEY ([[adjustment_id]]) REFERENCES {{%stock_adjustment}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
             ], $tableOptions);
 
-        $this->createTable('{{%good_movement}}', [
+        $this->createTable('{{%goods_movement}}', [
             'id' => Schema::TYPE_PK,
             'number' => Schema::TYPE_STRING . '(16) NOT NULL',
             'warehouse_id' => Schema::TYPE_INTEGER . ' NOT NULL',
@@ -113,7 +113,7 @@ class m140624_050056_create_table_inventory extends \yii\db\Migration
             'updated_by' => Schema::TYPE_INTEGER,
             ], $tableOptions);
 
-        $this->createTable('{{%good_movement_dtl}}', [
+        $this->createTable('{{%goods_movement_dtl}}', [
             'movement_id' => Schema::TYPE_INTEGER . ' NOT NULL',
             'product_id' => Schema::TYPE_INTEGER . ' NOT NULL',
             'uom_id' => Schema::TYPE_INTEGER . ' NOT NULL',
@@ -122,7 +122,7 @@ class m140624_050056_create_table_inventory extends \yii\db\Migration
             'trans_value' => Schema::TYPE_FLOAT,
             // constrain
             'PRIMARY KEY ([[movement_id]], [[product_id]])',
-            'FOREIGN KEY ([[movement_id]]) REFERENCES {{%good_movement}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
+            'FOREIGN KEY ([[movement_id]]) REFERENCES {{%goods_movement}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
             ], $tableOptions);
 
         $this->createTable('{{%product_stock_history}}', [
@@ -139,8 +139,8 @@ class m140624_050056_create_table_inventory extends \yii\db\Migration
     {
         $this->dropTable('{{%product_stock_history}}');
 
-        $this->dropTable('{{%good_movement_dtl}}');
-        $this->dropTable('{{%good_movement}}');
+        $this->dropTable('{{%goods_movement_dtl}}');
+        $this->dropTable('{{%goods_movement}}');
 
         $this->dropTable('{{%stock_adjustment_dtl}}');
         $this->dropTable('{{%stock_adjustment}}');

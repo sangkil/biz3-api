@@ -3,21 +3,21 @@
 namespace biz\core\inventory\components;
 
 use Yii;
-use biz\core\inventory\models\GoodMovement as MGoodMovement;
+use biz\core\inventory\models\GoodsMovement as MGoodsMovement;
 use yii\web\ServerErrorHttpException;
 
 /**
- * Description of GoodMovement
+ * Description of GoodsMovement
  *
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
  * @since 3.0
  */
-class GoodMovement extends \biz\core\base\Api
+class GoodsMovement extends \biz\core\base\Api
 {
     /**
      * @var string 
      */
-    public $modelClass = 'biz\core\inventory\models\GoodMovement';
+    public $modelClass = 'biz\core\inventory\models\GoodsMovement';
 
     /**
      * @var string 
@@ -27,25 +27,25 @@ class GoodMovement extends \biz\core\base\Api
     /**
      *
      * @param  array                                $data
-     * @param  \biz\core\inventory\models\GoodMovement $model
-     * @return \biz\core\inventory\models\GoodMovement
+     * @param  \biz\core\inventory\models\GoodsMovement $model
+     * @return \biz\core\inventory\models\GoodsMovement
      */
     public function create($data, $model = null)
     {
-        /* @var $model MGoodMovement */
+        /* @var $model MGoodsMovement */
         $model = $model ? : $this->createNewModel();
         $success = false;
         $model->load($data, '');
         if (!empty($data['details'])) {
             $this->fire('_create', [$model]);
-            $model->goodMovementDtls = $data['details'];
+            $model->goodsMovementDtls = $data['details'];
             $success = $model->save();
             if ($success) {
                 $this->fire('_created', [$model]);
             }
         } else {
             $model->validate();
-            $model->addError('goodMovementDtls', 'Details cannot be blank');
+            $model->addError('goodsMovementDtls', 'Details cannot be blank');
         }
 
         return $this->processOutput($success, $model);
@@ -56,9 +56,9 @@ class GoodMovement extends \biz\core\base\Api
      */
     public function update($id, $data, $model = null)
     {
-        /* @var $model MGoodMovement */
+        /* @var $model MGoodsMovement */
         $model = $model ? : $this->findModel($id);
-        if ($model->status != MGoodMovement::STATUS_DRAFT) {
+        if ($model->status != MGoodsMovement::STATUS_DRAFT) {
             throw new ServerErrorHttpException('Document can not be update');
         }
         $success = false;
@@ -66,7 +66,7 @@ class GoodMovement extends \biz\core\base\Api
         if (!isset($data['details']) || $data['details'] !== []) {
             $this->fire('_update', [$model]);
             if (!empty($data['details'])) {
-                $model->goodMovementDtls = $data['details'];
+                $model->goodsMovementDtls = $data['details'];
             }
             $success = $model->save();
             if ($success) {
@@ -74,7 +74,7 @@ class GoodMovement extends \biz\core\base\Api
             }
         } else {
             $model->validate();
-            $model->addError('goodMovementDtls', 'Details cannot be blank');
+            $model->addError('goodsMovementDtls', 'Details cannot be blank');
         }
 
         return $this->processOutput($success, $model);
@@ -86,12 +86,12 @@ class GoodMovement extends \biz\core\base\Api
      */
     public function apply($id, $model = null)
     {
-        /* @var $model MGoodMovement */
+        /* @var $model MGoodsMovement */
         $model = $model ? : $this->findModel($id);
-        if ($model->status != MGoodMovement::STATUS_DRAFT) {
+        if ($model->status != MGoodsMovement::STATUS_DRAFT) {
             throw new ServerErrorHttpException('Document can not be applied');
         }
-        $model->status = MGoodMovement::STATUS_APPLIED;
+        $model->status = MGoodsMovement::STATUS_APPLIED;
         if ($model->save()) {
             $this->fire('_applied', [$model]);
             return true;
@@ -104,9 +104,9 @@ class GoodMovement extends \biz\core\base\Api
      */
     public function delete($id, $model = null)
     {
-        /* @var $model MGoodMovement */
+        /* @var $model MGoodsMovement */
         $model = $model ? : $this->findModel($id);
-        if ($model->status != MGoodMovement::STATUS_DRAFT) {
+        if ($model->status != MGoodsMovement::STATUS_DRAFT) {
             throw new ServerErrorHttpException('Document can not be delete');
         }
         return parent::delete($id, $model);

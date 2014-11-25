@@ -90,7 +90,7 @@ class PurchaseDtl extends \yii\db\ActiveRecord
 
     /**
      * Set default value for GR detail
-     * @param \biz\core\inventory\models\GoodMovementDtl $model
+     * @param \biz\core\inventory\models\GoodsMovementDtl $model
      */
     public function applyGR($model)
     {

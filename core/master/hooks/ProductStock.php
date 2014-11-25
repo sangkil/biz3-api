@@ -7,7 +7,7 @@ use biz\core\master\models\ProductUom;
 use biz\core\base\NotFoundException;
 use yii\base\UserException;
 use biz\core\master\models\Cogs;
-use biz\core\inventory\models\GoodMovement as MGoodMovement;
+use biz\core\inventory\models\GoodsMovement as MGoodsMovement;
 
 /**
  * Description of Stock
@@ -20,7 +20,7 @@ class ProductStock extends \yii\base\Behavior
     public function events()
     {
         return [
-            'e_good-movement_applied' => 'goodMovementApplied',
+            'e_good-movement_applied' => 'goodsMovementApplied',
         ];
     }
 
@@ -117,18 +117,18 @@ class ProductStock extends \yii\base\Behavior
      * It used to update stock
      * @param \biz\core\base\Event $event
      */
-    public function goodMovementApplied($event)
+    public function goodsMovementApplied($event)
     {
-        /* @var $model MGoodMovement */
+        /* @var $model MGoodsMovement */
         $model = $event->params[0];
         $warehouse_id = $model->warehouse_id;
-        foreach ($model->goodMovementDtls as $detail) {
+        foreach ($model->goodsMovementDtls as $detail) {
             $params = [
                 'warehouse_id' => $warehouse_id,
                 'product_id' => $detail->product_id,
                 'qty' => $detail->qty,
                 'uom_id' => $detail->uom_id,
-                'app' => 'good_movement',
+                'app' => 'goods_movement',
                 'price' => $detail->item_value,
                 'reff_id' => $detail->movement_id,
             ];

@@ -43,11 +43,11 @@ class StockOpname extends \biz\core\base\Api
         if (!empty($data['details'])) {
             $this->fire('_create', [$model]);
             $success = $model->save();
-            $success = $model->saveRelated('goodMovementDtls', $data, $success, 'details');
+            $success = $model->saveRelated('goodsMovementDtls', $data, $success, 'details');
             if ($success) {
                 $this->fire('_created', [$model]);
             } else {
-                if ($model->hasRelatedErrors('goodMovementDtls')) {
+                if ($model->hasRelatedErrors('goodsMovementDtls')) {
                     $model->addError('details', 'Details validation error');
                 }
             }

@@ -5,7 +5,7 @@ namespace biz\core\inventory\models;
 use Yii;
 
 /**
- * This is the model class for table "{{%good_movement_dtl}}".
+ * This is the model class for table "{{%goods_movement_dtl}}".
  *
  * @property integer $movement_id
  * @property integer $product_id
@@ -14,12 +14,12 @@ use Yii;
  * @property double $item_value cogs value
  * @property double $trans_value invoice value
  *
- * @property GoodMovement $movement
+ * @property GoodsMovement $movement
  * 
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
  * @since 3.0
  */
-class GoodMovementDtl extends \yii\db\ActiveRecord
+class GoodsMovementDtl extends \yii\db\ActiveRecord
 {
     /**
      * @var double 
@@ -31,7 +31,7 @@ class GoodMovementDtl extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%good_movement_dtl}}';
+        return '{{%goods_movement_dtl}}';
     }
 
     /**
@@ -71,6 +71,6 @@ class GoodMovementDtl extends \yii\db\ActiveRecord
      */
     public function getMovement()
     {
-        return $this->hasOne(GoodMovement::className(), ['id' => 'movement_id']);
+        return $this->hasOne(GoodsMovement::className(), ['id' => 'movement_id']);
     }
 }
