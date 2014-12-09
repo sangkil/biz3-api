@@ -55,7 +55,7 @@ class Purchase extends \yii\base\Behavior
         if ($complete) {
             $purchase->status = MPurchase::STATUS_COMPLETE_RECEIVE;
             $purchase->save(false);
-        }  elseif($model->status == MPurchase::STATUS_DRAFT) {
+        }  elseif($purchase->status == MPurchase::STATUS_DRAFT) {
             $purchase->status = MPurchase::STATUS_PARTIAL_RECEIVE;
             $purchase->save(false);
         }
