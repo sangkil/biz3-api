@@ -136,7 +136,7 @@ class GoodsMovement extends \yii\db\ActiveRecord
      */
     public function resolveType()
     {
-        if (($config = Configs::movement($this->reff_type) !== null)) {
+        if (($config = Configs::movement($this->reff_type)) !== null) {
             $this->type = $config['type'];
         } else {
             $this->addError('reff_type', "Reference type {$this->reff_type} not recognize");

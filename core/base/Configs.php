@@ -25,7 +25,7 @@ class Configs
             if (isset(static::$configs[$name])) {
                 $config = static::$configs[$name];
                 if (is_string($config)) {
-                    $config = require(Yii::getAlias(static::$configs[$name]));
+                    $config = require(Yii::getAlias($config));
                 }
                 static::$_configs[$name] = $config;
             } else {
