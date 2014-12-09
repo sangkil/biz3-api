@@ -4,6 +4,7 @@ namespace biz\core\purchase\components;
 
 use Yii;
 use biz\core\purchase\models\Purchase as MPurchase;
+use yii\web\ServerErrorHttpException;
 
 /**
  * Description of Purchase
@@ -66,10 +67,11 @@ class Purchase extends \biz\core\base\Api
     public function update($id, $data, $model = null)
     {
         $model = $model ? : $this->findModel($id);
-
+        if ($model->status != MPurchase::STATUS_DRAFT) {
+            throw new ServerErrorHttpException('Document can not be update');
+        }
         $success = false;
         $model->load($data, '');
-
         if (!isset($data['details']) || $data['details'] !== []) {
             $this->fire('_update', [$model]);
             if (!empty($data['details'])) {
@@ -85,5 +87,15 @@ class Purchase extends \biz\core\base\Api
         }
 
         return $this->processOutput($success, $model);
+    }
+    
+    public function delete($id, $model = null)
+    {
+        /* @var $model MPurchase */
+        $model = $model ? : $this->findModel($id);
+        if ($model->status != MPurchase::STATUS_DRAFT) {
+            throw new ServerErrorHttpException('Document can not be update');
+        }        
+        parent::delete($id, $model);
     }
 }
