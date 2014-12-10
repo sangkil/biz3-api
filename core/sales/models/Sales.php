@@ -31,10 +31,10 @@ class Sales extends \yii\db\ActiveRecord
     const STATUS_DRAFT = 10;
     const STATUS_PARTIAL_ISSUE = 20;
     const STATUS_COMPLETE_ISSUE = 30;
-    
-    // scenario
-    const SCENARIO_RELAESE = 'release';
-    
+    /**
+     * scenario when sales release
+     */
+    const SCENARIO_RELEASE = 'release';
 
     /**
      * @inheritdoc
@@ -50,8 +50,9 @@ class Sales extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['number', 'branch_id', 'date', 'value', 'status'], 'required'],
+            [['branch_id', 'date', 'value'], 'required'],
             [['branch_id', 'customer_id', 'status', 'created_by', 'updated_by'], 'integer'],
+            [['status'], 'default', 'value' => static::STATUS_DRAFT],
             [['date', 'created_at', 'updated_at'], 'safe'],
             [['value', 'discount'], 'number'],
             [['number'], 'string', 'max' => 16]
@@ -86,7 +87,7 @@ class Sales extends \yii\db\ActiveRecord
     {
         return $this->hasMany(SalesDtl::className(), ['sales_id' => 'id']);
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -104,4 +105,5 @@ class Sales extends \yii\db\ActiveRecord
             'BizStatusConverter',
             'mdm\behaviors\ar\RelationBehavior',
         ];
-    }}
+    }
+}

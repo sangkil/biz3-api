@@ -3,7 +3,6 @@
 namespace biz\core\sales\models;
 
 use Yii;
-use biz\core\master\models\ProductUom;
 
 /**
  * This is the model class for table "{{%sales_dtl}}".
@@ -26,19 +25,9 @@ use biz\core\master\models\ProductUom;
 class SalesDtl extends \yii\db\ActiveRecord
 {
     /**
-     * @var integer Warehouse for release.
-     */
-    public $warehouse_id;
-
-    /**
      * @var double Quantity for release.
      */
-    public $qty_release;
-
-    /**
-     * @var integer Uom for receive.
-     */
-    public $uom_id_release;
+    public $release;
 
     /**
      * @inheritdoc
@@ -54,13 +43,11 @@ class SalesDtl extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_sales', 'product_id', 'uom_id', 'sales_qty', 'sales_price', 'cogs'], 'required'],
-            [['id_sales', 'product_id', 'uom_id'], 'integer'],
+            [['product_id', 'uom_id', 'qty', 'price', 'cogs'], 'required'],
+            [['sales_id', 'product_id', 'uom_id'], 'integer'],
             [['qty', 'price', 'cogs', 'discount', 'tax'], 'number'],
-            [['warehouse_id', 'qty_release', 'uom_id_release'], 'safe', 'on' => Sales::SCENARIO_RELEASE],
-            [['warehouse_id'], 'required', 'on' => Sales::SCENARIO_RELEASE, 'when' => [$this, 'whenReleased']],
-            [['qty_receive'], 'double', 'on' => Sales::SCENARIO_RELEASE],
-            [['qty_receive'], 'convertRelease', 'on' => Sales::SCENARIO_RELEASE]
+            [['release'], 'double', 'on' => Sales::SCENARIO_RELEASE],
+            [['release'], 'checkQty', 'on' => Sales::SCENARIO_RELEASE]
         ];
     }
 
@@ -80,28 +67,11 @@ class SalesDtl extends \yii\db\ActiveRecord
         return $scenarios;
     }
 
-    public function convertRelease($attribute)
+    public function checkQty($attribute)
     {
-        if ($this->uom_id_release === null || $this->uom_id == $this->uom_id_release) {
-            $this->total_release += $this->qty_release;
-        } else {
-            $uoms = ProductUom::find()->where(['product_id' => $this->product_id])->indexBy('uom_id')->all();
-            $this->total_release += $this->qty_release * $uoms[$this->uom_id_release]->isi / $uoms[$this->uom_id]->isi;
+        if ($this->release > $this->qty - $this->total_release) {
+            $this->addError($attribute, 'Total qty release large than purch qty');
         }
-        if ($this->total_release > $this->qty) {
-            $this->addError($attribute, 'Total qty release large than sales qty');
-        }
-    }
-
-    /**
-     * Check when purchase is received.
-     * Indicated with `qty_receive` is setted.
-     *
-     * @return boolean
-     */
-    public function whenReleased()
-    {
-        return $this->qty_release !== null && $this->qty_release !== '';
     }
 
     /**

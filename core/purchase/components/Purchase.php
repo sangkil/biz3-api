@@ -89,6 +89,12 @@ class Purchase extends \biz\core\base\Api
         return $this->processOutput($success, $model);
     }
     
+    /**
+     * Delete purchase
+     * @param integer|string $id
+     * @param \biz\core\purchase\models\Purchase $model
+     * @throws ServerErrorHttpException
+     */
     public function delete($id, $model = null)
     {
         /* @var $model MPurchase */
