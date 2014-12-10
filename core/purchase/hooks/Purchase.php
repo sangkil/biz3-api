@@ -32,6 +32,9 @@ class Purchase extends \yii\base\Behavior
     {
         /* @var $model MGoodsMovement */
         $model = $event->params[0];
+        /*
+         * 100 = Purchase
+         */
         if (!in_array($model->reff_type, [100])) {
             return;
         }
