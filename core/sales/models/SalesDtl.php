@@ -75,6 +75,18 @@ class SalesDtl extends \yii\db\ActiveRecord
     }
 
     /**
+     * Set default value for GI detail
+     * @param \biz\core\inventory\models\GoodsMovementDtl $model
+     */
+    public function applyGI($model)
+    {
+        $model->avaliable = $this->qty - $this->total_release;
+        $model->item_value = $this->cogs;
+        $model->trans_value = $this->price;
+        $model->uom_id = $this->uom_id;
+    }
+
+    /**
      * @inheritdoc
      */
     public function attributeLabels()

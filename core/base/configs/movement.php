@@ -14,4 +14,11 @@ return[
         'relation' => 'purchaseDtls',
         'apply_method' => 'applyGR',
     ],
+    // Purchase receive
+    200 => [
+        'type' => GoodsMovement::TYPE_ISSUE,
+        'class' => 'biz\core\sales\models\Sales',
+        'relation' => 'salesDtls',
+        'apply_method' => 'applyGI',
+    ],
 ];
