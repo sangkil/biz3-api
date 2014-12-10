@@ -74,7 +74,7 @@ class Sales extends \biz\core\base\Api
         if (!isset($data['details']) || $data['details'] !== []) {
             $this->fire('_update', [$model]);
             if (!empty($data['details'])) {
-                $model->purchaseDtls = $data['details'];
+                $model->salesDtls = $data['details'];
             }
             $success = $model->save();
             if ($success) {
@@ -82,7 +82,7 @@ class Sales extends \biz\core\base\Api
             }
         } else {
             $model->validate();
-            $model->addError('purchaseDtls', 'Details cannot be blank');
+            $model->addError('salesDtls', 'Details cannot be blank');
         }
 
         return $this->processOutput($success, $model);
