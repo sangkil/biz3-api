@@ -27,6 +27,7 @@ use biz\core\base\Configs;
  * @property \yii\db\ActiveRecord $reffDoc
  * @property \yii\db\ActiveRecord[] $reffDocDtls
  * @property GoodsMovementDtl[] $goodsMovementDtls
+ * @property string $reffLink
  * 
  * @property array $reffConfig
  * 
