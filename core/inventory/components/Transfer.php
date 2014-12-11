@@ -4,8 +4,7 @@ namespace biz\core\inventory\components;
 
 use Yii;
 use biz\core\inventory\models\Transfer as MTransfer;
-use biz\core\inventory\models\TransferDtl;
-use yii\helpers\ArrayHelper;
+use yii\web\ServerErrorHttpException;
 
 /**
  * Description of InventoryTransfer
@@ -28,33 +27,28 @@ class Transfer extends \biz\core\base\Api
     public $prefixEventName = 'e_transfer';
 
     /**
-     *
-     * @param  array      $data
-     * @param  type       $model
+     * 
+     * @param type $data
+     * @param \biz\core\inventory\models\Transfer $model
      * @return type
-     * @throws \Exception
      */
     public function create($data, $model = null)
     {
+        /* @var $model MTransfer */
         $model = $model ? : $this->createNewModel();
         $success = false;
-        $model->scenario = MTransfer::SCENARIO_DEFAULT;
         $model->load($data, '');
 
         if (!empty($data['details'])) {
             $this->fire('_create', [$model]);
+            $model->transferDtls = $data['details'];
             $success = $model->save();
-            $success = $model->saveRelated('transferDtls', $data, $success, 'details');
             if ($success) {
                 $this->fire('_created', [$model]);
-            } else {
-                if ($model->hasRelatedErrors('transferDtls')) {
-                    $model->addError('details', 'Details validation error');
-                }
             }
         } else {
             $model->validate();
-            $model->addError('details', 'Details cannot be blank');
+            $model->addError('transferDtls', 'Details cannot be blank');
         }
 
         return $this->processOutput($success, $model);
@@ -62,174 +56,43 @@ class Transfer extends \biz\core\base\Api
 
     public function update($id, $data, $model = null)
     {
+        /* @var $model MTransfer */
         $model = $model ? : $this->findModel($id);
-
+        if ($model->status != MTransfer::STATUS_DRAFT) {
+            throw new ServerErrorHttpException('Document can not be update');
+        }
         $success = false;
-        $model->scenario = MTransfer::SCENARIO_DEFAULT;
         $model->load($data, '');
-
         if (!isset($data['details']) || $data['details'] !== []) {
             $this->fire('_update', [$model]);
-            $success = $model->save();
             if (!empty($data['details'])) {
-                $success = $model->saveRelated('transferDtls', $data, $success, 'details');
+                $model->transferDtls = $data['details'];
             }
+            $success = $model->save();
             if ($success) {
                 $this->fire('_updated', [$model]);
-            } else {
-                if ($model->hasRelatedErrors('transferDtls')) {
-                    $model->addError('details', 'Details validation error');
-                }
             }
         } else {
             $model->validate();
-            $model->addError('details', 'Details cannot be blank');
+            $model->addError('transferDtls', 'Details cannot be blank');
         }
 
         return $this->processOutput($success, $model);
     }
-
+    
     /**
-     *
-     * @param  string     $id
-     * @param  array      $data
-     * @param  MTransfer  $model
-     * @return mixed
-     * @throws \Exception
+     * 
+     * @param type $id
+     * @param \biz\core\inventory\models\Transfer $model
+     * @throws ServerErrorHttpException
      */
-    public function release($id, $data = [], $model = null)
+    public function delete($id, $model = null)
     {
+        /* @var $model MTransfer */
         $model = $model ? : $this->findModel($id);
-
-        $success = true;
-        $model->scenario = MTransfer::SCENARIO_DEFAULT;
-        $model->load($data, '');
-        $model->status = MTransfer::STATUS_ISSUE;
-        $this->fire('_release', [$model]);
-
-        if (!empty($data['details'])) {
-            $transferDtls = ArrayHelper::index($model->transferDtls, 'product_id');
-            $this->fire('_release_head', [$model]);
-            foreach ($data['details'] as $dataDetail) {
-                $index = $dataDetail['product_id'];
-                $detail = $transferDtls[$index];
-                $detail->scenario = MTransfer::SCENARIO_RELEASE;
-                $detail->load($dataDetail, '');
-                $success = $success && $detail->save();
-                $this->fire('_release_body', [$model, $detail]);
-                $transferDtls[$index] = $detail;
-            }
-            $model->populateRelation('transferDtls', array_values($transferDtls));
-            if ($success) {
-                $this->fire('_release_end', [$model]);
-            }
-        }
-        if ($success && $model->save()) {
-            $this->fire('_released', [$model]);
-        } else {
-            $success = false;
-        }
-
-        return $this->processOutput($success, $model);
-    }
-
-    /**
-     *
-     * @param  string     $id
-     * @param  array      $data
-     * @param  MTransfer  $model
-     * @return mixed
-     * @throws \Exception
-     */
-    public function receive($id, $data = [], $model = null)
-    {
-        $model = $model ? : $this->findModel($id);
-
-        $success = true;
-        $model->scenario = MTransfer::SCENARIO_DEFAULT;
-        $model->load($data, '');
-        $model->status = MTransfer::STATUS_ISSUE;
-        $this->fire('_receive', [$model]);
-
-        if (!empty($data['details'])) {
-            $transferDtls = ArrayHelper::index($model->transferDtls, 'product_id');
-            $this->fire('_receive_head', [$model]);
-            foreach ($data['details'] as $dataDetail) {
-                $index = $dataDetail['product_id'];
-                if (isset($transferDtls[$index])) {
-                    $detail = $transferDtls[$index];
-                } else {
-                    $detail = new TransferDtl([
-                        'id_transfer' => $model->id_transfer,
-                        'product_id' => $index,
-                        'uom_id' => $dataDetail['uom_id_receive']
-                    ]);
-                }
-                $detail->scenario = MTransfer::SCENARIO_RECEIVE;
-                $detail->load($dataDetail, '');
-                $success = $success && $detail->save();
-                $this->fire('_receive_body', [$model, $detail]);
-                $transferDtls[$index] = $detail;
-            }
-            $model->populateRelation('transferDtls', array_values($transferDtls));
-            if ($success) {
-                $this->fire('_receive_end', [$model]);
-            }
-        }
-        if ($success && $model->save()) {
-            $this->fire('_received', [$model]);
-        } else {
-            $success = false;
-        }
-
-        return $this->processOutput($success, $model);
-    }
-
-    /**
-     *
-     * @param  string     $id
-     * @param  array      $data
-     * @param  MTransfer  $model
-     * @return mixed
-     * @throws \Exception
-     */
-    public function complete($id, $data = [], $model = null)
-    {
-        $model = $model ? : $this->findModel($id);
-
-        $success = true;
-        $model->scenario = MTransfer::SCENARIO_DEFAULT;
-        $model->load($data, '');
-        $model->status = MTransfer::STATUS_RECEIVE;
-        $this->fire('_complete', [$model]);
-        $transferDtls = ArrayHelper::index($model->transferDtls, 'product_id');
-        if (!empty($data['details'])) {
-            $this->fire('_complete_head', [$model]);
-            foreach ($data['details'] as $dataDetail) {
-                $index = $dataDetail['product_id'];
-                $detail = $transferDtls[$index];
-                $detail->scenario = MTransfer::SCENARIO_COMPLETE;
-                $detail->load($dataDetail, '');
-                $success = $success && $detail->save();
-                $this->fire('_complete_body', [$model, $detail]);
-                $transferDtls[$index] = $detail;
-            }
-            $model->populateRelation('transferDtls', array_values($transferDtls));
-            $this->fire('_complete_end', [$model]);
-        }
-        $complete = true;
-        foreach ($transferDtls as $detail) {
-            $complete = $complete && $detail->transfer_qty_send == $detail->transfer_total_receive;
-        }
-        if (!$complete) {
-            $model->addError('details', 'Not balance');
-        }
-        if ($success && $complete && $model->save()) {
-            $this->fire('_completed', [$model]);
-        } else {
-            $success = false;
-        }
-
-        return $this->processOutput($success, $model);
+        if ($model->status != MTransfer::STATUS_DRAFT) {
+            throw new ServerErrorHttpException('Document can not be delete');
+        }        
+        parent::delete($id, $model);
     }
 }

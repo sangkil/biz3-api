@@ -36,8 +36,8 @@ class m140624_050056_create_table_inventory extends \yii\db\Migration
             'product_id' => Schema::TYPE_INTEGER . ' NOT NULL',
             'uom_id' => Schema::TYPE_INTEGER . ' NOT NULL',
             'qty' => Schema::TYPE_FLOAT,
-            'qty_send' => Schema::TYPE_FLOAT,
-            'qty_receive' => Schema::TYPE_FLOAT,
+            'total_release' => Schema::TYPE_FLOAT,
+            'total_receive' => Schema::TYPE_FLOAT,
             // constrain
             'PRIMARY KEY ([[transfer_id]], [[product_id]])',
             'FOREIGN KEY ([[transfer_id]]) REFERENCES {{%transfer}} ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',

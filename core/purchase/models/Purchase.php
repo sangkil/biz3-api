@@ -32,16 +32,6 @@ class Purchase extends \yii\db\ActiveRecord
     const STATUS_COMPLETE_RECEIVE = 30;
 
     /**
-     * Scenario when purchase received.
-     */
-    const SCENARIO_RECEIVE = 'receive';
-
-    /**
-     * @var integer warehouse id
-     */
-    public $warehouse_id;
-
-    /**
      * @inheritdoc
      */
     public static function tableName()
@@ -61,7 +51,6 @@ class Purchase extends \yii\db\ActiveRecord
             [['date', 'created_at', 'updated_at'], 'safe'],
             [['discount'], 'number'],
             [['number'], 'string', 'max' => 16],
-            [['warehouse_id'], 'required', 'on' => self::SCENARIO_RECEIVE],
             [['purchaseDtls'], 'calcDetails'],
         ];
     }

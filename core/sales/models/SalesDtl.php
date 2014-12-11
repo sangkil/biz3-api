@@ -24,10 +24,6 @@ use Yii;
  */
 class SalesDtl extends \yii\db\ActiveRecord
 {
-    /**
-     * @var double Quantity for release.
-     */
-    public $release;
 
     /**
      * @inheritdoc
@@ -46,32 +42,7 @@ class SalesDtl extends \yii\db\ActiveRecord
             [['product_id', 'uom_id', 'qty', 'price', 'cogs'], 'required'],
             [['sales_id', 'product_id', 'uom_id'], 'integer'],
             [['qty', 'price', 'cogs', 'discount', 'tax'], 'number'],
-            [['release'], 'double', 'on' => Sales::SCENARIO_RELEASE],
-            [['release'], 'checkQty', 'on' => Sales::SCENARIO_RELEASE]
         ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function scenarios()
-    {
-        $scenarios = parent::scenarios();
-
-        foreach ($scenarios[Sales::SCENARIO_RELEASE] as $i => $attr) {
-            if (!in_array($attr, ['warehouse_id', 'qty_release', 'uom_id_release']) && $attr[0] != '!') {
-                $scenarios[Sales::SCENARIO_RELEASE][$i] = '!' . $attr;
-            }
-        }
-
-        return $scenarios;
-    }
-
-    public function checkQty($attribute)
-    {
-        if ($this->release > $this->qty - $this->total_release) {
-            $this->addError($attribute, 'Total qty release large than purch qty');
-        }
     }
 
     /**

@@ -56,10 +56,10 @@ class Sales extends \yii\base\Behavior
             }
         }
         if ($complete) {
-            $sales->status = MSales::STATUS_COMPLETE_ISSUE;
+            $sales->status = MSales::STATUS_COMPLETE_RELEASE;
             $sales->save(false);
         }  elseif($sales->status == MSales::STATUS_DRAFT) {
-            $sales->status = MSales::STATUS_PARTIAL_ISSUE;
+            $sales->status = MSales::STATUS_PARTIAL_RELEASE;
             $sales->save(false);
         }
     }

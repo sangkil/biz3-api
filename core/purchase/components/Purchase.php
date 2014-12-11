@@ -100,7 +100,7 @@ class Purchase extends \biz\core\base\Api
         /* @var $model MPurchase */
         $model = $model ? : $this->findModel($id);
         if ($model->status != MPurchase::STATUS_DRAFT) {
-            throw new ServerErrorHttpException('Document can not be update');
+            throw new ServerErrorHttpException('Document can not be delete');
         }        
         parent::delete($id, $model);
     }

@@ -25,6 +25,10 @@ use Yii;
  */
 class Transfer extends \yii\db\ActiveRecord
 {
+    const STATUS_DRAFT = 10;
+    const STATUS_PARTIAL_RELEASE = 20;
+    const STATUS_COMPLETE_RELEASE = 30;
+
     /**
      * @inheritdoc
      */
@@ -39,7 +43,8 @@ class Transfer extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['number', 'branch_id', 'branch_dest_id', 'date', 'status'], 'required'],
+            [['branch_id', 'branch_dest_id', 'date', 'transferDtls'], 'required'],
+            [['status'], 'default', 'value' => static::STATUS_DRAFT],
             [['branch_id', 'branch_dest_id', 'status', 'created_by', 'updated_by'], 'integer'],
             [['date', 'created_at', 'updated_at'], 'safe'],
             [['number'], 'string', 'max' => 16]
@@ -72,7 +77,7 @@ class Transfer extends \yii\db\ActiveRecord
     {
         return $this->hasMany(TransferDtl::className(), ['transfer_id' => 'id']);
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -90,4 +95,5 @@ class Transfer extends \yii\db\ActiveRecord
             'BizStatusConverter',
             'mdm\behaviors\ar\RelationBehavior',
         ];
-    }}
+    }
+}

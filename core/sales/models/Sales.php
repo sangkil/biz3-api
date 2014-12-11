@@ -29,12 +29,8 @@ class Sales extends \yii\db\ActiveRecord
 {
     // status sales
     const STATUS_DRAFT = 10;
-    const STATUS_PARTIAL_ISSUE = 20;
-    const STATUS_COMPLETE_ISSUE = 30;
-    /**
-     * scenario when sales release
-     */
-    const SCENARIO_RELEASE = 'release';
+    const STATUS_PARTIAL_RELEASE = 20;
+    const STATUS_COMPLETE_RELEASE = 30;
 
     /**
      * @inheritdoc

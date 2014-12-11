@@ -14,11 +14,25 @@ return[
         'relation' => 'purchaseDtls',
         'apply_method' => 'applyGR',
     ],
-    // Purchase receive
+    // Sales release
     200 => [
         'type' => GoodsMovement::TYPE_ISSUE,
         'class' => 'biz\core\sales\models\Sales',
         'relation' => 'salesDtls',
         'apply_method' => 'applyGI',
+    ],
+    // Transfer release
+    300 => [
+        'type' => GoodsMovement::TYPE_ISSUE,
+        'class' => 'biz\core\inventory\models\Transfer',
+        'relation' => 'transferDtls',
+        'apply_method' => 'applyGI',
+    ],
+    // Transfer release
+    400 => [
+        'type' => GoodsMovement::TYPE_RECEIVE,
+        'class' => 'biz\core\inventory\models\Transfer',
+        'relation' => 'transferDtls',
+        'apply_method' => 'applyGR',
     ],
 ];

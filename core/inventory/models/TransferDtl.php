@@ -11,7 +11,7 @@ use Yii;
  * @property integer $product_id
  * @property integer $uom_id
  * @property double $qty
- * @property double $total_send
+ * @property double $total_release
  * @property double $total_receive
  *
  * @property Transfer $transfer
@@ -35,9 +35,9 @@ class TransferDtl extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['transfer_id', 'product_id', 'uom_id'], 'required'],
+            [['product_id', 'uom_id'], 'required'],
             [['transfer_id', 'product_id', 'uom_id'], 'integer'],
-            [['qty', 'total_send', 'total_receive'], 'number']
+            [['qty', 'total_release', 'total_receive'], 'number']
         ];
     }
 
@@ -51,11 +51,31 @@ class TransferDtl extends \yii\db\ActiveRecord
             'product_id' => 'Product ID',
             'uom_id' => 'Uom ID',
             'qty' => 'Qty',
-            'total_send' => 'Qty Send',
-            'total_receive' => 'Qty Receive',
+            'total_release' => 'Total Release',
+            'total_receive' => 'Total Receive',
         ];
     }
 
+
+    /**
+     * Set default value for GR detail
+     * @param \biz\core\inventory\models\GoodsMovementDtl $model
+     */
+    public function applyGI($model)
+    {
+        $model->avaliable = $this->qty - $this->total_release;
+        $model->uom_id = $this->uom_id;
+    }
+
+    /**
+     * Set default value for GR detail
+     * @param \biz\core\inventory\models\GoodsMovementDtl $model
+     */
+    public function applyGR($model)
+    {
+        $model->avaliable = $this->total_release - $this->total_receive;
+        $model->uom_id = $this->uom_id;
+    }
     /**
      * @return \yii\db\ActiveQuery
      */

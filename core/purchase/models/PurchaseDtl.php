@@ -23,11 +23,6 @@ use Yii;
 class PurchaseDtl extends \yii\db\ActiveRecord
 {
     /**
-     * @var double Quantity for receive.
-     */
-    public $receive;
-
-    /**
      * @inheritdoc
      */
     public static function tableName()
@@ -44,32 +39,7 @@ class PurchaseDtl extends \yii\db\ActiveRecord
             [['product_id', 'uom_id', 'qty', 'price'], 'required'],
             [['purchase_id', 'product_id', 'uom_id'], 'integer'],
             [['qty', 'price'], 'number'],
-            [['receive'], 'double', 'on' => Purchase::SCENARIO_RECEIVE],
-            [['receive'], 'checkQty', 'on' => Purchase::SCENARIO_RECEIVE],
         ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function scenarios()
-    {
-        $scenarios = parent::scenarios();
-
-        foreach ($scenarios[Purchase::SCENARIO_RECEIVE] as $i => $attr) {
-            if (!in_array($attr, ['receive',]) && $attr[0] != '!') {
-                $scenarios[Purchase::SCENARIO_RECEIVE][$i] = '!' . $attr;
-            }
-        }
-
-        return $scenarios;
-    }
-
-    public function checkQty($attribute)
-    {
-        if ($this->receive > $this->qty - $this->total_receive) {
-            $this->addError($attribute, 'Total qty receive large than purch qty');
-        }
     }
 
     /**
